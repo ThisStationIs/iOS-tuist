@@ -2,28 +2,8 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 import MyPlugin
 
-/*
-                +-------------+
-                |             |
-                |     App     | Contains ThisStationIs App target and ThisStationIs unit-test target
-                |             |
-         +------+-------------+-------+
-         |         depends on         |
-         |                            |
- +----v-----+                   +-----v-----+
- |          |                   |           |
- |   Kit    |                   |     UI    |   Two independent frameworks to share code and start modularising your app
- |          |                   |           |
- +----------+                   +-----------+
-
- */
-
-// MARK: - Project
-
-// Local plugin loaded
-let localHelper = LocalHelper(name: "MyPlugin")
-
-// Creates our project using a helper function defined in ProjectDescriptionHelpers
-let project = Project.app(name: "ThisStationIs",
-                          platform: .iOS,
-                          additionalTargets: ["ThisStationIsKit", "ThisStationIsUI"])
+let project = Project.makeApp(
+    name: "ThisStationIsTuist",
+    deploymentTarget: .iOS(targetVersion: "15.0", devices: [.ipad]),
+    infoPlist: .default
+)

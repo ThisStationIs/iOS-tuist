@@ -1,6 +1,5 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
-import UtilityPlugin
 
 let project = Project.makeModule(
     name: "{{ name }}",
@@ -11,8 +10,6 @@ let project = Project.makeModule(
 )
 
 private func configureInfoPlist(merging other: [String: InfoPlist.Value] = [:]) -> InfoPlist {
-    var extendedPlist: [String: InfoPlist.Value] = [
-        "NSMicrophoneUsageDescription": ""
-    ]
+    var extendedPlist: [String: InfoPlist.Value] = [:]
     return InfoPlist.extendingDefault(with: extendedPlist)
 }

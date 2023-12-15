@@ -10,6 +10,8 @@ let project = Project.makeModule(
 )
 
 private func configureInfoPlist(merging other: [String: InfoPlist.Value] = [:]) -> InfoPlist {
-    var extendedPlist: [String: InfoPlist.Value] = [:]
+    var extendedPlist: [String: InfoPlist.Value] = [
+        "NSAppTransportSecurity": "NSAllowsArbitraryLoads"
+    ]
     return InfoPlist.extendingDefault(with: extendedPlist)
 }

@@ -137,7 +137,7 @@ extension Project {
         let testTarget = Target(
             name: "\(name)Tests",
             platform: platform,
-            product: product,
+            product: .unitTests,
             bundleId: baseBundleId + ".\(name)Tests",
             deploymentTarget: deploymentTarget,
             infoPlist: .default,
@@ -151,7 +151,7 @@ extension Project {
         let sampleTarget = Target(
             name: "\(name)Sample",
             platform: platform,
-            product: product,
+            product: .app,
             bundleId: baseBundleId + ".\(name)Sample",
             deploymentTarget: deploymentTarget,
             infoPlist: infoPlist,

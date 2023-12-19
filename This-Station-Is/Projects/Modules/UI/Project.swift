@@ -9,7 +9,9 @@ let project = Project.makeModule(
     name: "UI",
     product: .staticLibrary,
     deploymentTarget: .iOS(targetVersion: "15.0", devices: [.iphone]),
-    dependencies: [],
+    dependencies: [
+        .external(name: "SnapKit")
+    ],
     infoPlist: configureInfoPlist()
 )
 

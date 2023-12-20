@@ -11,14 +11,6 @@ public extension Package {
     static let snapKit: Package = .remote(url: "https://github.com/SnapKit/SnapKit.git", requirement: .upToNextMajor(from: "5.0.1"))
 }
 
-//let dependencies = Dependencies(
-//    carthage: [],
-//    swiftPackageManager: [
-//        .remote(url: "https://github.com/SnapKit/SnapKit.git", requirement: .upToNextMajor(from: "5.0.1")),
-//    ],
-//    platforms: [.iOS]
-//)
-
 
 let dependencies = Dependencies(
     carthage: [],

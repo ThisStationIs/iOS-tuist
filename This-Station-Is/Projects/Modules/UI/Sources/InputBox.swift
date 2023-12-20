@@ -9,7 +9,7 @@
 import UIKit
 import SnapKit
 
-class InputBox: UIView {
+public class InputBox: UIView {
     
     private let textField: TextField = {
        let textField = TextField()
@@ -27,15 +27,23 @@ class InputBox: UIView {
         return label
     }()
     
-    init() {
-        super.init(frame: .zero)
-        setLayout()
+    var isError: Bool = false {
+        didSet {
+            errorText.isHidden = isError
+        }
     }
     
+    public init(title: String, error: String = "") {
+        super.init(frame: .zero)
+        titleLabel.text = title
+        errorText.text = error
+        setLayout()
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+ 
     private func setLayout() {
         self.addSubview(titleLabel)
         titleLabel.snp.makeConstraints {
@@ -51,7 +59,7 @@ class InputBox: UIView {
         
         self.addSubview(errorText)
         errorText.snp.makeConstraints {
-            $0.top.equalTo(textField.snp.bottom).inset(8)
+            $0.top.equalTo(textField.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview()
         }
         

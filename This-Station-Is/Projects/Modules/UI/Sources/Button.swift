@@ -8,9 +8,9 @@
 
 import UIKit
 
-class Button: UIButton {
+public class Button: UIButton {
    
-    override var isEnabled: Bool {
+    public override var isEnabled: Bool {
         didSet {
             if isEnabled {
                 self.backgroundColor = .red.withAlphaComponent(0.4)
@@ -22,25 +22,28 @@ class Button: UIButton {
         }
     }
     
-    var title: String = "" {
+    public var title: String = "" {
         didSet {
             self.setTitle(title, for: .normal)
         }
     }
     
-    var textColor: UIColor = .white {
+    public var textColor: UIColor = .white {
         didSet {
             self.setTitleColor(textColor, for: .normal)
         }
     }
    
-    init() {
+    public init() {
         super.init(frame: .zero)
-        
-        self.frame = .init(x: 0, y: 0, width: .zero, height: 48)
-        self.clipsToBounds = true
+        self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 48)
+        self.layer.masksToBounds = true
         self.layer.cornerRadius = 20
         self.backgroundColor = .red
+        
+        self.snp.makeConstraints {
+            $0.height.equalTo(48)
+        }
     }
     
     required init?(coder: NSCoder) {

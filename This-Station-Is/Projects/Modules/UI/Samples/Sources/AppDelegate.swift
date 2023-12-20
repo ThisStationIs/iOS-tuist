@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import UI
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -9,6 +10,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let vc = UIViewController()
         vc.title = "UI"
         vc.view.backgroundColor = .systemYellow
+        
+        let button = Button()
+        button.title = "aaa"
+        vc.view.addSubview(button)
+        button.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+        }
+        
+        let inputBox = InputBox(title: "타이틀", error: "에러")
+        vc.view.addSubview(inputBox)
+        inputBox.snp.makeConstraints {
+            $0.top.equalTo(button.snp.bottom).offset(10)
+            $0.leading.trailing.equalToSuperview()
+        }
+        
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = UINavigationController(rootViewController: vc)

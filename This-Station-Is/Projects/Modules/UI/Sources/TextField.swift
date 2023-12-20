@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TextField: UITextField {
+public class TextField: UITextField {
     let padding = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8)
     
     private lazy var underLineView: UIView = {
@@ -17,7 +17,7 @@ class TextField: UITextField {
         return lineView
     }()
     
-    init() {
+    public init() {
         super.init(frame: .zero)
         self.addSubview(underLineView)
         

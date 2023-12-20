@@ -8,8 +8,8 @@
 
 import UIKit
 
-class Badge: UIView {
-    init() {
+public class Badge: UIView {
+    public init() {
         super.init(frame: .zero)
     }
     

@@ -24,6 +24,8 @@ public extension TargetDependency.Module {
     }
     
     static let ThirdPartyManager = project(name: "ThirdPartyManager")
+    static let CommonProtocol = project(name: "CommonProtocol")
+    
     static let Network = project(name: "Network")
     static let UI = project(name: "UI")
     

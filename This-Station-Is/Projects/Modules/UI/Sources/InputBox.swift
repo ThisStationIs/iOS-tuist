@@ -18,12 +18,14 @@ public class InputBox: UIView {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
     
     private let errorText: UILabel = {
         let label = UILabel()
-        label.textColor = .red
+        label.textColor = AppColor.setupColor(.statusNegative)
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
     
@@ -64,7 +66,7 @@ public class InputBox: UIView {
         }
         
         self.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.top).offset(8)
+            $0.top.equalTo(titleLabel.snp.top).inset(-8)
             $0.bottom.equalTo(errorText.snp.bottom)
         }
     }

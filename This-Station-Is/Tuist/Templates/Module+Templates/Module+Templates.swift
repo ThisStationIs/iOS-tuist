@@ -19,7 +19,7 @@ let template = Template(
     items: [
         [
             .file(path: "Projects/Modules/\(nameAttribute)/Samples/Sources/AppDelegate.swift", templatePath: "appdelegate.stencil"),
-            .file(path: "Projects/Modules/\(nameAttribute)/Samples/Resources/Assets.xcassets/contents.json", templatePath: "xcassets.stencil")
+            .file(path: "Projects/Modules/\(nameAttribute)/Samples/Resources/Assets.xcassets/contents.json", templatePath: "xcassets.stencil"),
             .file(path: "Projects/Modules/\(nameAttribute)/Samples/Resources/Assets.xcassets/AppIcon.appiconset/contents.json", templatePath: "appIcon.stencil")
         ],
         [

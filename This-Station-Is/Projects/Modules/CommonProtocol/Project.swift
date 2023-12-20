@@ -2,17 +2,11 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 import UtilityPlugin
 
-private let projectName = "UI"
-private let iOSTargetVersion = "15.0"
-
-
 let project = Project.makeModule(
-    name: "UI",
+    name: "CommonProtocol",
     product: .staticLibrary,
     deploymentTarget: .iOS(targetVersion: "15.0", devices: [.iphone]),
-    dependencies: [
-        .Module.ThirdPartyManager
-    ],
+    dependencies: [],
     infoPlist: configureInfoPlist()
 )
 

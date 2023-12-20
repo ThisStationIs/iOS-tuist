@@ -3,10 +3,12 @@ import ProjectDescriptionHelpers
 import UtilityPlugin
 
 let project = Project.makeModule(
-    name: "{{ name }}",
+    name: "LoginFeature",
     product: .staticLibrary,
     deploymentTarget: .iOS(targetVersion: "15.0", devices: [.iphone]),
-    dependencies: [],
+    dependencies: [
+        .Module.ThirdPartyManager
+    ],
     infoPlist: configureInfoPlist()
 )
 

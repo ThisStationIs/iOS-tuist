@@ -6,17 +6,15 @@
 //
 
 import ProjectDescription
+import ProjectDescriptionHelpers
+import UtilityPlugin
 
-public extension Package {
-    static let snapKit: Package = .remote(url: "https://github.com/SnapKit/SnapKit.git", requirement: .upToNextMajor(from: "5.0.1"))
-}
-
-
-let dependencies = Dependencies(
-    carthage: [],
-    swiftPackageManager: SwiftPackageManagerDependencies(
+let dependencis = Dependencies(
+    swiftPackageManager: SwiftPackageManagerDependencies.init(
         [
-            .snapKit
+            .remote(url: "https://github.com/devxoul/Then", requirement: .upToNextMajor(from: "2")),
+            .remote(url: "https://github.com/SnapKit/SnapKit.git", requirement: .upToNextMajor(from: "5.0.1")),
+            .remote(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", requirement: .upToNextMajor(from: "4.0.0"))
         ]
     ),
     platforms: [.iOS]

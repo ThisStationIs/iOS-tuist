@@ -3,10 +3,13 @@ import ProjectDescriptionHelpers
 import UtilityPlugin
 
 let project = Project.makeModule(
-    name: "{{ name }}",
+    name: "ThirdPartyManager",
     product: .staticLibrary,
     deploymentTarget: .iOS(targetVersion: "15.0", devices: [.iphone]),
-    dependencies: [],
+    dependencies: [
+        .SPM.SnapKit,
+        .SPM.Then
+    ],
     infoPlist: configureInfoPlist()
 )
 

@@ -1,12 +1,13 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
+import UtilityPlugin
 
 let project = Project.makeModule(
     name: "UI",
     product: .staticLibrary,
     deploymentTarget: .iOS(targetVersion: "15.0", devices: [.iphone]),
     dependencies: [
-        .external(name: "SnapKit")
+        .Module.ThirdPartyManager
     ],
     infoPlist: configureInfoPlist()
 )

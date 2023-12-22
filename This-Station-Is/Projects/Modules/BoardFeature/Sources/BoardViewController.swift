@@ -19,7 +19,11 @@ public class BoardViewController: UIViewController {
         $0.rowHeight = UITableView.automaticDimension
         $0.estimatedRowHeight = 232
         $0.backgroundColor = .white
+        $0.separatorStyle = .none
     }
+    
+    private let categoryView = CateogryView()
+    private let tableHeaderView = BoardTableHeaderView()
     
     private let searchBar = UISearchBar().then {
         $0.placeholder = "찾으시는게 있나요?"
@@ -41,6 +45,8 @@ public class BoardViewController: UIViewController {
         
         let filterButton = UIBarButtonItem(image: UIImage(named: "filter"), style: .plain, target: self, action: #selector(selectFilterButton))
         self.navigationItem.rightBarButtonItem = filterButton
+        // TODO: 스크롤 올리면 내려오지 않음 문제 해결 필요
+        self.navigationController?.hidesBarsOnSwipe = true
         
         self.view.addSubview(mainBoardTableView)
     }
@@ -48,29 +54,55 @@ public class BoardViewController: UIViewController {
     private func setLayout() {
         
         mainBoardTableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalTo(self.view.safeAreaLayoutGuide)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
+    }
+    
+    private func setTableHeaderView() {
+        
     }
 }
 
 extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
+    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return 10 + 1
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return tableHeaderView
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let identifier = "\(indexPath.row)"
         
-        if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
-            return reuseCell
+        if indexPath.row == 0 {
+            let identidier = "CATEGORY_\(indexPath.row)"
+            
+            let cell = UITableViewCell.init(style: .default, reuseIdentifier: identidier)
+            cell.backgroundColor = .white
+            cell.selectionStyle = .none
+            cell.contentView.addSubview(categoryView)
+            return cell
+        } else {
+            if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
+                return reuseCell
+            }
+            
+            let cell = BoardTableViewCell(reuseIdentifier: identifier)
+            cell.selectionStyle = .none
+            cell.backgroundColor = .white
+            
+            return cell
         }
-        
-        let cell = UITableViewCell.init(style: .default, reuseIdentifier: identifier)
-        
-        cell.backgroundColor = .white
-        
-        return cell
     }
-    
-    
 }

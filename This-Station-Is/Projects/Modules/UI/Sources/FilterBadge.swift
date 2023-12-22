@@ -32,7 +32,6 @@ public class FilterBadge: UIView {
         super.init(frame: .zero)
         setUI()
         setLayout()
-        setData(title: title)
     }
     
     required init?(coder: NSCoder) {
@@ -55,10 +54,6 @@ public class FilterBadge: UIView {
             self.backgroundColor = .componentTextbox
             self.layer.borderColor = UIColor.componentDivider.cgColor
         }
-    }
-    
-    private func setData(title: String) {
-        badgeTitleLabel.text = title
     }
     
     private func setUI() {

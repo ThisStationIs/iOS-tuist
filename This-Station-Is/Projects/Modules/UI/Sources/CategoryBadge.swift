@@ -29,10 +29,11 @@ public class CategoryBadge: UIView {
         }
     }
     
-    public init() {
+    public init(title: String) {
         super.init(frame: .zero)
         setUI()
         setLayout()
+        setData(title: title)
     }
     
     required init?(coder: NSCoder) {
@@ -45,16 +46,20 @@ public class CategoryBadge: UIView {
         
         switch type {
         case .outline:
-            badgeTitleLabel.textColor = AppColor.setupColor(.textTeritory)
-            self.layer.borderColor = AppColor.setupColor(.componentDivider).cgColor
+            badgeTitleLabel.textColor = .textTeritory
+            self.layer.borderColor = UIColor.componentDivider.cgColor
         case .color:
-            self.layer.borderColor = AppColor.setupColor(.primaryNormal).cgColor
-            badgeTitleLabel.textColor = AppColor.setupColor(.primaryNormal)
+            self.layer.borderColor = UIColor.primaryNormal.cgColor
+            badgeTitleLabel.textColor = .primaryNormal
         case .background:
-            badgeTitleLabel.textColor = AppColor.setupColor(.textSub)
-            self.backgroundColor = AppColor.setupColor(.componentTextbox)
-            self.layer.borderColor = AppColor.setupColor(.componentDivider).cgColor
+            badgeTitleLabel.textColor = .textSub
+            self.backgroundColor = .componentTextbox
+            self.layer.borderColor = UIColor.componentDivider.cgColor
         }
+    }
+    
+    private func setData(title: String) {
+        badgeTitleLabel.text = title
     }
     
     private func setUI() {

@@ -24,7 +24,7 @@ public class InputBox: UIView {
     
     private let errorText: UILabel = {
         let label = UILabel()
-        label.textColor = AppColor.setupColor(.statusNegative)
+        label.textColor = .statusNegative
         label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()

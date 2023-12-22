@@ -18,13 +18,13 @@ public class Toast: UIView {
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "checkmark.circle")?.withRenderingMode(.alwaysTemplate)
-        imageView.tintColor = AppColor.setupColor(.statusPositive)
+        imageView.tintColor = .statusPositive
         return imageView
     }()
     
     private let toastText: UILabel = {
         let label = UILabel()
-        label.textColor = AppColor.setupColor(.textMain)
+        label.textColor = .textMain
         label.text = "adsdsdsdsdsd"
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         return label
@@ -33,7 +33,7 @@ public class Toast: UIView {
     private lazy var closeButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "xmark")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.tintColor = AppColor.setupColor(.componentIcon)
+        button.tintColor = .componentIcon
         button.addTarget(self, action: #selector(selectCloseButton), for: .touchUpInside)
         return button
     }()
@@ -79,13 +79,13 @@ public class Toast: UIView {
         
         switch type {
         case .success:
-            self.layer.borderColor = AppColor.setupColor(.statusPositive).cgColor
+            self.layer.borderColor = UIColor.statusPositive.cgColor
             iconImageView.image = UIImage(systemName: "checkmark.circle")?.withRenderingMode(.alwaysTemplate)
-            iconImageView.tintColor = AppColor.setupColor(.statusPositive)
+            iconImageView.tintColor = .statusPositive
         case .error:
-            self.layer.borderColor = AppColor.setupColor(.statusNegative).cgColor
+            self.layer.borderColor = UIColor.statusNegative.cgColor
             iconImageView.image = UIImage(systemName: "info.circle")?.withRenderingMode(.alwaysTemplate)
-            iconImageView.tintColor = AppColor.setupColor(.statusNegative)
+            iconImageView.tintColor = .statusNegative
         }
     }
     

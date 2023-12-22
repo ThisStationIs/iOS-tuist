@@ -68,8 +68,9 @@ public class AlertView: UIView {
     // title, description, oneButton, twoButton, okbutton, okHandler, cancelButton, cancelHandler
     public init(title: String, message: String) {
         super.init(frame: .zero)
-        setUI(title: title, message: message)
+        setUI()
         setLayout()
+        setData(title: title, message: message)
     }
     
     required init?(coder: NSCoder) {
@@ -81,26 +82,29 @@ public class AlertView: UIView {
         makeAction(title: title, style: style, handler: handler)
     }
     
-    private func setUI(title: String, message: String) {
-        self.backgroundColor = .black.withAlphaComponent(0.3)
+    private func setData(title: String, message: String) {
         self.contentTitle.text = title
         self.messageLabel.text = message
     }
     
-    private func setLayout() {
+    private func setUI() {
+        self.backgroundColor = .black.withAlphaComponent(0.3)
         self.addSubview(contentView)
-//        contentView.snp.makeConstraints {
-//
-//            $0.height.equalTo(180)
-//        }
         
-        contentView.addSubview(contentTitle)
+        [
+            contentTitle,
+            messageLabel
+        ].forEach {
+            contentView.addSubview($0)
+        }
+    }
+    
+    private func setLayout() {
         contentTitle.snp.makeConstraints {
             $0.top.equalToSuperview().inset(32)
             $0.leading.trailing.equalToSuperview().inset(24)
         }
-        
-        contentView.addSubview(messageLabel)
+    
         messageLabel.snp.makeConstraints {
             $0.top.equalTo(contentTitle.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview().inset(24)

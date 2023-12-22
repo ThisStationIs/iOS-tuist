@@ -39,7 +39,7 @@ public class Button: UIButton {
         self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 48)
         self.layer.masksToBounds = true
         self.layer.cornerRadius = 20
-        self.backgroundColor = AppColor.setupColor(.primaryNormal)
+        self.backgroundColor = .primaryNormal
         
         self.snp.makeConstraints {
             $0.height.equalTo(48)

@@ -72,9 +72,9 @@ public class CategoryBadge: UIView {
         }
         
         self.snp.makeConstraints {
-            $0.top.equalTo(badgeTitleLabel.snp.top).inset(4)
+            $0.top.equalTo(badgeTitleLabel.snp.top).inset(-4)
             $0.bottom.equalTo(badgeTitleLabel.snp.bottom).inset(-4)
-            $0.leading.equalTo(badgeTitleLabel.snp.leading).inset(12)
+            $0.leading.equalTo(badgeTitleLabel.snp.leading).inset(-12)
             $0.trailing.equalTo(badgeTitleLabel.snp.trailing).inset(-12)
         }
     }

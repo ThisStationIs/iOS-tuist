@@ -6,6 +6,9 @@ import UI
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
+    let toast = Toast(type: .error)
+  
+    
     internal func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let vc = UIViewController()
         vc.title = "UI"
@@ -18,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             $0.center.equalToSuperview()
             $0.leading.trailing.equalToSuperview()
         }
+        button.addTarget(self, action: #selector(selectButton), for: .touchUpInside)
         
         let inputBox = InputBox(title: "타이틀", error: "에러")
         vc.view.addSubview(inputBox)
@@ -35,12 +39,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             $0.centerX.equalToSuperview()
         }
         
-        let toast = Toast(type: .error)
-        toast.show()
-//        toast.snp.makeConstraints {
-//            $0.top.equalTo(badge.snp.bottom).offset(10)
-//            $0.leading.trailing.equalToSuperview()
-//        }
+        
+        //        toast.snp.makeConstraints {
+        //            $0.top.equalTo(badge.snp.bottom).offset(10)
+        //            $0.leading.trailing.equalToSuperview()
+        //        }
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = UINavigationController(rootViewController: vc)
@@ -48,5 +51,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         return true
+    }
+    
+    @objc func selectButton() {
+//        toast.show()
+        let alertView = AlertView(title: "aaa", message: "212sdasdsadsdsdasdsadsdsdsdasdldkfaskdhaskfhklsadfhlskdfhdsjkfhsdkjfhksdfhs;lkjsASld;sjl;kdjasldkjasl;fhdkafjsdaklfjsdl;fkjkdlsfjdsklfjldskfjdslkjkl")
+        alertView.addAction(title: "닫기", style: .cancel)
+        alertView.addAction(title: "완료", style: .destructive)
+        alertView.present()
     }
 }

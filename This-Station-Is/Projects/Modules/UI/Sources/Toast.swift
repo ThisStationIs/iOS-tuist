@@ -15,21 +15,22 @@ public class Toast: UIView {
         case error
     }
     
-    let iconImageView: UIImageView = {
+    private let iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "checkmark.circle")?.withRenderingMode(.alwaysTemplate)
         imageView.tintColor = AppColor.setupColor(.statusPositive)
         return imageView
     }()
     
-    let toastText: UILabel = {
+    private let toastText: UILabel = {
         let label = UILabel()
         label.textColor = AppColor.setupColor(.textMain)
         label.text = "adsdsdsdsdsd"
+        label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         return label
     }()
     
-    lazy var closeButton: UIButton = {
+    private lazy var closeButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "xmark")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = AppColor.setupColor(.componentIcon)
@@ -38,13 +39,12 @@ public class Toast: UIView {
     }()
     
     @objc func selectCloseButton() {
-        guard let root = self.superview else { return }
+        guard let _ = self.superview else { return }
         self.removeFromSuperview()
     }
     
     public func show(completion: (() -> ())? = nil) {
-        //TODO: 최상위 뷰 가져오기
-        guard let rootViewController = UIApplication.shared.keyWindow?.visibleViewController else { return }
+        guard let rootViewController = UIApplication.topViewController() else { return }
         rootViewController.view.addSubview(self)
         self.snp.makeConstraints {
             $0.bottom.equalToSuperview()
@@ -112,32 +112,22 @@ public class Toast: UIView {
     }
 }
 
-extension UIWindow {
-    
-    public var visibleViewController: UIViewController? {
-        return self.visibleViewControllerFrom(vc: self.rootViewController)
-    }
-    
-    /**
-     # visibleViewControllerFrom
-     - Author: suni
-     - Date:
-     - Parameters:
-        - vc: rootViewController 혹은 UITapViewController
-     - Returns: UIViewController?
-     - Note: vc내에서 가장 최상위에 있는 뷰컨트롤러 반환
-    */
-    public func visibleViewControllerFrom(vc: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
-        if let nc = vc as? UINavigationController {
-            return self.visibleViewControllerFrom(vc: nc.visibleViewController)
-        } else if let tc = vc as? UITabBarController {
-            return self.visibleViewControllerFrom(vc: tc.selectedViewController)
-        } else {
-            if let pvc = vc?.presentedViewController {
-                return self.visibleViewControllerFrom(vc: pvc)
-            } else {
-                return vc
+extension UIApplication {
+    class func topViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+        if let navigationController = base as? UINavigationController {
+            return topViewController(base: navigationController.visibleViewController)
+        }
+        
+        if let tabbarController = base as? UITabBarController {
+            if let selected = tabbarController.selectedViewController {
+                return topViewController(base: selected)
             }
         }
+        
+        if let presented = base?.presentedViewController {
+            return topViewController(base: presented)
+        }
+        
+        return base
     }
 }

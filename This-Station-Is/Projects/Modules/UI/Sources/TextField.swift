@@ -12,7 +12,7 @@ import SnapKit
 public class TextField: UITextField {
     let padding = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8)
     
-    private lazy var underLineView: UIView = {
+    public lazy var underLineView: UIView = {
         let lineView = UIView()
         lineView.backgroundColor = .componentDivider
         return lineView

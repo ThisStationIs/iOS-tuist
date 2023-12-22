@@ -54,8 +54,8 @@ public class BoardViewController: UIViewController {
     private func setLayout() {
         
         mainBoardTableView.snp.makeConstraints {
-            $0.top.equalTo(self.view.safeAreaLayoutGuide)
-            $0.leading.trailing.bottom.equalToSuperview()
+//            $0.top.equalTo(self.view.safeAreaLayoutGuide)
+            $0.top.leading.trailing.bottom.equalToSuperview()
         }
     }
     
@@ -83,8 +83,7 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier = "\(indexPath.row)"
-        
+    
         if indexPath.row == 0 {
             let identidier = "CATEGORY_\(indexPath.row)"
             
@@ -92,8 +91,11 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
             cell.backgroundColor = .white
             cell.selectionStyle = .none
             cell.contentView.addSubview(categoryView)
+            
             return cell
         } else {
+            let identifier = "LIST_\(indexPath.row)"
+            
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell
             }
@@ -104,5 +106,10 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
             
             return cell
         }
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let boardDetailViewController = BoardDetailViewController()
+        self.navigationController?.pushViewController(boardDetailViewController, animated: true)
     }
 }

@@ -39,6 +39,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             $0.centerX.equalToSuperview()
         }
         
+        let radioButton = RadioButton()
+        radioButton.isOn = true
+        vc.view.addSubview(radioButton)
+        radioButton.snp.makeConstraints {
+            $0.top.equalTo(badge.snp.bottom).offset(10)
+            $0.centerX.equalToSuperview()
+        }
+        
+        let checkbox = CheckBox()
+        checkbox.isCheck = true
+        vc.view.addSubview(checkbox)
+        checkbox.snp.makeConstraints {
+            $0.top.equalTo(badge.snp.bottom).offset(10)
+            $0.leading.equalTo(radioButton.snp.trailing).offset(10)
+        }
+        
+        let toggle = Toggle()
+        vc.view.addSubview(toggle)
+        toggle.snp.makeConstraints {
+            $0.top.equalTo(badge.snp.bottom).offset(10)
+            $0.leading.equalTo(checkbox.snp.trailing).offset(10)
+        }
         
         //        toast.snp.makeConstraints {
         //            $0.top.equalTo(badge.snp.bottom).offset(10)

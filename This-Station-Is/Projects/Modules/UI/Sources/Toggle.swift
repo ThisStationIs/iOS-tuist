@@ -20,7 +20,7 @@ public class Toggle: UISwitch {
     
     private func setUI() {
         self.frame = .init(x: 0, y: 0, width: 44, height: 24)
-        self.onTintColor = AppColor.setupColor(.primaryNormal)
+        self.onTintColor = .primaryNormal
         self.transform = .init(scaleX: 0.75, y: 0.75)
     }
 }

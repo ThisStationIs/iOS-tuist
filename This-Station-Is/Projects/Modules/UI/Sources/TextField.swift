@@ -14,7 +14,7 @@ public class TextField: UITextField {
     
     private lazy var underLineView: UIView = {
         let lineView = UIView()
-        lineView.backgroundColor = AppColor.setupColor(.componentDivider)
+        lineView.backgroundColor = .componentDivider
         return lineView
     }()
     

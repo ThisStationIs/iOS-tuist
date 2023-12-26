@@ -22,7 +22,7 @@ public class Toast: UIView {
         return imageView
     }()
     
-    private let toastText: UILabel = {
+    public let toastText: UILabel = {
         let label = UILabel()
         label.textColor = .textMain
         label.text = "adsdsdsdsdsd"

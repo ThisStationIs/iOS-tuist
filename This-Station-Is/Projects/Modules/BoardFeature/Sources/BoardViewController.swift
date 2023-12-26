@@ -30,7 +30,10 @@ public class BoardViewController: UIViewController {
     }
     
     @objc func selectFilterButton() {
-        
+        // TODO: 테스트 코드
+        let boardUploadViewController = BoardUploadViewController()
+        boardUploadViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(boardUploadViewController, animated: true)
     }
 
     public override func viewDidLoad() {

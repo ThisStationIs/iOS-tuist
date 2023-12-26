@@ -29,6 +29,7 @@ class BoardDetailViewController: UIViewController {
         $0.backgroundColor = .componentTextbox
         $0.underLineView.isHidden = true
         $0.placeholder = "댓글을 입력하세요."
+        $0.tintColor = .textSub
         $0.layer.cornerRadius = 18
     }
     

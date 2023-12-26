@@ -7,7 +7,10 @@ let project = Project.makeModule(
     product: .staticLibrary,
     deploymentTarget: .iOS(targetVersion: "15.0", devices: [.iphone]),
     dependencies: [
-        .Module.ThirdPartyManager
+        .Module.ThirdPartyManager,
+        .Module.UI,
+        .Module.Network,
+        .Module.CommonProtocol
     ],
     infoPlist: configureInfoPlist()
 )

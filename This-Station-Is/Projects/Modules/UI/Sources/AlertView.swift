@@ -148,7 +148,7 @@ public class AlertView: UIView {
             actionHandlerArray.append(handler)
         } else {
             // handler 없는 경우 style 이 dismiss 인 경우
-            if style == .cancel {
+            if style == .cancel || style == .default {
                 actionHandlerArray.append(dismiss)
             }
         }
@@ -159,11 +159,11 @@ public class AlertView: UIView {
         // 스타일에 따라 버튼 색상 수정
         switch style {
         case .default:
-            actionButton.setTitleColor(AppColor.setupColor(.primaryNormal), for: .normal)
+            actionButton.setTitleColor(.primaryNormal, for: .normal)
         case .cancel:
-            actionButton.setTitleColor(AppColor.setupColor(.textSub), for: .normal)
+            actionButton.setTitleColor(.textSub, for: .normal)
         case .destructive:
-            actionButton.setTitleColor(AppColor.setupColor(.statusNegative), for: .normal)
+            actionButton.setTitleColor(.statusNegative, for: .normal)
         }
         
         actionView.addSubview(actionButton)

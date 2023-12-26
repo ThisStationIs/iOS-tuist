@@ -45,3 +45,10 @@ public class TextField: UITextField {
         return bounds.inset(by: padding)
     }
 }
+
+public extension TextField {
+    func updateState(isError: Bool) {
+        self.textColor = isError ? .statusNegative : .textMain
+        self.underLineView.backgroundColor = isError ? .statusNegative : .componentDivider
+    }
+}

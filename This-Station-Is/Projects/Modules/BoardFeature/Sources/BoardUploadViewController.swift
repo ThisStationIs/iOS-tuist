@@ -22,14 +22,18 @@ class BoardUploadViewController: UIViewController {
     
     var rightBarItemForSetting: UIBarButtonItem!
     
-    @objc func selectUploadPost() {
-        
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setLayout()
+    }
+    
+    @objc func selectLeftBarButton() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func selectUploadPost() {
+        
     }
     
     private func setUI() {
@@ -58,6 +62,11 @@ class BoardUploadViewController: UIViewController {
 
         rightBarItemForSetting = UIBarButtonItem(image: tintedImage, style: .plain, target: self, action: #selector(selectUploadPost))
         navigationItem.rightBarButtonItem = rightBarItemForSetting
+        
+        let leftBarButton = UIBarButtonItem(image: UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(selectLeftBarButton))
+        leftBarButton.tintColor = .black
+        self.navigationItem.leftBarButtonItem = leftBarButton
+        
     }
 }
 

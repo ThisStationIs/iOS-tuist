@@ -23,17 +23,14 @@ public class BoardViewController: UIViewController {
     }
     
     private let categoryView = CateogryView()
-    private let tableHeaderView = BoardTableHeaderView()
-    
-    private let searchBar = UISearchBar().then {
-        $0.placeholder = "찾으시는게 있나요?"
+    private lazy var tableHeaderView = BoardTableHeaderView().then {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(selectTableHeaderView))
+        $0.addGestureRecognizer(gesture)
     }
     
-    @objc func selectFilterButton() {
-        // TODO: 테스트 코드
-        let boardUploadViewController = BoardUploadViewController()
-        boardUploadViewController.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(boardUploadViewController, animated: true)
+    private let searchBar = UISearchBar().then {
+        $0.searchTextField.attributedPlaceholder = NSAttributedString(string: "찾으시는게 있나요?", attributes: [NSAttributedString.Key.foregroundColor : UIColor.textSub])
+        $0.searchTextField.textColor = .textMain
     }
 
     public override func viewDidLoad() {
@@ -42,12 +39,26 @@ public class BoardViewController: UIViewController {
         setLayout()
     }
     
+    @objc func selectTableHeaderView() {
+        let selectSubwayLineViewController = SelectSubwayLineViewController()
+        selectSubwayLineViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(selectSubwayLineViewController, animated: true)
+    }
+    
+    @objc func selectFilterButton() {
+        // TODO: 테스트 코드
+        let boardUploadViewController = BoardUploadViewController()
+        boardUploadViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(boardUploadViewController, animated: true)
+    }
+    
     private func setUI() {
         self.view.backgroundColor = .white
         self.navigationItem.titleView = searchBar
         
-        let filterButton = UIBarButtonItem(image: UIImage(named: "filter"), style: .plain, target: self, action: #selector(selectFilterButton))
+        let filterButton = UIBarButtonItem(image: UIImage(named: "filter")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectFilterButton))
         self.navigationItem.rightBarButtonItem = filterButton
+        
         // TODO: 스크롤 올리면 내려오지 않음 문제 해결 필요
         self.navigationController?.hidesBarsOnSwipe = true
         

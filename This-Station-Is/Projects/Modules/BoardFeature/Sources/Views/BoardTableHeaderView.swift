@@ -17,6 +17,10 @@ public class BoardTableHeaderView: UIView {
         $0.textColor = .textMain
     }
     
+    private let arrowImageView = UIImageView().then {
+        $0.image = UIImage(named: "right_arrow")
+    }
+    
     public init() {
         super.init(frame: .zero)
         setUI()
@@ -31,11 +35,17 @@ public class BoardTableHeaderView: UIView {
         self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 40)
         self.backgroundColor = .white
         self.addSubview(headerLabel)
+        self.addSubview(arrowImageView)
     }
     
     private func setLayout() {
         headerLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(24)
+            $0.centerY.equalToSuperview()
+        }
+        
+        arrowImageView.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(24)
             $0.centerY.equalToSuperview()
         }
     }

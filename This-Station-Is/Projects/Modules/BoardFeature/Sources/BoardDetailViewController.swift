@@ -36,10 +36,6 @@ class BoardDetailViewController: UIViewController {
     private let sendButton = UIButton().then {
         $0.setImage(UIImage(named: "send"), for: .normal)
     }
-    
-    @objc func selectMoreButton() {
-        
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,10 +43,28 @@ class BoardDetailViewController: UIViewController {
         setLayout()
     }
     
+    @objc func selectLeftBarButton() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func selectMoreButton() {
+        let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let editAction = UIAlertAction(title: "수정하기", style: .default)
+        let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
+        alertView.addAction(editAction)
+        alertView.addAction(deleteAction)
+        
+        self.present(alertView, animated: true)
+    }
+    
     private func setUI() {
         self.navigationItem.title = ""
         self.view.backgroundColor = .white
         self.navigationController?.hidesBarsOnSwipe = false
+        
+        let leftBarButton = UIBarButtonItem(image: UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(selectLeftBarButton))
+        leftBarButton.tintColor = .black
+        self.navigationItem.leftBarButtonItem = leftBarButton
     
         let moreButton = UIBarButtonItem(image: UIImage(named: "more")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectMoreButton))
 
@@ -70,7 +84,8 @@ class BoardDetailViewController: UIViewController {
     
     private func setLayout() {
         detilaTableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(64)
         }
         
         bottomView.snp.makeConstraints {

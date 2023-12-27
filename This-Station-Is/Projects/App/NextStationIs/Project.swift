@@ -3,7 +3,7 @@ import ProjectDescriptionHelpers
 import UtilityPlugin
 
 let project = Project.makeApp(
-    name: "MetroStory",
+    name: "NextStationIs",
     deploymentTarget: .iOS(targetVersion: "15.0", devices: [.iphone]),
     dependencies: [
         .Module.CommonProtocol,

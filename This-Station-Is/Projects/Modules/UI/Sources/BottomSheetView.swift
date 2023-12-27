@@ -91,6 +91,8 @@ public class BottomSheetView: UIView {
         self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds
             .width, height: UIScreen.main.bounds.height)
         
+        self.backgroundColor = .black.withAlphaComponent(0.2)
+        
         let blurEffect = UIBlurEffect(style: .light)
         let visualEffectView = UIVisualEffectView(effect: blurEffect)
         visualEffectView.frame = self.frame

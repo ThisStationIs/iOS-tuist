@@ -8,6 +8,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let toast = Toast(type: .error)
   
+    let bottomSheet = BottomSheetView(defaultHeight: 224, title: "게시글 정렬")
     
     internal func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let vc = UIViewController()
@@ -30,14 +31,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             $0.leading.trailing.equalToSuperview()
         }
         
-//        let badge = CategoryBadge()
-//        badge.title = "1호선"
-//        badge.setType(.background)
-//        vc.view.addSubview(badge)
-//        badge.snp.makeConstraints {
-//            $0.top.equalTo(inputBox.snp.bottom).offset(10)
-//            $0.centerX.equalToSuperview()
-//        }
+        let badge = CategoryBadge()
+        badge.title = "1호선"
+        badge.setType(.background)
+        vc.view.addSubview(badge)
+        badge.snp.makeConstraints {
+            $0.top.equalTo(inputBox.snp.bottom).offset(10)
+            $0.centerX.equalToSuperview()
+        }
+        
+        let label = UILabel()
+        label.text = "안녕"
+        
+        bottomSheet.addContentView(label)
         
         let radioButton = RadioButton()
         radioButton.isOn = true
@@ -76,10 +82,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     @objc func selectButton() {
+        bottomSheet.show()
 //        toast.show()
-        let alertView = AlertView(title: "aaa", message: "212sdasdsadsdsdasdsadsdsdsdasdldkfaskdhaskfhklsadfhlskdfhdsjkfhsdkjfhksdfhs;lkjsASld;sjl;kdjasldkjasl;fhdkafjsdaklfjsdl;fkjkdlsfjdsklfjldskfjdslkjkl")
-        alertView.addAction(title: "닫기", style: .cancel)
-        alertView.addAction(title: "완료", style: .destructive)
-        alertView.present()
+//        let alertView = AlertView(title: "aaa", message: "212sdasdsadsdsdasdsadsdsdsdasdldkfaskdhaskfhklsadfhlskdfhdsjkfhsdkjfhksdfhs;lkjsASld;sjl;kdjasldkjasl;fhdkafjsdaklfjsdl;fkjkdlsfjdsklfjldskfjdslkjkl")
+//        alertView.addAction(title: "닫기", style: .cancel)
+//        alertView.addAction(title: "완료", style: .destructive)
+//        alertView.present()
     }
 }

@@ -9,7 +9,7 @@
 import UIKit
 import UI
 
-class BoardUploadViewController: UIViewController {
+public class BoardUploadViewController: UIViewController {
     
     lazy var mainTableView = UITableView(frame: .zero, style: .grouped).then {
         $0.delegate = self
@@ -22,7 +22,7 @@ class BoardUploadViewController: UIViewController {
     
     var rightBarItemForSetting: UIBarButtonItem!
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setLayout()
@@ -71,15 +71,15 @@ class BoardUploadViewController: UIViewController {
 }
 
 extension BoardUploadViewController: UITableViewDelegate, UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
+    public func numberOfSections(in tableView: UITableView) -> Int {
         return 4
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
         case 0, 1:
             return 24 + 8
@@ -88,11 +88,11 @@ extension BoardUploadViewController: UITableViewDelegate, UITableViewDataSource 
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 1
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = .white
         
@@ -122,7 +122,7 @@ extension BoardUploadViewController: UITableViewDelegate, UITableViewDataSource 
         }
     }
     
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footerView = UIView()
         footerView.snp.makeConstraints {
             $0.height.equalTo(1)
@@ -130,11 +130,11 @@ extension BoardUploadViewController: UITableViewDelegate, UITableViewDataSource 
         return footerView
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let identifier = "\(indexPath.section) \(indexPath.row)"
         
         if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {

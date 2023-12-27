@@ -1,4 +1,5 @@
 import UIKit
+import BoardFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?

@@ -29,11 +29,10 @@ public class CategoryBadge: UIView {
         }
     }
     
-    public init(title: String) {
+    public init() {
         super.init(frame: .zero)
         setUI()
         setLayout()
-        setData(title: title)
     }
     
     required init?(coder: NSCoder) {
@@ -58,10 +57,6 @@ public class CategoryBadge: UIView {
         }
     }
     
-    private func setData(title: String) {
-        badgeTitleLabel.text = title
-    }
-    
     private func setUI() {
         self.frame = .init(x: 0, y: 0, width: 54, height: 24)
         self.layer.masksToBounds = true
@@ -77,9 +72,9 @@ public class CategoryBadge: UIView {
         }
         
         self.snp.makeConstraints {
-            $0.top.equalTo(badgeTitleLabel.snp.top).inset(-4)
+            $0.top.equalTo(badgeTitleLabel.snp.top).inset(4)
             $0.bottom.equalTo(badgeTitleLabel.snp.bottom).inset(-4)
-            $0.leading.equalTo(badgeTitleLabel.snp.leading).inset(-12)
+            $0.leading.equalTo(badgeTitleLabel.snp.leading).inset(12)
             $0.trailing.equalTo(badgeTitleLabel.snp.trailing).inset(-12)
         }
     }

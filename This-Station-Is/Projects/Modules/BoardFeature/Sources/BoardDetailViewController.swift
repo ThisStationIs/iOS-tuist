@@ -36,11 +36,26 @@ class BoardDetailViewController: UIViewController {
     private let sendButton = UIButton().then {
         $0.setImage(UIImage(named: "send"), for: .normal)
     }
-
+    
+    private var id: Int!
+    private var viewModel: BoardViewModel!
+    
+    public init(viewModel: BoardViewModel, id: Int) {
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
+        self.id = id
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUI()
-        setLayout()
+        viewModel.getDetailBoardData(id: id) { [self] in
+            setUI()
+            setLayout()
+        }
     }
     
     @objc func selectLeftBarButton() {
@@ -89,8 +104,9 @@ class BoardDetailViewController: UIViewController {
         }
         
         bottomView.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(64)
+            $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
         
         sendButton.snp.makeConstraints {
@@ -114,7 +130,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
         if section == 0 {
             return 1
         } else {
-            return 10
+            return viewModel.detailBoardData.comments.count
         }
     }
     
@@ -129,17 +145,18 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
                 return reuseCell
             }
             
-            let cell = BoardDetailContentTableViewCell(reuseIdentifier: identifier)
+            let cell = BoardDetailContentTableViewCell(reuseIdentifier: identifier, detailData: viewModel.detailBoardData)
             cell.backgroundColor = .white
             cell.selectionStyle = .none
             return cell
         } else {
-            let identifier = "COMMENT_\(indexPath.section)_\(indexPath.row)"
+            let commentData = viewModel.detailBoardData.comments[indexPath.row]
+            let identifier = "COMMENT_\(indexPath.section)_\(indexPath.row)_\(commentData.commentId)"
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell
             }
             
-            let cell = CommentTableViewCell(reuseIdentifier: identifier)
+            let cell = CommentTableViewCell(reuseIdentifier: identifier, commentData: commentData)
             cell.backgroundColor = .white
             cell.selectionStyle = .none
             return cell

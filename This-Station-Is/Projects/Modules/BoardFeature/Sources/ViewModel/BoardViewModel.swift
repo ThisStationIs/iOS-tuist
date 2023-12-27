@@ -11,33 +11,14 @@ import Network
 
 public class BoardViewModel: NSObject {
     
+    var boardArray: [Post] = []
+    var detailBoardData: DetailPost!
+    
     var lineInfo: [Lines] = []
     
     var selectedLineArray: [Lines] = []
     var selectedCategoryArray: [String] = []
     var canSelect: Bool = false
-    
-    // 호선 정보 가져오기
-    public func getSubwayLine(completionHandler: @escaping (() -> ())) {
-        // /api/v1/subway/lines
-        APIServiceManager().request(with: getLine()) { result in
-            switch result {
-            case .success(let success):
-                self.lineInfo = success.data.lines
-                DispatchQueue.main.async {
-                    completionHandler()
-                }
-            case .failure(let failure):
-                print("### failure is \(failure)")
-            }
-        }
-    }
-    
-    private func getLine() -> Endpoint<SubwayLineData> {
-        return Endpoint(
-            path: "api/v1/subway/lines"
-        )
-    }
     
     // 선택한 호선 저장
     public func addSelectLine(lineInfo: Lines, tag: Int) {
@@ -80,5 +61,71 @@ public class BoardViewModel: NSObject {
         }
         
         print("🗑 삭제 완료 : \(selectedCategoryArray)")
+    }
+}
+
+extension BoardViewModel {
+    // 호선 정보 가져오기
+    public func getSubwayLine(completion: @escaping (() -> ())) {
+        // /api/v1/subway/lines
+        APIServiceManager().request(with: getLine()) { result in
+            switch result {
+            case .success(let success):
+                self.lineInfo = success.data.lines
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func getLine() -> Endpoint<SubwayLineModel> {
+        return Endpoint(
+            path: "api/v1/subway/lines"
+        )
+    }
+    
+    // 게시판 리스트 가져오기
+    public func getBoardData(completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: getBoard()) { result in
+            switch result {
+            case .success(let success):
+                self.boardArray = success.data.posts
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func getBoard() -> Endpoint<BoardModel<BoardData>> {
+        return Endpoint(
+            path: "api/v1/posts"
+        )
+    }
+     
+    // 게시판 상세
+    public func getDetailBoardData(id: Int, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: getDetailBoard(id: id)) { result in
+            switch result {
+            case .success(let success):
+                self.detailBoardData = success.data
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func getDetailBoard(id: Int) -> Endpoint<BoardModel<DetailPost>> {
+        return Endpoint(
+            path: "api/v1/post/\(id)"
+        )
     }
 }

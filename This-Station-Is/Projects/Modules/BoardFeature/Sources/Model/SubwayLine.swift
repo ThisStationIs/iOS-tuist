@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct SubwayLineData: Decodable {
+struct SubwayLineModel: Decodable {
     let code: String
     let message: String
     let data: LinesData

@@ -44,8 +44,10 @@ public class BoardViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        setUI()
-        setLayout()
+        viewModel.getBoardData { [self] in
+            setUI()
+            setLayout()
+        }
     }
     
     @objc func selectTableHeaderView() {
@@ -90,7 +92,7 @@ public class BoardViewController: UIViewController {
 extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10 + 1
+        return viewModel.boardArray.count + 1
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -117,22 +119,24 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
             
             return cell
         } else {
-            let identifier = "LIST_\(indexPath.row)"
+            let post = viewModel.boardArray[indexPath.row - 1]
+            let identifier = "LIST_\(indexPath.row)_\(post.postId)"
             
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell
             }
             
-            let cell = BoardTableViewCell(reuseIdentifier: identifier)
-            cell.selectionStyle = .none
-            cell.backgroundColor = .white
+            let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post)
+           
             
             return cell
         }
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let boardDetailViewController = BoardDetailViewController()
+        let id = viewModel.boardArray[indexPath.row - 1].postId
+        
+        let boardDetailViewController = BoardDetailViewController(viewModel: viewModel, id: id)
         self.navigationController?.pushViewController(boardDetailViewController, animated: true)
     }
 }

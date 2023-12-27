@@ -63,17 +63,47 @@ public class BoardTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    public init(reuseIdentifier: String?) {
+    public init(reuseIdentifier: String?, boardData: Post) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
         setLayout()
+        setData(boardData: boardData)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setData(boardData: Post) {
+        print(boardData)
+        
+        /*
+         "postId": 2,
+                "authorNickname": "밝은고양이",
+                "subwayLineName": "2호선",
+                "categoryName": "분실물",
+                "title": "2호선에서 아이폰 13 미니 주우신분ㅜㅜ",
+                "preview": "분실물 찾아요",
+                "commentCount": 2,
+                "likeCount": 0,
+                "isReported": false,
+                "createdAt": "2023-12-27T03:40:35"
+         */
+        
+        profileName.text = boardData.authorNickname
+        
+        lineCategoryBadge.title = boardData.subwayLineName
+        cateogryBadge.title = boardData.categoryName
+        
+        titleLabel.text = boardData.title
+        contentLabel.text = boardData.preview
+        commentCountLabel.text = "\(boardData.commentCount)"
+    }
+    
     private func setUI() {
+        self.selectionStyle = .none
+        self.backgroundColor = .white
+        
         self.contentView.addSubview(conainerView)
         
         [
@@ -143,7 +173,7 @@ public class BoardTableViewCell: UITableViewCell {
         
         commentImageView.snp.makeConstraints {
             $0.top.equalTo(contentLabel.snp.bottom).offset(28).priority(.low)
-            $0.width.height.equalTo(16)
+            $0.width.height.equalTo(24)
             $0.leading.equalToSuperview()
             $0.bottom.equalToSuperview()
         }

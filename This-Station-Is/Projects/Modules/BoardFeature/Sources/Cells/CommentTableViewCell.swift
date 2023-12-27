@@ -36,14 +36,28 @@ class CommentTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    public init(reuseIdentifier: String?) {
+    public init(reuseIdentifier: String?, commentData: Comment) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
         setLayout()
+        setData(commentData: commentData)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setData(commentData: Comment) {
+        /*
+         "commentId": 1,
+                 "nickname": "밝은고양이",
+                 "content": "분실물센터 확인해보셨나요?",
+                 "isReported": false,
+                 "createdAt": "2023-12-27T03:42:22",
+                 "lastUpdatedAt": "2023-12-27T03:42:22"
+         */
+        profileName.text = commentData.nickname
+        commentLabel.text = commentData.content
     }
     
     private func setUI() {

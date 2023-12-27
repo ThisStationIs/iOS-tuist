@@ -36,8 +36,8 @@ class SelectSubwayLineViewController: UIViewController {
     
 //    let lineNameArray: [String] = ["1호선", "2호선", "3호선", "4호선", "5호선", "6호선", "7호선", "8호선", "9호선"]
     
-    var viewModel: BoardViewModel!
-    var lineNameViewArray: [UIButton] = []
+    private var viewModel: BoardViewModel!
+    private var lineNameViewArray: [UIButton] = []
     
     init(viewModel: BoardViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -125,6 +125,7 @@ class SelectSubwayLineViewController: UIViewController {
             let lineLabel = UILabel()
             lineLabel.text = viewModel.lineInfo[i].name
             lineLabel.textColor = .textTeritory
+            lineLabel.font = UIFont.systemFont(ofSize: 12, weight: .medium)
             lineButton.addSubview(lineLabel)
             lineLabel.snp.makeConstraints {
                 $0.top.bottom.equalToSuperview().inset(8)

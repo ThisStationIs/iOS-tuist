@@ -39,17 +39,20 @@ public class APIServiceManager: APIService {
     
     private func checkError(with data: Data?, _ response: URLResponse?, _ error: Error?, completion: @escaping(Result<Data, Error>) -> ()) {
         if let error = error {
+            print("😈 Error : \(error)")
             completion(.failure(error))
             return
         }
 
         // TODO: 에러 조건 추가
         guard let response = response as? HTTPURLResponse else {
+            print("😈 response : \(response?.description)")
             completion(.failure(NetworkError.common))
             return
         }
 
         guard (200...299).contains(response.statusCode) else {
+            print("😈 statusCode : \(response.statusCode)")
             completion(.failure(NetworkError.common))
             return
         }

@@ -31,4 +31,5 @@ public extension TargetDependency.Module {
     
     // MARK: - Features
     static let LoginFeature = project(name: "LoginFeature")
+    static let BoardFeature = project(name: "BoardFeature")
 }

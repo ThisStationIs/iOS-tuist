@@ -8,7 +8,8 @@ let project = Project.makeApp(
     dependencies: [
         .Module.CommonProtocol,
         .Module.ThirdPartyManager,
-        .Module.LoginFeature
+        .Module.LoginFeature,
+        .Module.BoardFeature,
     ],
     infoPlist: .file(path: "Supports/Info.plist")
 )

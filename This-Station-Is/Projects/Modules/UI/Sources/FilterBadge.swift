@@ -28,11 +28,22 @@ public class FilterBadge: UIView {
         }
     }
     
+    public var isSelect: Bool = false {
+        didSet {
+            if isSelect {
+                badgeTitleLabel.textColor = .primaryNormal
+                self.layer.borderColor = UIColor.primaryNormal.cgColor
+            } else {
+                badgeTitleLabel.textColor = .textTeritory
+                self.layer.borderColor = UIColor.componentDivider.cgColor
+            }
+        }
+    }
+    
     public init() {
         super.init(frame: .zero)
         setUI()
         setLayout()
-        setData(title: title)
     }
     
     required init?(coder: NSCoder) {
@@ -57,10 +68,6 @@ public class FilterBadge: UIView {
         }
     }
     
-    private func setData(title: String) {
-        badgeTitleLabel.text = title
-    }
-    
     private func setUI() {
         self.frame = .init(x: 0, y: 0, width: 60, height: 32)
         self.layer.masksToBounds = true
@@ -76,9 +83,9 @@ public class FilterBadge: UIView {
         }
         
         self.snp.makeConstraints {
-            $0.top.equalTo(badgeTitleLabel.snp.top).inset(8)
+            $0.top.equalTo(badgeTitleLabel.snp.top).inset(-8)
             $0.bottom.equalTo(badgeTitleLabel.snp.bottom).inset(-8)
-            $0.leading.equalTo(badgeTitleLabel.snp.leading).inset(12)
+            $0.leading.equalTo(badgeTitleLabel.snp.leading).inset(-12)
             $0.trailing.equalTo(badgeTitleLabel.snp.trailing).inset(-12)
         }
     }

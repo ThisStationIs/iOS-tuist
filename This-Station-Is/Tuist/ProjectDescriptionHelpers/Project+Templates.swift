@@ -52,6 +52,7 @@ extension Project {
             product: .app,
             bundleId: baseBundleId + ".\(name)",
             deploymentTarget: deploymentTarget,
+            infoPlist: infoPlist,
             sources: ["Sources/**"],
             resources: ["Resources/**"],
             dependencies: dependencies

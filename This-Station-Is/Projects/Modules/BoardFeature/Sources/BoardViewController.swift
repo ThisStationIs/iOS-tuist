@@ -23,7 +23,7 @@ public class BoardViewController: UIViewController {
     }
     
     private let categoryView = CateogryView()
-    private lazy var tableHeaderView = BoardTableHeaderView().then {
+    private lazy var tableHeaderView = BoardTableHeaderView(viewModel: viewModel).then {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(selectTableHeaderView))
         $0.addGestureRecognizer(gesture)
     }
@@ -31,6 +31,15 @@ public class BoardViewController: UIViewController {
     private let searchBar = UISearchBar().then {
         $0.searchTextField.attributedPlaceholder = NSAttributedString(string: "찾으시는게 있나요?", attributes: [NSAttributedString.Key.foregroundColor : UIColor.textSub])
         $0.searchTextField.textColor = .textMain
+    }
+    
+    let viewModel = BoardViewModel()
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // 호선 업데이트
+        tableHeaderView.setUpLineView()
     }
 
     public override func viewDidLoad() {
@@ -40,7 +49,7 @@ public class BoardViewController: UIViewController {
     }
     
     @objc func selectTableHeaderView() {
-        let selectSubwayLineViewController = SelectSubwayLineViewController()
+        let selectSubwayLineViewController = SelectSubwayLineViewController(viewModel: viewModel)
         selectSubwayLineViewController.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(selectSubwayLineViewController, animated: true)
     }

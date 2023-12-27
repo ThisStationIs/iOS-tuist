@@ -35,13 +35,15 @@ class SelectSubwayLineViewController: UIViewController {
 //    let lineNameArray: [LineColorSet] = [.lineOne, .lineTwo, .lineThree, .lineFour, .lineFive, .lineSix, .lineSeven, .lineEight, .lineNine, .경강선, .경의중앙선, .경춘선, .공항철도, .김포골드라인, .서해선, .수인분당선, .신림선, .신분당선, .용인에버라인, .우이신설선, .인천1호선, .인천2호선, .의정부경전철]
     
 //    let lineNameArray: [String] = ["1호선", "2호선", "3호선", "4호선", "5호선", "6호선", "7호선", "8호선", "9호선"]
-
+    
+    var viewModel: BoardViewModel!
     var lineNameViewArray: [UIButton] = []
     
-    init() {
+    init(viewModel: BoardViewModel) {
         super.init(nibName: nil, bundle: nil)
+        
+        self.viewModel = viewModel
     }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -65,6 +67,21 @@ class SelectSubwayLineViewController: UIViewController {
     @objc func selectLineButton(_ sender: UIButton) {
         print(sender.isSelected)
         sender.isSelected.toggle()
+        
+        // 호선 저장
+        sender.isSelected ? viewModel?.addSelectLine(lineInfo: lineNameArray[sender.tag], tag: sender.tag) : viewModel?.removeSelectLine(lineInfo: lineNameArray[sender.tag], tag: sender.tag)
+        
+        // 선택된 호선이 5개 이상이면
+        if !viewModel.canSelect {
+            sender.isSelected = false
+            return
+        }
+        
+        lineNameViewArray[sender.tag].backgroundColor = sender.isSelected ? .red.withAlphaComponent(0.1) : .white
+        lineNameViewArray[sender.tag].layer.borderWidth = sender.isSelected ? 0 : 1
+        
+        let titleLabel = lineNameViewArray[sender.tag].subviews[0] as! UILabel
+        titleLabel.textColor = sender.isSelected ? .red : .textTeritory
     }
     
     @objc func selectApplyButton() {
@@ -111,16 +128,21 @@ class SelectSubwayLineViewController: UIViewController {
             }
             
             // 현재 선택되어있는 호선 표시
-//            for j in 0..<viewModel.selectedLineArray.count {
-//                // 이름이 같으면 선택 처리
-//                if viewModel.selectedLineArray[j] == lineNameArray[i] {
-//                    lineButton.isSelected = true
-//                    // 배경 색, 텍스트 색 변경
+            for j in 0..<viewModel.selectedLineArray.count {
+                // 이름이 같으면 선택 처리
+                if viewModel.selectedLineArray[j] == lineNameArray[i] {
+                    lineButton.isSelected = true
+                    // 배경 색, 텍스트 색 변경
 //                    lineLabel.textColor = AppColor.setupLineColor(lineNameArray[i])
 //                    lineButton.backgroundColor = AppColor.setupLineColor(lineNameArray[i]).withAlphaComponent(0.1)
-//                    lineButton.layer.borderWidth = 0
-//                }
-//            }
+                    
+                    // TODO: 색상 정보 API 에서 받아오기
+                    lineLabel.textColor = .red
+                    lineButton.backgroundColor = .red.withAlphaComponent(0.1)
+                    
+                    lineButton.layer.borderWidth = 0
+                }
+            }
             
             lineNameViewArray.append(lineButton)
     

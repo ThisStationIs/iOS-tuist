@@ -1,24 +1,28 @@
+//
+//  SceneDelegate.swift
+//  BoardFeatureSample
+//
+//  Created by min on 2023/12/27.
+//  Copyright © 2023 Kkonmo. All rights reserved.
+//
+
 import UIKit
 import BoardFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
-    var coordinator: ApplicationCoordinator?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         self.window = window
-
-//        UserDefaults.standard.set(false, forKey: "isLogin")
+        self.window?.backgroundColor = .white
         
-//        self.coordinator = ApplicationCoordinator(window: window)
-//        coordinator?.start()
+        let naviagationController = UINavigationController(rootViewController: BoardViewController())
+        naviagationController.view.backgroundColor = .white
         
-        let tabbarController = MainTabBarController()
-        
-        window.rootViewController = tabbarController
-        window.makeKeyAndVisible()
+        self.window?.rootViewController = naviagationController
+        self.window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

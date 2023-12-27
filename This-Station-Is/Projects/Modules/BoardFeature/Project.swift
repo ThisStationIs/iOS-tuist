@@ -9,11 +9,29 @@ let project = Project.makeModule(
     dependencies: [
         .Module.ThirdPartyManager,
         .Module.UI,
+        .Module.Network
     ],
     infoPlist: configureInfoPlist()
 )
 
 private func configureInfoPlist(merging other: [String: InfoPlist.Value] = [:]) -> InfoPlist {
     var extendedPlist: [String: InfoPlist.Value] = [:]
-    return InfoPlist.extendingDefault(with: extendedPlist)
+    
+    let infoPlist: [String: InfoPlist.Value] = [
+        "CFBundleVersion": "1",
+        "UILaunchStoryboardName": "LaunchScreen",
+        "UIApplicationSceneManifest": [
+            "UIApplicationSupportsMultipleScenes": false,
+            "UISceneConfigurations": [
+                "UIWindowSceneSessionRoleApplication": [
+                    [
+                        "UISceneConfigurationName": "Default Configuration",
+                        "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
+                    ],
+                ]
+            ]
+        ],
+    ]
+    
+    return InfoPlist.extendingDefault(with: infoPlist)
 }

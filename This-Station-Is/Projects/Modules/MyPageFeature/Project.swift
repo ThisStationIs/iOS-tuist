@@ -9,6 +9,7 @@ let project = Project.makeModule(
     dependencies: [
         .Module.ThirdPartyManager,
         .Module.UI,
+        .Module.Network
     ],
     infoPlist: configureInfoPlist()
 )

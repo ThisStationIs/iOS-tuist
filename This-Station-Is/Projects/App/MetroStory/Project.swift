@@ -10,6 +10,8 @@ let project = Project.makeApp(
         .Module.ThirdPartyManager,
         .Module.LoginFeature,
         .Module.BoardFeature,
+        .Module.MyPageFeature,
+        .Module.HistoryFeature
     ],
     infoPlist: .file(path: "Supports/Info.plist")
 )

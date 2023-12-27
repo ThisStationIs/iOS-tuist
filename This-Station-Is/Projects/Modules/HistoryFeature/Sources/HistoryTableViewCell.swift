@@ -25,7 +25,8 @@ class HistoryTableViewCell: UITableViewCell {
     private let checkboxButton = CheckBox().then {
         $0.isHidden = true
     }
-    private let lineView = CategoryBadge(title: "n호선").then {
+    private let lineView = CategoryBadge().then {
+        $0.title = "n호선"
         $0.setType(.color)
     }
     private let boardTitleLabel = UILabel().then {

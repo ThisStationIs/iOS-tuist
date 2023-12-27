@@ -148,7 +148,7 @@ public class AlertView: UIView {
             actionHandlerArray.append(handler)
         } else {
             // handler 없는 경우 style 이 dismiss 인 경우
-            if style == .cancel {
+            if style == .cancel || style == .default {
                 actionHandlerArray.append(dismiss)
             }
         }

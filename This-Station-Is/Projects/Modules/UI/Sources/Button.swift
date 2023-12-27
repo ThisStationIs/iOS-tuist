@@ -12,13 +12,7 @@ public class Button: UIButton {
    
     public override var isEnabled: Bool {
         didSet {
-            if isEnabled {
-                self.backgroundColor = .red.withAlphaComponent(0.4)
-                self.isEnabled = true
-            } else {
-                self.backgroundColor = .red
-                self.isEnabled = false
-            }
+            updateButtonState(isEnabled: isEnabled)
         }
     }
     
@@ -48,5 +42,11 @@ public class Button: UIButton {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension Button {
+    private func updateButtonState(isEnabled: Bool) {
+        backgroundColor = isEnabled ? .primaryNormal : .primaryNormal.withAlphaComponent(0.4)
     }
 }

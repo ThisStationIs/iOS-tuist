@@ -30,14 +30,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             $0.leading.trailing.equalToSuperview()
         }
         
-        let badge = CategoryBadge()
-        badge.title = "1호선"
-        badge.setType(.background)
-        vc.view.addSubview(badge)
-        badge.snp.makeConstraints {
-            $0.top.equalTo(inputBox.snp.bottom).offset(10)
-            $0.centerX.equalToSuperview()
-        }
+//        let badge = CategoryBadge()
+//        badge.title = "1호선"
+//        badge.setType(.background)
+//        vc.view.addSubview(badge)
+//        badge.snp.makeConstraints {
+//            $0.top.equalTo(inputBox.snp.bottom).offset(10)
+//            $0.centerX.equalToSuperview()
+//        }
         
         let radioButton = RadioButton()
         radioButton.isOn = true

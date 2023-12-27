@@ -11,7 +11,7 @@ import SnapKit
 
 public class InputBox: UIView {
     
-    private let textField: TextField = {
+    public let textField: TextField = {
        let textField = TextField()
         return textField
     }()
@@ -29,9 +29,10 @@ public class InputBox: UIView {
         return label
     }()
     
-    var isError: Bool = false {
+    public var isError: Bool = false {
         didSet {
-            errorText.isHidden = isError
+            errorText.isHidden = !isError
+            textField.updateState(isError: isError)
         }
     }
     
@@ -69,5 +70,15 @@ public class InputBox: UIView {
             $0.top.equalTo(titleLabel.snp.top).inset(-8)
             $0.bottom.equalTo(errorText.snp.bottom)
         }
+    }
+}
+
+public extension InputBox {
+    func setTextFieldPlaceholder(placeholder: String) {
+        textField.placeholder = placeholder
+    }
+    
+    func setErrorText(_ error: String) {
+        errorText.text = error
     }
 }

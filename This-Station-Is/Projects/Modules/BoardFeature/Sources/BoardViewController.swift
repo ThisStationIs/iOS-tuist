@@ -57,10 +57,9 @@ public class BoardViewController: UIViewController {
     }
     
     @objc func selectFilterButton() {
-        // TODO: 테스트 코드
-        let boardUploadViewController = BoardUploadViewController()
-        boardUploadViewController.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(boardUploadViewController, animated: true)
+        let bottomSheetView = BottomSheetView(defaultHeight: 270, title: "게시판 정렬")
+        bottomSheetView.addContentView(BoardFilterView())
+        bottomSheetView.show()
     }
     
     private func setUI() {

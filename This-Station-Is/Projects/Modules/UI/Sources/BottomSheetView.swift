@@ -58,7 +58,6 @@ public class BottomSheetView: UIView {
     }
     
     public func addContentView(_ contentView: UIView) {
-        contentView.backgroundColor = .red
         containerView.addSubview(contentView)
         contentView.snp.makeConstraints {
             $0.top.equalTo(separatorView.snp.bottom).offset(24)
@@ -91,6 +90,7 @@ public class BottomSheetView: UIView {
     private func setUI() {
         self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds
             .width, height: UIScreen.main.bounds.height)
+        
         let blurEffect = UIBlurEffect(style: .light)
         let visualEffectView = UIVisualEffectView(effect: blurEffect)
         visualEffectView.frame = self.frame

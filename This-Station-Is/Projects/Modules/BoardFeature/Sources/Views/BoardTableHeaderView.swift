@@ -47,10 +47,11 @@ public class BoardTableHeaderView: UIView {
         
         for i in 0..<viewModel.selectedLineArray.count {
             let lineView = SubwayLineView(type: .icon)
-            let firstIndex = viewModel.selectedLineArray[i].startIndex
+            let firstIndex = viewModel.selectedLineArray[i].name.startIndex
 //            lineView.setLineName = "\(viewModel.selectedLineArray[i][firstIndex])"
-            lineView.lineLabel.text = "\(viewModel.selectedLineArray[i][firstIndex])"
-            // TODO: 호선 색상 DB
+            lineView.lineLabel.text = "\(viewModel.selectedLineArray[i].name[firstIndex])"
+            
+            lineView.setLineColor = UIColor(hexCode: viewModel.selectedLineArray[i].colorCode)
 //            lineView.setLineColor = AppColor.setupLineColor(viewModel.selectedLineArray[i])
             
             lineIconViewArray.append(lineView)

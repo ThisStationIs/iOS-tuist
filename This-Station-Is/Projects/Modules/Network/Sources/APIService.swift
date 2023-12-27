@@ -22,7 +22,6 @@ public class APIServiceManager: APIService {
     public func request<R, E>(with endpoint: E, completion: @escaping (Result<R, Error>) -> Void) where R : Decodable, R == E.Response, E : RequestResponsable {
         do {
             let urlRequest = try endpoint.getUrlRequest()
-            
             session.dataTask(with: urlRequest) {  data, response, error in
                 self.checkError(with: data, response, error, completion: { result in
                     switch result {

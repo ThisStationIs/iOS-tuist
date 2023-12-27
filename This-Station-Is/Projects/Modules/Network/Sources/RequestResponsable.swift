@@ -23,7 +23,8 @@ public class Endpoint<R>: RequestResponsable {
     public var sampleData: Data?
     
     public init(
-        baseURL: String = "http://ec2-3-37-127-228.ap-northeast-2.compute.amazonaws.com",
+        baseURL: String =
+        "http://ec2-3-37-127-228.ap-northeast-2.compute.amazonaws.com",
         path: String = "",
         method: HttpMethod = .get,
         queryPrameters: Encodable? = nil,

@@ -41,7 +41,7 @@ public class SubwayLineView: UIView {
         }
     }
     
-    var setLineColor: UIColor = .red {
+    public var setLineColor: UIColor = .systemBlue {
         didSet {
             circleView.backgroundColor = setLineColor
         }
@@ -97,7 +97,7 @@ public class SubwayLineView: UIView {
             $0.leading.equalToSuperview().inset(type == .default ? 12 : 0)
         }
         
-        circleView.layer.cornerRadius = 20 / 2
+        circleView.layer.cornerRadius = circleView.frame.height / 2
         
         lineLabel.snp.makeConstraints {
             $0.center.equalToSuperview()

@@ -7,15 +7,40 @@
 //
 
 import Foundation
+import Network
 
 public class BoardViewModel: NSObject {
     
-    var selectedLineArray: [String] = []
+    var lineInfo: [Lines] = []
+    
+    var selectedLineArray: [Lines] = []
     var selectedCategoryArray: [String] = []
     var canSelect: Bool = false
     
+    // 호선 정보 가져오기
+    public func getSubwayLine(completionHandler: @escaping (() -> ())) {
+        // /api/v1/subway/lines
+        APIServiceManager().request(with: getLine()) { result in
+            switch result {
+            case .success(let success):
+                self.lineInfo = success.data.lines
+                DispatchQueue.main.async {
+                    completionHandler()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func getLine() -> Endpoint<SubwayLineData> {
+        return Endpoint(
+            path: "api/v1/subway/lines"
+        )
+    }
+    
     // 선택한 호선 저장
-    public func addSelectLine(lineInfo: String, tag: Int) {
+    public func addSelectLine(lineInfo: Lines, tag: Int) {
         // 5개만 선택 가능하도록
         if selectedLineArray.count < 5 {
             selectedLineArray.append(lineInfo)
@@ -28,9 +53,9 @@ public class BoardViewModel: NSObject {
     }
     
     // 선택한 호선 삭제
-    public func removeSelectLine(lineInfo: String, tag: Int) {
+    public func removeSelectLine(lineInfo: Lines, tag: Int) {
         canSelect = true
-        selectedLineArray = selectedLineArray.filter { $0 != lineInfo }
+        selectedLineArray = selectedLineArray.filter { $0.id != lineInfo.id }
         
         print("🗑 삭제 완료 : \(selectedLineArray)")
     }

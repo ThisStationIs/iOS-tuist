@@ -30,7 +30,7 @@ class SelectSubwayLineViewController: UIViewController {
         $0.addTarget(self, action: #selector(selectApplyButton), for: .touchUpInside)
     }
     
-    let lineNameArray: [String] = ["1호선", "2호선", "3호선", "4호선", "5호선", "6호선", "7호선", "8호선", "9호선", "경강선", "경의중앙선", "경춘선", "공항철도", "김포골드라인", "서해선", "수인분당선", "신림선", "신분당선", "용인에버라인", "우이신설선", "인천 1호선", "인천 2호선", "의정부경전철"]
+//    let lineNameArray: [String] = ["1호선", "2호선", "3호선", "4호선", "5호선", "6호선", "7호선", "8호선", "9호선", "경강선", "경의중앙선", "경춘선", "공항철도", "김포골드라인", "서해선", "수인분당선", "신림선", "신분당선", "용인에버라인", "우이신설선", "인천 1호선", "인천 2호선", "의정부경전철"]
     
 //    let lineNameArray: [LineColorSet] = [.lineOne, .lineTwo, .lineThree, .lineFour, .lineFive, .lineSix, .lineSeven, .lineEight, .lineNine, .경강선, .경의중앙선, .경춘선, .공항철도, .김포골드라인, .서해선, .수인분당선, .신림선, .신분당선, .용인에버라인, .우이신설선, .인천1호선, .인천2호선, .의정부경전철]
     
@@ -56,8 +56,11 @@ class SelectSubwayLineViewController: UIViewController {
         leftBarButton.tintColor = .black
         self.navigationItem.leftBarButtonItem = leftBarButton
         
-        setUI()
-        setLayout()
+        // 호선 정보 가져오기
+        viewModel.getSubwayLine {
+            self.setUI()
+            self.setLayout()
+        }
     }
     
     @objc func selectLeftBarButton() {
@@ -67,21 +70,29 @@ class SelectSubwayLineViewController: UIViewController {
     @objc func selectLineButton(_ sender: UIButton) {
         print(sender.isSelected)
         sender.isSelected.toggle()
-        
+       
         // 호선 저장
-        sender.isSelected ? viewModel?.addSelectLine(lineInfo: lineNameArray[sender.tag], tag: sender.tag) : viewModel?.removeSelectLine(lineInfo: lineNameArray[sender.tag], tag: sender.tag)
+        sender.isSelected ?
+        viewModel?.addSelectLine(lineInfo: viewModel.lineInfo[sender.tag], tag: sender.tag) :
+        viewModel?.removeSelectLine(lineInfo: viewModel.lineInfo[sender.tag], tag: sender.tag)
         
         // 선택된 호선이 5개 이상이면
         if !viewModel.canSelect {
             sender.isSelected = false
+            
+            // 토스트 띄우기
+            let toast = Toast(type: .error)
+            toast.toastText.text = "최대 5개까지만 선택할 수 있어요."
+            toast.show()
+            
             return
         }
         
-        lineNameViewArray[sender.tag].backgroundColor = sender.isSelected ? .red.withAlphaComponent(0.1) : .white
+        lineNameViewArray[sender.tag].backgroundColor = sender.isSelected ? UIColor(hexCode: viewModel.lineInfo[sender.tag].colorCode, alpha: 0.1) : .white
         lineNameViewArray[sender.tag].layer.borderWidth = sender.isSelected ? 0 : 1
         
         let titleLabel = lineNameViewArray[sender.tag].subviews[0] as! UILabel
-        titleLabel.textColor = sender.isSelected ? .red : .textTeritory
+        titleLabel.textColor = sender.isSelected ? UIColor(hexCode: viewModel.lineInfo[sender.tag].colorCode) : .textTeritory
     }
     
     @objc func selectApplyButton() {
@@ -102,7 +113,7 @@ class SelectSubwayLineViewController: UIViewController {
         }
         
         // 호선 뷰 만들기
-        for i in 0..<lineNameArray.count {
+        for i in 0..<viewModel.lineInfo.count {
             let lineButton = UIButton()
             lineButton.layer.cornerRadius = 32 / 2
             lineButton.layer.masksToBounds = true
@@ -112,7 +123,7 @@ class SelectSubwayLineViewController: UIViewController {
             lineButton.addTarget(self, action: #selector(selectLineButton), for: .touchUpInside)
             
             let lineLabel = UILabel()
-            lineLabel.text = lineNameArray[i]
+            lineLabel.text = viewModel.lineInfo[i].name
             lineLabel.textColor = .textTeritory
             lineButton.addSubview(lineLabel)
             lineLabel.snp.makeConstraints {
@@ -129,16 +140,12 @@ class SelectSubwayLineViewController: UIViewController {
             
             // 현재 선택되어있는 호선 표시
             for j in 0..<viewModel.selectedLineArray.count {
-                // 이름이 같으면 선택 처리
-                if viewModel.selectedLineArray[j] == lineNameArray[i] {
+                // id가 같으면 선택 처리
+                if viewModel.selectedLineArray[j].id == viewModel.lineInfo[i].id {
                     lineButton.isSelected = true
                     // 배경 색, 텍스트 색 변경
-//                    lineLabel.textColor = AppColor.setupLineColor(lineNameArray[i])
-//                    lineButton.backgroundColor = AppColor.setupLineColor(lineNameArray[i]).withAlphaComponent(0.1)
-                    
-                    // TODO: 색상 정보 API 에서 받아오기
-                    lineLabel.textColor = .red
-                    lineButton.backgroundColor = .red.withAlphaComponent(0.1)
+                    lineLabel.textColor = UIColor(hexCode: viewModel.lineInfo[i].colorCode)
+                    lineButton.backgroundColor = UIColor(hexCode: viewModel.lineInfo[i].colorCode, alpha: 0.1)
                     
                     lineButton.layer.borderWidth = 0
                 }

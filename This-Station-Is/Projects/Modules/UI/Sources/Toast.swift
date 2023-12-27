@@ -47,12 +47,17 @@ public class Toast: UIView {
         guard let rootViewController = UIApplication.topViewController() else { return }
         rootViewController.view.addSubview(self)
         self.snp.makeConstraints {
-            $0.bottom.equalToSuperview()
-            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(rootViewController.view.safeAreaLayoutGuide).inset(14)
+            $0.leading.trailing.equalToSuperview().inset(24)
         }
         
         if let completion = completion {
             completion()
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            guard let _ = self.superview else { return }
+            self.removeFromSuperview()
         }
     }
     

@@ -7,9 +7,13 @@
 //
 
 import UIKit
+import UI
+import SnapKit
+
 import BoardFeature
 import HistoryFeature
 import MyPageFeature
+import HomeFeature
 
 class MainTabBarController: UITabBarController {
 
@@ -17,20 +21,24 @@ class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         self.view.backgroundColor = .white
 
-        let homeNavigationViewController = UINavigationController(rootViewController: UIViewController())
-        homeNavigationViewController.tabBarItem = UITabBarItem(title: "홈", image: UIImage(named: "home"), selectedImage: UIImage(named: "home"))
+        self.tabBar.tintColor = .primaryNormal
+        self.tabBar.unselectedItemTintColor = .textSub
+
+        
+        let homeNavigationViewController = UINavigationController(rootViewController: HomeViewController())
+        homeNavigationViewController.tabBarItem = UITabBarItem(title: "홈", image: UIImage(named: "home"), tag: 0)
         
         let boardNavigationViewController = UINavigationController(rootViewController: BoardViewController())
-        boardNavigationViewController.tabBarItem = UITabBarItem(title: "게시판", image: UIImage(named: "board"), selectedImage: UIImage(named: "board"))
+        boardNavigationViewController.tabBarItem = UITabBarItem(title: "게시판", image: UIImage(named: "board"), tag: 1)
         
         let uploadViewController = OpenUploadViewController()
         uploadViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "upload_board"), tag: 2)
         
         let historyNavigationViewController = UINavigationController(rootViewController: HistoryViewController())
-        historyNavigationViewController.tabBarItem = UITabBarItem(title: "내 활동", image: UIImage(named: "activity"), selectedImage: UIImage(named: "activity"))
+        historyNavigationViewController.tabBarItem = UITabBarItem(title: "내 활동", image: UIImage(named: "activity"), tag: 3)
         
         let myPageNavigationViewController = UINavigationController(rootViewController: MyPageViewController())
-        myPageNavigationViewController.tabBarItem = UITabBarItem(title: "마이페이지", image: UIImage(named: "myPage"), selectedImage: UIImage(named: "myPage"))
+        myPageNavigationViewController.tabBarItem = UITabBarItem(title: "마이페이지", image: UIImage(named: "myPage"), tag: 4)
         
         setViewControllers([homeNavigationViewController, boardNavigationViewController, uploadViewController, historyNavigationViewController, myPageNavigationViewController], animated: false)
     }

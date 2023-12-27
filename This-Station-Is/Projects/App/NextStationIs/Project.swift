@@ -11,7 +11,8 @@ let project = Project.makeApp(
         .Module.LoginFeature,
         .Module.BoardFeature,
         .Module.MyPageFeature,
-        .Module.HistoryFeature
+        .Module.HistoryFeature,
+        .Module.HomeFeature
     ],
     infoPlist: .file(path: "Supports/Info.plist")
 )

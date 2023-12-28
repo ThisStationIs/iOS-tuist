@@ -33,14 +33,16 @@ public class HomeViewController: UIViewController {
         $0.textColor = .textMain
         $0.font = .systemFont(ofSize: 18, weight: .semibold)
     }
-    private let newBoardTableView = UITableView().then {
+    private let recentBoardTableView = UITableView().then {
         $0.register(HomeBoardTableViewCell.self, forCellReuseIdentifier: "HomeBoardTableViewCell")
+        
         $0.isScrollEnabled = false
+        
         $0.rowHeight = UITableView.automaticDimension
         $0.estimatedRowHeight = 216
     }
 
-    private var recentBoards: [String] = ["1","1","1"]
+    private var recentBoards: [Post] = []
     
     let viewModel = HomeViewModel()
     
@@ -52,6 +54,14 @@ public class HomeViewController: UIViewController {
             switch result {
             case .success(let success):
                 print("### success: \(success)")
+                self.recentBoards = success.data.posts
+                DispatchQueue.main.async {
+                    print("### recentBoards:\(self.recentBoards)")
+                    self.recentBoardTableView.reloadData()
+                    self.recentBoardTableView.snp.updateConstraints {
+                        $0.height.equalTo(216 * self.recentBoards.count)
+                    }
+                }
             case .failure(let failure):
                 print("### failure: \(failure)")
             }
@@ -74,7 +84,7 @@ extension HomeViewController {
             hotBoardLabel,
             hotBoardCollectionView,
             newBoardLabel,
-            newBoardTableView
+            recentBoardTableView
         ].forEach {
             scrollView.addSubview($0)
         }
@@ -107,9 +117,10 @@ extension HomeViewController {
             $0.leading.trailing.equalTo(hotBoardLabel)
         }
         
-        newBoardTableView.snp.makeConstraints {
+        recentBoardTableView.snp.makeConstraints {
             $0.top.equalTo(newBoardLabel.snp.bottom)
-            $0.leading.trailing.equalTo(hotBoardLabel)
+            $0.leading.trailing.equalToSuperview()
+                .inset(24)
             $0.bottom.equalToSuperview()
             $0.height.equalTo(216 * recentBoards.count)
         }
@@ -121,8 +132,8 @@ extension HomeViewController {
         hotBoardCollectionView.delegate = self
         hotBoardCollectionView.dataSource = self
         
-        newBoardTableView.delegate = self
-        newBoardTableView.dataSource = self
+        recentBoardTableView.delegate = self
+        recentBoardTableView.dataSource = self
     }
 }
 
@@ -150,11 +161,19 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        print("### count is \(recentBoards.count)")
+        return recentBoards.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print("### cellforrow")
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomeBoardTableViewCell", for: indexPath) as! HomeBoardTableViewCell
+        cell.selectionStyle = .none
+        cell.setData(self.recentBoards[indexPath.row])
         return cell
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 300
     }
 }

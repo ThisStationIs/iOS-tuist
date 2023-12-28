@@ -161,7 +161,8 @@ extension HomeBoardCollectionViewCell {
         conainerView.snp.makeConstraints {
             $0.top.equalTo(profileView.snp.top)
             $0.bottom.equalTo(commentImageView.snp.bottom)
-            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.leading.trailing.equalToSuperview()
+//                .inset(24)
             $0.top.bottom.equalToSuperview().inset(16)
         }
     }

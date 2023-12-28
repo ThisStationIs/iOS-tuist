@@ -135,3 +135,4 @@ struct UploadBoardResponse: Decodable {
     let content: String
     let createdAt: String
 }
+

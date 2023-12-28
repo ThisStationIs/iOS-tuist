@@ -36,7 +36,7 @@ class CommentTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    public init(reuseIdentifier: String?, commentData: Comment) {
+    public init(reuseIdentifier: String?, commentData: Comments) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
         setLayout()
@@ -47,7 +47,7 @@ class CommentTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setData(commentData: Comment) {
+    private func setData(commentData: Comments) {
         /*
          "commentId": 1,
                  "nickname": "밝은고양이",
@@ -56,7 +56,7 @@ class CommentTableViewCell: UITableViewCell {
                  "createdAt": "2023-12-27T03:42:22",
                  "lastUpdatedAt": "2023-12-27T03:42:22"
          */
-        profileName.text = commentData.nickname
+        profileName.text = commentData.authorNickname
         commentLabel.text = commentData.content
     }
     

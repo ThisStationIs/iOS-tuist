@@ -14,6 +14,7 @@ public class BoardViewModel: NSObject {
     var boardArray: [Post] = []
     var detailBoardData: DetailPost!
     var lineInfo: [Lines] = []
+    var commentData: [Comments] = []
     var uploadBoardData: [String: Any] = [:]
     
     var selectedLineArray: [Lines] = []
@@ -149,7 +150,7 @@ extension BoardViewModel {
     
     private func postBoar(uploadData: UploadBoardData) -> Endpoint<BoardModel<UploadBoardResponse>> {
         
-        let header: [String: String] = [
+        let headers: [String: String] = [
             "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
             "Content-Type": "application/json"
         ]
@@ -158,7 +159,60 @@ extension BoardViewModel {
             path: "api/v1/post",
             method: .post,
             bodyParameters: uploadData,
-            headers: header
+            headers: headers
+        )
+    }
+    
+    // 댓글
+    public func getCommentData(id: Int, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: getComment(id: id)) { result in
+            switch result {
+            case .success(let success):
+                print(success)
+                self.commentData = success.data.comments
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func getComment(id: Int) -> Endpoint<BoardModel<CommentData>> {
+        return Endpoint(
+            path: "api/v1/post/\(id)/comments"
+        )
+    }
+    
+    // 댓글 등록
+    public func postCommentData(id: Int, commentData: UploadCommentData, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: postComment(id: id, commentData: commentData)) { result in
+            switch result {
+            case .success(let success):
+                print(success)
+//                self.detailBoardData = success.data
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func postComment(id: Int, commentData: UploadCommentData) -> Endpoint<BoardModel<UploadCommentResponse>> {
+        
+        let headers: [String: String] = [
+            "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
+            "Content-Type": "application/json"
+        ]
+        
+        return Endpoint(
+            path: "api/v1/post/\(id)/comment",
+            method: .post,
+            bodyParameters: commentData,
+            headers: headers
         )
     }
 }

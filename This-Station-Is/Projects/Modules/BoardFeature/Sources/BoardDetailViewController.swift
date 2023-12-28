@@ -30,11 +30,13 @@ class BoardDetailViewController: UIViewController {
         $0.underLineView.isHidden = true
         $0.placeholder = "댓글을 입력하세요."
         $0.tintColor = .textSub
+        $0.textColor = .textMain
         $0.layer.cornerRadius = 18
     }
     
-    private let sendButton = UIButton().then {
+    private lazy var sendButton = UIButton().then {
         $0.setImage(UIImage(named: "send"), for: .normal)
+        $0.addTarget(self, action: #selector(selectSendButton), for: .touchUpInside)
     }
     
     private var id: Int!
@@ -53,8 +55,25 @@ class BoardDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.getDetailBoardData(id: id) { [self] in
-            setUI()
-            setLayout()
+            viewModel.getCommentData(id: id) { [self] in
+                setUI()
+                setLayout()
+            }
+        }
+    }
+    
+    @objc func selectSendButton() {
+        guard let commentText = textField.text else { return }
+        let commentData = UploadCommentData(content: commentText)
+        
+        self.viewModel.postCommentData(id: self.id, commentData: commentData) {
+            self.textField.text = ""
+            
+            self.viewModel.getDetailBoardData(id: self.id) {
+                self.viewModel.getCommentData(id: self.id) {
+                    self.detilaTableView.reloadData()
+                }
+            }
         }
     }
     
@@ -130,7 +149,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
         if section == 0 {
             return 1
         } else {
-            return viewModel.detailBoardData.comments.count
+            return viewModel.commentData.count
         }
     }
     
@@ -140,7 +159,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let identifier = "DETAIL_\(indexPath.section)_\(indexPath.row)"
+            let identifier = "DETAIL_\(indexPath.section)_\(indexPath.row)_\(viewModel.detailBoardData.commentCount)"
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell
             }
@@ -150,7 +169,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.selectionStyle = .none
             return cell
         } else {
-            let commentData = viewModel.detailBoardData.comments[indexPath.row]
+            let commentData = viewModel.commentData[indexPath.row]
             let identifier = "COMMENT_\(indexPath.section)_\(indexPath.row)_\(commentData.commentId)"
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell

@@ -46,19 +46,25 @@ class MyUploadBoardTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    init(reuseIdentifier: String?, data: Post) {
+    init(reuseIdentifier: String?, data: Post, lineInfo: [Lines]) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
         setLayout()
-        setData(data: data)
+        setData(data: data, lineInfo: lineInfo)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setData(data: Post) {
+    private func setData(data: Post, lineInfo: [Lines]) {
         lineCategoryBadge.title = data.subwayLineName
+        for colorInfo in lineInfo {
+            if colorInfo.name == data.subwayLineName {
+                lineCategoryBadge.backgroundColor = UIColor(hexCode: colorInfo.colorCode).withAlphaComponent(0.1)
+                lineCategoryBadge.badgeTitleLabel.textColor = UIColor(hexCode: colorInfo.colorCode)
+            }
+        }
         cateogryBadge.title = data.categoryName
         contentLabel.text = data.preview
         commentCountLabel.text = "\(data.commentCount)"

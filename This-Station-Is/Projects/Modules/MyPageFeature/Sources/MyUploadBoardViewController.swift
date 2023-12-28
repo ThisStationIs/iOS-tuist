@@ -28,8 +28,10 @@ class MyUploadBoardViewController: UIViewController {
         self.viewModel = viewModel
         
         viewModel.getMyUploadBoardData { [self] in
-            setUI()
-            setLayout()
+            viewModel.getSubwayLine { [self] in
+                setUI()
+                setLayout()
+            }
         }
     }
     
@@ -88,7 +90,7 @@ extension MyUploadBoardViewController: UITableViewDelegate, UITableViewDataSourc
             return reuseCell
         }
         
-        let cell = MyUploadBoardTableViewCell.init(reuseIdentifier: identifier, data: data)
+        let cell = MyUploadBoardTableViewCell.init(reuseIdentifier: identifier, data: data, lineInfo: viewModel.lineInfo)
         
         return cell
     }

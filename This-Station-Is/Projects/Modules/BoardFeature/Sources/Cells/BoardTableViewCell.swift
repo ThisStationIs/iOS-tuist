@@ -63,18 +63,18 @@ public class BoardTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    public init(reuseIdentifier: String?, boardData: Post) {
+    public init(reuseIdentifier: String?, boardData: Post, colorInfos: [Lines]) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
         setLayout()
-        setData(boardData: boardData)
+        setData(boardData: boardData, colorInfos: colorInfos)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setData(boardData: Post) {
+    private func setData(boardData: Post, colorInfos: [Lines]) {
         print(boardData)
         
         /*
@@ -93,6 +93,13 @@ public class BoardTableViewCell: UITableViewCell {
         profileName.text = boardData.authorNickname
         
         lineCategoryBadge.title = boardData.subwayLineName
+        for colorInfo in colorInfos {
+            if colorInfo.name == boardData.subwayLineName {
+                lineCategoryBadge.backgroundColor = UIColor(hexCode: colorInfo.colorCode).withAlphaComponent(0.1)
+                lineCategoryBadge.badgeTitleLabel.textColor = UIColor(hexCode: colorInfo.colorCode)
+            }
+        }
+        
         cateogryBadge.title = boardData.categoryName
         
         titleLabel.text = boardData.title

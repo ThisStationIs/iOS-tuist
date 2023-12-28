@@ -12,6 +12,7 @@ import Network
 public class MyPageViewModel: NSObject {
     var myUploadBoardData: [Post] = []
     var myCommentData: [Comments] = []
+    var lineInfo: [Lines] = []
     
     let ACCESS_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDE6NTU6MTciLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI4IDAxOjU1OjE3In0.oSfKvYL1kzqcl4MToHCuVa7n0PcTBtCCTowowa6QFwPjYuLMrt_sv6z6OHBcBq61QizCl8Fp4bgMuuK2UeRGhg"
 }
@@ -68,6 +69,28 @@ extension MyPageViewModel {
         return Endpoint(
             path: "api/v1/my/comments",
             headers: headers
+        )
+    }
+    
+    // 호선 정보 가져오기
+    public func getSubwayLine(completion: @escaping (() -> ())) {
+        // /api/v1/subway/lines
+        APIServiceManager().request(with: getLine()) { result in
+            switch result {
+            case .success(let success):
+                self.lineInfo = success.data.lines
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func getLine() -> Endpoint<SubwayLineModel> {
+        return Endpoint(
+            path: "api/v1/subway/lines"
         )
     }
 }

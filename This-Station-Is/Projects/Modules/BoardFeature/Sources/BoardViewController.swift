@@ -54,8 +54,10 @@ public class BoardViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        setUI()
-        setLayout()
+        viewModel.getSubwayLine { [self] in
+            setUI()
+            setLayout()
+        }
 //        viewModel.getBoardData { [self] in
 //
 //        }
@@ -136,7 +138,7 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
                 return reuseCell
             }
             
-            let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post)
+            let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post, colorInfos: viewModel.lineInfo)
            
             
             return cell

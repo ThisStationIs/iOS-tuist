@@ -100,7 +100,7 @@ class HomeBoardCollectionViewCell: UICollectionViewCell {
     
     func changeFormat(input: String) -> String {
         let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        inputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         if let date = inputFormatter.date(from: input) {
             let outputFormatter = DateFormatter()
             outputFormatter.dateFormat = "yy.MM.dd HH:mm"

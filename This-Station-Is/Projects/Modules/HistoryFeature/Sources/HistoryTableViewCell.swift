@@ -17,7 +17,7 @@ enum HistoryState {
 class HistoryTableViewCell: UITableViewCell {
     private let noHistoryDescriptionLabel = UILabel().then {
 //        $0.text = "알림이 존재하지 않습니다."
-        $0.text = "준비중인 서비스 입니다."
+        $0.text = "알림 서비스는 준비중이에요."
         $0.textColor = .textSub
         $0.font = .systemFont(ofSize: 16)
         $0.textAlignment = .center

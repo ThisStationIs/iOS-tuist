@@ -141,7 +141,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = BoardTableViewCell(reuseIdentifier: "")
+
+//        let cell = BoardTableViewCell(reuseIdentifier: "", boardData: nil)
+        let cell = UITableViewCell.init(style: .default, reuseIdentifier: "")
         return cell
     }
 }

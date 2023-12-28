@@ -18,12 +18,18 @@ class BoardTitleTableViewCell: UITableViewCell {
     
     init(reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        
         setUI()
         setLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func getText() -> String {
+        guard let text = titleTextField.text else { return "" }
+        return text
     }
     
     private func setUI() {

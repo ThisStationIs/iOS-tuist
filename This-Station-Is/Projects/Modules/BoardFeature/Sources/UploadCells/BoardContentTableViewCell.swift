@@ -22,7 +22,7 @@ class BoardContentTableViewCell: UITableViewCell {
     private lazy var contentTextView = TextView().then {
         $0.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 506)
         $0.backgroundColor = .white
-        $0.delegate = self
+        $0.textViewDelegate = self
         $0.isScrollEnabled = false
         $0.sizeToFit()
         $0.textColor = .textMain
@@ -40,6 +40,11 @@ class BoardContentTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func getText() -> String {
+        guard let text = contentTextView.text else { return "" }
+        return text
     }
     
     private func setUI() {
@@ -64,7 +69,7 @@ class BoardContentTableViewCell: UITableViewCell {
     }
 }
 
-extension BoardContentTableViewCell: UITextViewDelegate {
+extension BoardContentTableViewCell: TextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         if let delegate = delegate {
             delegate.updateTextViewHeight(self, textView: textView)

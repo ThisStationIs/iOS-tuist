@@ -21,6 +21,19 @@ public class BoardUploadViewController: UIViewController {
     }
     
     var rightBarItemForSetting: UIBarButtonItem!
+    var viewModel: BoardViewModel!
+    
+    var titleText: String = ""
+    var contentText: String = ""
+    
+    public init(viewModel: BoardViewModel) {
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +46,32 @@ public class BoardUploadViewController: UIViewController {
     }
     
     @objc func selectUploadPost() {
+        
+        if let titleCell = mainTableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? BoardTitleTableViewCell {
+            self.viewModel.uploadBoardData["title"] = titleCell.getText()
+        }
+        
+        if let contentCell = mainTableView.cellForRow(at: IndexPath(row: 0, section: 3)) as? BoardContentTableViewCell {
+            self.viewModel.uploadBoardData["content"] = contentCell.getText()
+        }
+        
+        print("data : \(viewModel.uploadBoardData)")
+        
+        // 데이터 세팅
+        guard let categoryId = self.viewModel.uploadBoardData["categoryId"] as? Int,
+              let subwayLineId = self.viewModel.uploadBoardData["subwayLineId"] as? Int,
+              let title = self.viewModel.uploadBoardData["title"] as? String,
+              let content = self.viewModel.uploadBoardData["content"] as? String
+        else {
+            return
+        }
+        
+        let uploadBoardData = UploadBoardData(categoryId: categoryId, subwayLineId: subwayLineId, title: title, content: content)
+        
+        self.viewModel.postBoardData(uploadData: uploadBoardData) {
+            //
+            self.navigationController?.popViewController(animated: true)
+        }
         
     }
     
@@ -143,10 +182,10 @@ extension BoardUploadViewController: UITableViewDelegate, UITableViewDataSource 
         
         switch indexPath.section {
         case 0:
-            let cell = SelectLineTableViewCell.init(reuseIdentifier: identifier)
+            let cell = SelectLineTableViewCell.init(reuseIdentifier: identifier, viewModel: viewModel)
             return cell
         case 1:
-            let cell = SelectTagTableViewCell.init(reuseIdentifier: identifier)
+            let cell = SelectTagTableViewCell.init(reuseIdentifier: identifier, viewModel: viewModel)
             return cell
         case 2:
             let cell = BoardTitleTableViewCell.init(reuseIdentifier: identifier)

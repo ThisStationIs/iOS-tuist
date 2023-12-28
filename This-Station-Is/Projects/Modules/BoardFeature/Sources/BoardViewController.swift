@@ -35,6 +35,11 @@ public class BoardViewController: UIViewController {
     
     let viewModel = BoardViewModel()
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.mainBoardTableView.reloadData()
+    }
+    
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -57,9 +62,14 @@ public class BoardViewController: UIViewController {
     }
     
     @objc func selectFilterButton() {
-        let bottomSheetView = BottomSheetView(defaultHeight: 270, title: "게시판 정렬")
-        bottomSheetView.addContentView(BoardFilterView())
-        bottomSheetView.show()
+//        let bottomSheetView = BottomSheetView(defaultHeight: 270, title: "게시판 정렬")
+//        bottomSheetView.addContentView(BoardFilterView())
+//        bottomSheetView.show()
+        
+        // TODO: 테스트
+        let boardUploadViewController = BoardUploadViewController(viewModel: viewModel)
+        boardUploadViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(boardUploadViewController, animated: true)
     }
     
     private func setUI() {

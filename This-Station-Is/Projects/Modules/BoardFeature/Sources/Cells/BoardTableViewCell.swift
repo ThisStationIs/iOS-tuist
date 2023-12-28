@@ -98,6 +98,8 @@ public class BoardTableViewCell: UITableViewCell {
         titleLabel.text = boardData.title
         contentLabel.text = boardData.preview
         commentCountLabel.text = "\(boardData.commentCount)"
+        
+        writeDate.text = replaceDateFormatter(date: boardData.createdAt)
     }
     
     private func setUI() {

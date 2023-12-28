@@ -15,6 +15,12 @@ class HomeViewModel {
             path: "api/v1/home/recent/posts?size=5"
         )
     }
+    
+    public func getHomeHotPosts() -> Endpoint<ResponseWrapper<RecentPosts>> {
+        return Endpoint(
+            path: "api/v1/home/hot/posts?size=5"
+        )
+    }
 }
 
 struct RecentPosts: Decodable {

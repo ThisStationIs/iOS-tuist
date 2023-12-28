@@ -16,7 +16,7 @@ public class CategoryBadge: UIView {
         case background
     }
     
-    let badgeTitleLabel: UILabel = {
+    public let badgeTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Label"
         label.font = UIFont.systemFont(ofSize: 12)

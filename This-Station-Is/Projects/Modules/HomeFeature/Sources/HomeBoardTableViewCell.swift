@@ -19,7 +19,7 @@ class HomeBoardTableViewCell: UITableViewCell {
     private let profileView = UIView()
     
     private let profileImageView = UIImageView().then {
-        $0.image = UIImage(named: "profile")
+        $0.image = UIImage(named: "profileWithColor")
     }
     
     private var profileName = UILabel().then {
@@ -77,12 +77,22 @@ class HomeBoardTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setData(_ data: Post) {
+    func setData(
+        _ data: Post,
+        _ colorInfos: [Lines]
+    ) {
         self.profileName.text = data.authorNickname
         
         self.writeDate.text = changeFormat(input: data.createdAt)
         
         self.lineCategoryBadge.title = data.subwayLineName
+        for colorInfo in colorInfos {
+            if colorInfo.name == data.subwayLineName {
+                lineCategoryBadge.backgroundColor = UIColor(hexCode: colorInfo.colorCode).withAlphaComponent(0.1)
+                lineCategoryBadge.badgeTitleLabel.textColor = UIColor(hexCode: colorInfo.colorCode)
+            }
+        }
+        
         self.cateogryBadge.title = data.categoryName
         self.titleLabel.text = data.title
         self.contentLabel.text = data.preview

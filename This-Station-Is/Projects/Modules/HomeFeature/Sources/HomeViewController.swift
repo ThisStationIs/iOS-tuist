@@ -44,6 +44,7 @@ public class HomeViewController: UIViewController {
         $0.estimatedRowHeight = 216
     }
 
+    private var lineInfo: [Lines] = []
     private var recentBoards: [Post] = []
     private var hotBoards: [Post] = []
     
@@ -53,6 +54,10 @@ public class HomeViewController: UIViewController {
         super.viewWillAppear(animated)
         self.changeStatusBarBgColor(bgColor: .white)
         navigationItem.titleView = searchBar
+        
+        viewModel.getSubwayLine { lines in
+            self.lineInfo = lines
+        }
         
         APIServiceManager().request(with: viewModel.getHomeRecentPosts()) { result in
             switch result {
@@ -170,7 +175,10 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeBoardCollectionViewCell", for: indexPath) as! HomeBoardCollectionViewCell
-        cell.setData(hotBoards[indexPath.item])
+        cell.setData(
+            self.hotBoards[indexPath.row],
+            self.lineInfo
+        )
         return cell
     }
     
@@ -189,7 +197,10 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         print("### cellforrow")
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomeBoardTableViewCell", for: indexPath) as! HomeBoardTableViewCell
         cell.selectionStyle = .none
-        cell.setData(self.recentBoards[indexPath.row])
+        cell.setData(
+            self.recentBoards[indexPath.row],
+            self.lineInfo
+        )
         return cell
     }
     

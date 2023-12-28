@@ -34,7 +34,7 @@ public class HomeViewController: UIViewController {
         $0.font = .systemFont(ofSize: 18, weight: .semibold)
     }
     private let newBoardTableView = UITableView().then {
-//        $0.register(BoardTableViewCell.self, forCellReuseIdentifier: "BoardTableViewCell")
+        $0.register(HomeBoardTableViewCell.self, forCellReuseIdentifier: "HomeBoardTableViewCell")
         $0.isScrollEnabled = false
         $0.rowHeight = UITableView.automaticDimension
         $0.estimatedRowHeight = 216
@@ -154,7 +154,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = BoardTableViewCell(reuseIdentifier: "")
-        return UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "HomeBoardTableViewCell", for: indexPath) as! HomeBoardTableViewCell
+        return cell
     }
 }

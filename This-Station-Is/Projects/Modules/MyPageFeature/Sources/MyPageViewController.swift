@@ -22,6 +22,7 @@ public class MyPageViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.backgroundColor = .primaryNormal
         self.changeStatusBarBgColor(bgColor: .primaryNormal)
         setupNavi()
     }

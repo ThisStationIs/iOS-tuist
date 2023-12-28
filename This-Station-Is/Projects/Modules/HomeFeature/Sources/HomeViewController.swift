@@ -14,7 +14,8 @@ import Network
 
 public class HomeViewController: UIViewController {
     private let searchBar = UISearchBar().then {
-        $0.placeholder = "키워드를 검색해보세요"
+        $0.searchTextField.attributedPlaceholder = NSAttributedString(string: "키워드를 검색해보세요", attributes: [NSAttributedString.Key.foregroundColor : UIColor.textSub])
+        $0.setImage(UIImage(named: "search"), for: .search, state: .normal)
     }
     private let scrollView = UIScrollView()
     private let hotBoardLabel = UILabel().then {

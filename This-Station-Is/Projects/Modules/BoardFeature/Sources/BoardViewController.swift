@@ -29,6 +29,7 @@ public class BoardViewController: UIViewController {
     }
     
     private let searchBar = UISearchBar().then {
+        $0.setImage(UIImage(named: "search"), for: .search, state: .normal)
         $0.searchTextField.attributedPlaceholder = NSAttributedString(string: "찾으시는게 있나요?", attributes: [NSAttributedString.Key.foregroundColor : UIColor.textSub])
         $0.searchTextField.textColor = .textMain
     }

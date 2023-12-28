@@ -18,13 +18,11 @@ public class HistoryViewController: UIViewController {
         $0.estimatedRowHeight = 100
     }
     
-    private var historys: [String] = ["test"]
+    private var historys: [String] = []
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let trashButton = UIBarButtonItem(image: UIImage(named: "trash"), style: .plain, target: self, action: #selector(toggleEditMode))
-        trashButton.tintColor = .textMain
-        navigationItem.rightBarButtonItem = trashButton
+        setNavigationBar()
     }
     
     public override func viewDidLoad() {
@@ -33,6 +31,13 @@ public class HistoryViewController: UIViewController {
         setLayout()
         setDelegate()
     }
+    private func setNavigationBar() {
+        title = "알림"
+        let trashButton = UIBarButtonItem(image: UIImage(named: "trash"), style: .plain, target: self, action: #selector(toggleEditMode))
+        trashButton.tintColor = .textMain
+        navigationItem.rightBarButtonItem = trashButton
+    }
+    
 }
 
 extension HistoryViewController {

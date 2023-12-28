@@ -135,6 +135,20 @@ extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
             let myCommentViewController = MyCommentViewController(viewModel: viewModel)
             myCommentViewController.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(myCommentViewController, animated: true)
+        } else {
+            self.tabBarController?.tabBar.isHidden = true
+            let alertView = AlertView(title: "", message: "‘문의하기'는 <이번역은> 공식 메일로\n바로 연결됩니다!\nthis.stop.is.contact@gmail.com")
+            alertView.addAction(title: "취소", style: .cancel)
+            {
+                alertView.dismiss()
+                self.tabBarController?.tabBar.isHidden = false
+            }
+//            alertView.addAction(title: "쓰러가기", style: .default) {
+//                alertView.dismiss()
+//                self.navigationController?.isNavigationBarHidden = false
+//                self.tabBarController?.tabBar.isHidden = false
+//            }
+            alertView.present()
         }
     }
     

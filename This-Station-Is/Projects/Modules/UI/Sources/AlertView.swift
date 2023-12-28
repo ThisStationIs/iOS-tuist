@@ -56,7 +56,8 @@ public class AlertView: UIView {
         guard let rootViewController = UIApplication.topViewController() else { return }
         rootViewController.view.addSubview(self)
         self.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalToSuperview().offset(rootViewController.view.safeAreaInsets.top)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
     

@@ -44,6 +44,7 @@ public class HomeViewController: UIViewController {
     }
 
     private var recentBoards: [Post] = []
+    private var hotBoards: [Post] = []
     
     let viewModel = HomeViewModel()
     
@@ -63,6 +64,20 @@ public class HomeViewController: UIViewController {
                     self.recentBoardTableView.snp.updateConstraints {
                         $0.height.equalTo(216 * self.recentBoards.count)
                     }
+                }
+            case .failure(let failure):
+                print("### failure: \(failure)")
+            }
+        }
+        
+        APIServiceManager().request(with: viewModel.getHomeHotPosts()) { result in
+            switch result {
+            case .success(let success):
+                print("### success: \(success)")
+                self.hotBoards = success.data.posts
+                DispatchQueue.main.async {
+                    print("### hotBoards:\(self.hotBoards)")
+                    self.hotBoardCollectionView.reloadData()
                 }
             case .failure(let failure):
                 print("### failure: \(failure)")
@@ -148,11 +163,12 @@ extension HomeViewController: UISearchBarDelegate {
 
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return hotBoards.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeBoardCollectionViewCell", for: indexPath) as! HomeBoardCollectionViewCell
+        cell.setData(hotBoards[indexPath.item])
         return cell
     }
     

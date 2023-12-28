@@ -58,6 +58,7 @@ class CommentTableViewCell: UITableViewCell {
          */
         profileName.text = commentData.authorNickname
         commentLabel.text = commentData.content
+        writeDate.text = replaceDateFormatter(date: commentData.lastUpdatedAt)
     }
     
     private func setUI() {

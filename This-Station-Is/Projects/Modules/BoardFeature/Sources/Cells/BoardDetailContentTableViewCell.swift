@@ -112,6 +112,7 @@ class BoardDetailContentTableViewCell: UITableViewCell {
         titleLabel.text = detailData.title
         contentLabel.text = detailData.content
         commentCountLabel.text = "\(detailData.commentCount)"
+        writeDate.text = replaceDateFormatter(date: detailData.lastUpdatedAt)
         
     }
     

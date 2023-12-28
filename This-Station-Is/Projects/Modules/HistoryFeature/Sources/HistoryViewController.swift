@@ -13,7 +13,6 @@ import Then
 
 public class HistoryViewController: UIViewController {
     private let mainTableView = UITableView().then {
-        $0.backgroundColor = .red
         $0.register(HistoryTableViewCell.self, forCellReuseIdentifier: "HistoryTableViewCell")
         $0.rowHeight = UITableView.automaticDimension
         $0.estimatedRowHeight = 100

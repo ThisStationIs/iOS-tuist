@@ -20,6 +20,9 @@ private func configureInfoPlist(merging other: [String: InfoPlist.Value] = [:]) 
     let infoPlist: [String: InfoPlist.Value] = [
         "CFBundleVersion": "1",
         "UILaunchStoryboardName": "LaunchScreen",
+        "NSAppTransportSecurity": [
+            "NSAllowsArbitraryLoads": true
+        ],
         "UIApplicationSceneManifest": [
             "UIApplicationSupportsMultipleScenes": false,
             "UISceneConfigurations": [

@@ -12,7 +12,7 @@ import Network
 class HomeViewModel {
     public func getHomeRecentPosts() -> Endpoint<ResponseWrapper<RecentPosts>> {
         return Endpoint(
-            path: "/api/v1/home/recent/posts?size=5"
+            path: "api/v1/home/recent/posts?size=5"
         )
     }
 }

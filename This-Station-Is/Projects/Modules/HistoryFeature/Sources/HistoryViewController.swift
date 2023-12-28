@@ -100,6 +100,7 @@ extension HistoryViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryTableViewCell", for: indexPath) as! HistoryTableViewCell
         cell.confgiureCell(historyCount: historys.count)
+        cell.selectionStyle = .none
         return cell
     }
     

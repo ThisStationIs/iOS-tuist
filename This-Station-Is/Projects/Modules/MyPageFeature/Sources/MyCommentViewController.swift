@@ -27,8 +27,10 @@ class MyCommentViewController: UIViewController {
         
         self.viewModel = viewModel
         
-        setUI()
-        setLayout()
+        self.viewModel.getMyCommentData { [self] in
+            setUI()
+            setLayout()
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -70,7 +72,7 @@ class MyCommentViewController: UIViewController {
 
 extension MyCommentViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return viewModel.myCommentData.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -78,13 +80,14 @@ extension MyCommentViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier = "\(indexPath.row)"
+        let data = viewModel.myCommentData[indexPath.row]
+        let identifier = "\(indexPath.row)_\(data.commentId)"
         
         if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
             return reuseCell
         }
         
-        let cell = MyCommentTableViewCell.init(reuseIdentifier: identifier)
+        let cell = MyCommentTableViewCell.init(reuseIdentifier: identifier, data: data)
         
         return cell
     }

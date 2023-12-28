@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UI
 
 class MyCommentTableViewCell: UITableViewCell {
     
@@ -32,14 +33,22 @@ class MyCommentTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    init(reuseIdentifier: String?) {
+    init(reuseIdentifier: String?, data: Comments) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
         setLayout()
+        setData(data: data)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setData(data: Comments) {
+        contentLabel.text = "\"\(data.content)\""
+        // TODO: API 에 제목도 추가 ..?
+        titleLabel.text = "[\(data.authorNickname)]"
+        writeDate.text = replaceDateFormatter(date: data.lastUpdatedAt)
     }
     
     private func setUI() {

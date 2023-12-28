@@ -26,3 +26,21 @@ public struct Post: Decodable {
     let isReported: Bool
     let createdAt: String
 }
+
+public struct MyCommentData: Decodable {
+    let comments: [Comments]
+    let lastCommentId: Int?
+    let hasMoreComments: Bool
+}
+
+public struct Comments: Decodable {
+    let commentId: Int
+    let postId: Int
+    let content: String
+    let authorNickname: String
+    let isDeleted: Bool
+    let isBlocked: Bool
+    let likeCount: Int
+    let createdAt: String
+    let lastUpdatedAt: String
+}

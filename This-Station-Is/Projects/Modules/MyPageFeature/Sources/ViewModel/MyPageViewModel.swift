@@ -11,6 +11,7 @@ import Network
 
 public class MyPageViewModel: NSObject {
     var myUploadBoardData: [Post] = []
+    var myCommentData: [Comments] = []
     
     let ACCESS_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDE6NTU6MTciLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI4IDAxOjU1OjE3In0.oSfKvYL1kzqcl4MToHCuVa7n0PcTBtCCTowowa6QFwPjYuLMrt_sv6z6OHBcBq61QizCl8Fp4bgMuuK2UeRGhg"
 }
@@ -39,6 +40,33 @@ extension MyPageViewModel {
         
         return Endpoint(
             path: "api/v1/my/posts",
+            headers: headers
+        )
+    }
+    
+    // 내가 쓴 댓글
+    public func getMyCommentData(completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: getMyComment()) { result in
+            switch result {
+            case .success(let success):
+                self.myCommentData = success.data.comments
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func getMyComment() -> Endpoint<ResponseWrapper<MyCommentData>> {
+        let headers: [String: String] = [
+            "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
+            "Content-Type": "application/json"
+        ]
+        
+        return Endpoint(
+            path: "api/v1/my/comments",
             headers: headers
         )
     }

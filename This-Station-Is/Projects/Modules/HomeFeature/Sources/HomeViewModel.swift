@@ -18,13 +18,13 @@ class HomeViewModel {
 }
 
 struct RecentPosts: Decodable {
-    let posts: [Posts]
+    let posts: [Post]
     private enum CodingKeys: String, CodingKey {
         case posts
     }
 }
 
-struct Posts: Decodable {
+struct Post: Decodable {
     let postId: Int
     let authorNickname: String
     let subwayLineName: String

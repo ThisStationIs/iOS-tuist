@@ -18,7 +18,7 @@ public class HistoryViewController: UIViewController {
         $0.estimatedRowHeight = 100
     }
     
-    private var historys: [String] = ["test"]
+    private var historys: [String] = []
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

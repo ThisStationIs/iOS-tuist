@@ -116,6 +116,7 @@ extension HomeViewController {
         
         hotBoardLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
+                .offset(24)
             $0.leading.trailing.equalToSuperview()
                 .offset(24)
             $0.width.equalTo(scrollView)

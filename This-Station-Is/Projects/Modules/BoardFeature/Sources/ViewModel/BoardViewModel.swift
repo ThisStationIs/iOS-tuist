@@ -13,12 +13,14 @@ public class BoardViewModel: NSObject {
     
     var boardArray: [Post] = []
     var detailBoardData: DetailPost!
-    
     var lineInfo: [Lines] = []
+    var uploadBoardData: [String: Any] = [:]
     
     var selectedLineArray: [Lines] = []
     var selectedCategoryArray: [String] = []
     var canSelect: Bool = false
+    
+    let ACCESS_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDE6NTU6MTciLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI4IDAxOjU1OjE3In0.oSfKvYL1kzqcl4MToHCuVa7n0PcTBtCCTowowa6QFwPjYuLMrt_sv6z6OHBcBq61QizCl8Fp4bgMuuK2UeRGhg"
     
     // 선택한 호선 저장
     public func addSelectLine(lineInfo: Lines, tag: Int) {
@@ -126,6 +128,37 @@ extension BoardViewModel {
     private func getDetailBoard(id: Int) -> Endpoint<BoardModel<DetailPost>> {
         return Endpoint(
             path: "api/v1/post/\(id)"
+        )
+    }
+    
+    // 게시판 등록
+    public func postBoardData(uploadData: UploadBoardData, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: postBoar(uploadData: uploadData)) { result in
+            switch result {
+            case .success(let success):
+                print(success)
+//                self.detailBoardData = success.data
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func postBoar(uploadData: UploadBoardData) -> Endpoint<BoardModel<UploadBoardResponse>> {
+        
+        let header: [String: String] = [
+            "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
+            "Content-Type": "application/json"
+        ]
+        
+        return Endpoint(
+            path: "api/v1/post",
+            method: .post,
+            bodyParameters: uploadData,
+            headers: header
         )
     }
 }

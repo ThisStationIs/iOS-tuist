@@ -97,3 +97,41 @@ struct Comment: Decodable {
     let createdAt: String
     let lastUpdatedAt: String
 }
+
+public struct UploadBoardData: Encodable {
+    /*
+     {
+       "categoryId": 0,
+       "subwayLineId": 0,
+       "title": "string",
+       "content": "string"
+     }
+     */
+    
+    var categoryId: Int
+    var subwayLineId: Int
+    var title: String
+    var content: String
+}
+
+struct UploadBoardResponse: Decodable {
+    /*
+     {
+       "code": "200",
+       "message": "OK",
+       "data": {
+         "postId": 3,
+         "authorNickname": "밝은고양이",
+         "title": "타이틀",
+         "content": "컨텐츠",
+         "createdAt": "2023-12-28T05:18:21.810140476"
+       }
+     }
+     */
+    
+    let postId: Int
+    let authorNickname: String
+    let title: String
+    let content: String
+    let createdAt: String
+}

@@ -17,19 +17,29 @@ class SelectLineTableViewCell: UITableViewCell {
         $0.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         $0.layer.cornerRadius = 10
         $0.setTitleColor(.textMain, for: .normal)
-        $0.addTarget(self, action: #selector(selectLine), for: .touchUpInside)
     }
     
-    let lineNameArray: [String] = ["1호선", "2호선", "3호선", "4호선", "5호선", "6호선", "7호선", "8호선", "9호선", "경강선", "경의중앙선", "경춘선", "공항철도", "김포골드라인", "서해선", "수인분당선", "신림선", "신분당선", "용인에버라인", "우이신설선", "인천 1호선", "인천 2호선", "의정부경전철"]
+    var viewModel: BoardViewModel!
     
-    @objc func selectLine(_ sender: UIButton) {
+    lazy var actionClosure = { (action: UIAction) in
+        print(action.title)
+        
+        // 선택한 호선의 id 값 찾아오기
+        guard let selectedLine = self.viewModel.lineInfo.filter({ $0.name == action.title }).first else { return }
+        
+        self.viewModel.uploadBoardData["subwayLineId"] = selectedLine.id
     }
     
-    init(reuseIdentifier: String?) {
+    init(reuseIdentifier: String?, viewModel: BoardViewModel) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-       
-        setUI()
-        setLayout()
+        
+        self.viewModel = viewModel
+        
+        // 호선 정보 가져오기
+        viewModel.getSubwayLine { [self] in
+            setUI()
+            setLayout()
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -41,22 +51,18 @@ class SelectLineTableViewCell: UITableViewCell {
         self.selectionStyle = .none
         self.contentView.addSubview(selectLineView)
         
-        let actionClosure = { (action: UIAction) in
-               print(action.title)
-           }
-
-           var menuChildren: [UIMenuElement] = []
-           for fruit in lineNameArray {
-               menuChildren.append(UIAction(title: fruit, handler: actionClosure))
-           }
-           
+        var menuChildren: [UIMenuElement] = []
+        for i in 0..<viewModel.lineInfo.count {
+            menuChildren.append(UIAction(title: viewModel.lineInfo[i].name, handler: actionClosure))
+        }
+        
         selectLineView.menu = UIMenu(options: .displayInline, children: menuChildren)
-           
+        
         selectLineView.showsMenuAsPrimaryAction = true
         selectLineView.changesSelectionAsPrimaryAction = true
-           
+        
         selectLineView.frame = CGRect(x: 150, y: 200, width: 100, height: 40)
-
+        
     }
     
     private func setLayout() {

@@ -15,20 +15,28 @@ class SelectTagTableViewCell: UITableViewCell {
     
     private var tagButtonArray: [FilterBadge] = []
     
-    let tagTitleArray: [String] = ["분실물", "연착정보", "사건사고", "알쓸신잡", "질문", "기타"]
+    let tagTitleArray: [String] = ["연착정보", "분실물", "사건사고", "알쓸신잡", "질문", "기타"]
+    
+    var viewModel: BoardViewModel!
     
     @objc func selectBadgeTapGesture(_ sender: UIGestureRecognizer) {
         guard let sender = sender.view as? FilterBadge else { return }
         tagButtonArray.forEach { $0.isSelect = false }
         sender.isSelect.toggle()
         
+        // 선택한 카테고리 저장
+        self.viewModel.uploadBoardData["categoryId"] = sender.tag + 1
+        
 //        if let categorySelectAction = categorySelectAction {
 //            categorySelectAction(tagTitleArray[sender.tag], sender.tag)
 //        }
     }
     
-    init(reuseIdentifier: String?) {
+    init(reuseIdentifier: String?, viewModel: BoardViewModel) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        
+        self.viewModel = viewModel
+        
         setUI()
         setLayout()
     }

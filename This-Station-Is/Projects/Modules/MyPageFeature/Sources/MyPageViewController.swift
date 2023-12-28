@@ -2,7 +2,7 @@
 //  MyPageViewController.swift
 //  MyPageFeature
 //
-//  Created by min on 2023/12/27.
+//  Created by min on 2023/12/28.
 //  Copyright © 2023 Kkonmo. All rights reserved.
 //
 
@@ -10,21 +10,54 @@ import UIKit
 import UI
 
 public class MyPageViewController: UIViewController {
-    private let myTableView = UITableView().then {
+    
+    private let profileView = UIView().then {
+        $0.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 154)
+        $0.backgroundColor = .primaryNormal
+    }
+    
+    private let titleLabel = UILabel().then {
+        $0.text = "나의 프로필"
+        $0.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        $0.textColor = .white
+    }
+    
+    private let profileImageView = UIImageView().then {
+        $0.image = UIImage(named: "my_profile")
+    }
+    
+    private let profileNameLabel = UILabel().then {
+        $0.text = "행복한 바나나"
+        $0.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        $0.textColor = .white
+    }
+    
+    private let profileUIDLabel = UILabel().then {
+        $0.text = "UID 123"
+        $0.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        $0.textColor = .white
+    }
+    
+    private lazy var myTableView = UITableView(frame: .zero, style: .grouped).then {
+        $0.delegate = self
+        $0.dataSource = self
         $0.backgroundColor = .white
         $0.separatorStyle = .none
     }
     
-    private let myActivityMenus: [String] = ["내 활동", "내가 쓴 글", "내가 쓴 댓글"]
-    private let thisStationIsMenus: [String] = ["이번역은", "문의하기"]
+    var stringArray: [String] = ["내가 쓴 글", "내가 쓴 댓글"]
     
     private let viewModel = MyPageViewModel()
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.backgroundColor = .primaryNormal
         self.changeStatusBarBgColor(bgColor: .primaryNormal)
-        setupNavi()
+        self.navigationController?.navigationBar.isHidden = true
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.navigationBar.isHidden = false
     }
 
     public override func viewDidLoad() {
@@ -32,106 +65,169 @@ public class MyPageViewController: UIViewController {
         setUI()
         setLayout()
     }
-}
-
-extension MyPageViewController {
+    
     private func setUI() {
-        view.backgroundColor = .primaryNormal
-        view.addSubview(myTableView)
-        if #available(iOS 15, *) {
-            myTableView.sectionHeaderTopPadding = 0
+        self.view.backgroundColor = .white
+        self.view.addSubview(profileView)
+        
+        [
+            titleLabel,
+            profileImageView,
+            profileNameLabel,
+            profileUIDLabel
+        ].forEach {
+            profileView.addSubview($0)
         }
         
-        myTableView.delegate = self
-        myTableView.dataSource = self
+        self.view.addSubview(myTableView)
     }
     
     private func setLayout() {
+        profileView.snp.makeConstraints {
+            $0.height.equalTo(154)
+            $0.top.equalTo(self.view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalToSuperview()
+        }
+        
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(18)
+            $0.leading.equalToSuperview().inset(24)
+        }
+        
+        profileImageView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(32)
+            $0.leading.equalToSuperview().inset(24)
+            $0.width.height.equalTo(58)
+        }
+        
+        profileNameLabel.snp.makeConstraints {
+            $0.top.equalTo(profileImageView.snp.top).inset(6)
+            $0.leading.equalTo(profileImageView.snp.trailing).offset(16)
+        }
+        
+        profileUIDLabel.snp.makeConstraints {
+            $0.top.equalTo(profileNameLabel.snp.bottom).offset(3)
+            $0.leading.equalTo(profileNameLabel.snp.leading)
+        }
+        
         myTableView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalTo(profileView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }
-    
-    private func setupNavi() {
-        navigationController?.navigationBar.backgroundColor = .primaryNormal
-        setupLeftBarButtonItem()
-        setupRightBarButtonItem()
-    }
-    
-    private func setupLeftBarButtonItem() {
-        let leftBarItemForTitle = UIBarButtonItem(title: "나의 프로필", style: .plain, target: nil, action: nil)
-        leftBarItemForTitle.setTitleTextAttributes([
-            NSAttributedString.Key.foregroundColor: UIColor.white,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20)
-        ], for: .normal)
-        navigationItem.leftBarButtonItem = leftBarItemForTitle
-    }
-    
-    private func setupRightBarButtonItem() {
-        guard let originalImage = UIImage(named: "setting") else { return }
-        
-        let resizedImage = originalImage.resized(to: CGSize(width: 24, height: 24))
-        
-        let tintedImage = resizedImage?.withTintColor(.white, renderingMode: .alwaysOriginal)
 
-        let rightBarItemForSetting = UIBarButtonItem(image: tintedImage, style: .plain, target: nil, action: nil)
-        navigationItem.rightBarButtonItem = rightBarItemForSetting
-    }
-    
 }
 
 extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
-    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return section == 0 ? MyPageTableViewHeader() : nil
-    }
-    
-    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? 88 : 40
-    }
-    
     public func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let section = indexPath.section
-        let row = indexPath.row
+    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
         
-        let identifier = "\(indexPath.row)"
+        let titleLabel = UILabel()
+        titleLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        titleLabel.textColor = .textMain
+        headerView.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(24)
+            $0.leading.equalToSuperview().inset(24)
+        }
+        
+        let underLineView = UIView()
+        underLineView.backgroundColor = .componentDivider
+        headerView.addSubview(underLineView)
+        underLineView.snp.makeConstraints {
+            $0.height.equalTo(1)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalToSuperview()
+        }
+        
+        switch section {
+        case 0:
+            titleLabel.text = "내 활동"
+        default:
+            titleLabel.text = "메트로스토리"
+        }
+        
+        return headerView
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 45 + 16
+    }
+    
+    public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 45
+    }
+    
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return 2
+        default:
+            return 1
+        }
+    }
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let identifier = "\(indexPath.section)_\(indexPath.row)"
         
         if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
             return reuseCell
         }
         
-        switch indexPath.row {
-        case 0:
-            let cell = MyPageTitleTableViewCell.init(style: .default, reuseIdentifier: identifier)
-            cell.setupTitle(title: section == 0 ? myActivityMenus[0] : thisStationIsMenus[0])
-            cell.version = section == 0 ? .noVersion : .isVersion
-            return cell
-        default:
-            let cell = MyPageMenuTableViewCell.init(style: .default, reuseIdentifier: identifier)
-            cell.setupTitle(title: section == 0 ? myActivityMenus[row] : thisStationIsMenus[row])
-            return cell
+        let cell = UITableViewCell.init(style: .default, reuseIdentifier: identifier)
+        cell.backgroundColor = .white
+        cell.selectionStyle = .none
+        
+        let arrowImageView = UIImageView().then {
+            $0.image = UIImage(named: "right_arrow")
         }
-    }
-    
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? myActivityMenus.count : thisStationIsMenus.count
-    }
-    
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = indexPath.row
-        return row == 0 ? 45 : 40
+        
+        let titleLabel = UILabel().then {
+            $0.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+            $0.textColor = .textMain
+        }
+        
+        cell.contentView.addSubview(titleLabel)
+        cell.contentView.addSubview(arrowImageView)
+        
+        arrowImageView.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(24)
+            $0.centerY.equalToSuperview()
+        }
+        
+        titleLabel.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(24)
+            $0.centerY.equalToSuperview()
+        }
+        
+        switch indexPath.section {
+        case 0:
+            titleLabel.text = stringArray[indexPath.row]
+        default:
+            titleLabel.text = "문의하기"
+        }
+        
+        return cell
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 && indexPath.row == 1 {
+        if indexPath.section == 0 && indexPath.row == 0 {
             let myUploadBoardViewController = MyUploadBoardViewController(viewModel: viewModel)
             myUploadBoardViewController.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(myUploadBoardViewController, animated: true)
-        } else if indexPath.section == 0 && indexPath.row == 2 {
+        } else if indexPath.section == 0 && indexPath.row == 1 {
             let myCommentViewController = MyCommentViewController(viewModel: viewModel)
             myCommentViewController.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(myCommentViewController, animated: true)
@@ -143,23 +239,7 @@ extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
                 alertView.dismiss()
                 self.tabBarController?.tabBar.isHidden = false
             }
-//            alertView.addAction(title: "쓰러가기", style: .default) {
-//                alertView.dismiss()
-//                self.navigationController?.isNavigationBarHidden = false
-//                self.tabBarController?.tabBar.isHidden = false
-//            }
             alertView.present()
         }
     }
-    
-}
-
-extension UIImage {
-    func resized(to size: CGSize) -> UIImage? {
-         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-         self.draw(in: CGRect(origin: .zero, size: size))
-         let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
-         UIGraphicsEndImageContext()
-         return resizedImage
-     }
 }

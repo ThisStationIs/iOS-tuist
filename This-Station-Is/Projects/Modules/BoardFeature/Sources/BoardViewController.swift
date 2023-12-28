@@ -75,6 +75,7 @@ public class BoardViewController: UIViewController {
     private func setUI() {
         self.view.backgroundColor = .white
         self.navigationItem.titleView = searchBar
+        self.changeStatusBarBgColor(bgColor: UIColor.white)
         
         let filterButton = UIBarButtonItem(image: UIImage(named: "filter")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectFilterButton))
         self.navigationItem.rightBarButtonItem = filterButton
@@ -96,6 +97,20 @@ public class BoardViewController: UIViewController {
     private func setTableHeaderView() {
         
     }
+    
+    func changeStatusBarBgColor(bgColor: UIColor?) {
+         if #available(iOS 13.0, *) {
+             let window = UIApplication.shared.windows.first
+             let statusBarManager = window?.windowScene?.statusBarManager
+             
+             let statusBarView = UIView(frame: statusBarManager?.statusBarFrame ?? .zero)
+             statusBarView.backgroundColor = bgColor
+             window?.addSubview(statusBarView)
+         } else {
+             let statusBarView = UIApplication.shared.value(forKey: "statusBar") as? UIView
+             statusBarView?.backgroundColor = bgColor
+         }
+     }
 }
 
 extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
@@ -146,6 +161,7 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
         let id = viewModel.boardArray[indexPath.row - 1].postId
         
         let boardDetailViewController = BoardDetailViewController(viewModel: viewModel, id: id)
+        boardDetailViewController.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(boardDetailViewController, animated: true)
     }
 }

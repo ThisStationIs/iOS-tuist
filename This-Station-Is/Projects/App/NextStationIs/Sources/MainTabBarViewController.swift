@@ -41,5 +41,7 @@ class MainTabBarController: UITabBarController {
         myPageNavigationViewController.tabBarItem = UITabBarItem(title: "마이페이지", image: UIImage(named: "myPage"), tag: 4)
         
         setViewControllers([homeNavigationViewController, boardNavigationViewController, uploadViewController, historyNavigationViewController, myPageNavigationViewController], animated: false)
+        
+        
     }
 }

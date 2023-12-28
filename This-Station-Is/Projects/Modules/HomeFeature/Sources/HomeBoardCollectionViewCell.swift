@@ -79,6 +79,7 @@ class HomeBoardCollectionViewCell: UICollectionViewCell {
 
 extension HomeBoardCollectionViewCell {
     private func setView() {
+        self.backgroundColor = .white
         self.contentView.addSubview(conainerView)
         
         [

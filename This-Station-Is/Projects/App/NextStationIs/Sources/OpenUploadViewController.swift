@@ -10,11 +10,13 @@ import UIKit
 import BoardFeature
 
 class OpenUploadViewController: UITabBarController {
+    
+    let boardViewModel = BoardViewModel()
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let uploadViewController = UINavigationController(rootViewController: BoardUploadViewController())
+        let uploadViewController = UINavigationController(rootViewController: BoardUploadViewController(viewModel: boardViewModel))
         uploadViewController.modalPresentationStyle = .fullScreen
         self.present(uploadViewController, animated: true)
     }

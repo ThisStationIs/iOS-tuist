@@ -105,6 +105,7 @@ class HomeBoardTableViewCell: UITableViewCell {
 
 extension HomeBoardTableViewCell {
     private func setView() {
+        self.backgroundColor = .white
         self.contentView.addSubview(conainerView)
         
         [
@@ -175,7 +176,7 @@ extension HomeBoardTableViewCell {
         
         commentImageView.snp.makeConstraints {
             $0.top.equalTo(contentLabel.snp.bottom).offset(28).priority(.low)
-            $0.width.height.equalTo(16)
+            $0.width.height.equalTo(24)
             $0.leading.equalToSuperview()
             $0.bottom.equalToSuperview()
         }

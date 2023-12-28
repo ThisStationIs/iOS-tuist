@@ -11,7 +11,7 @@ import UIKit
 enum DateFormatType: String {
     // 23.03.09 17:37
     case dateTime = "yy.MM.dd HH:mm"
-    case fullDate = "yyyy-MM-dd hh:mm:ss"
+    case fullDate = "yyyy:mm:dd HH:mm:ss"
 }
 
 extension DateFormatter {
@@ -36,9 +36,9 @@ extension DateFormatter {
 // "2023-12-28T07:49:17.162371695
 public func replaceDateFormatter(date: String) -> String {
     
-    let replaceDate = date.components(separatedBy: "T0")
-    let joinDate = "\(replaceDate[0]) \(replaceDate[1])"
-    let changeDate = DateFormatter().changeStringToDate(joinDate, format: .fullDate)
+    let changeDate = DateFormatter().changeStringToDate(date, format: .fullDate)
+    print(changeDate)
+    
     let stringDate = DateFormatter().changeDateFormat(changeDate, format: .dateTime)
     
     return stringDate

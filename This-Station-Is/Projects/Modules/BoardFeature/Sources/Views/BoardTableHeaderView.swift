@@ -84,7 +84,7 @@ public class BoardTableHeaderView: UIView {
     }
     
     private func setUI() {
-        self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 40)
+        self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 56)
         self.backgroundColor = .white
         self.addSubview(headerLabel)
         self.addSubview(arrowImageView)

@@ -130,6 +130,7 @@ extension HomeViewController {
         
         hotBoardCollectionView.snp.makeConstraints {
             $0.top.equalTo(hotBoardLabel.snp.bottom)
+                .offset(8)
             $0.leading.equalToSuperview()
                 .offset(24)
             $0.trailing.equalToSuperview()
@@ -205,6 +206,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 300
+        return 216
     }
 }

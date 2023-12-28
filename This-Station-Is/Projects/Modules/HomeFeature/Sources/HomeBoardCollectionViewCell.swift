@@ -114,7 +114,8 @@ class HomeBoardCollectionViewCell: UICollectionViewCell {
 
 extension HomeBoardCollectionViewCell {
     private func setView() {
-        self.backgroundColor = .white
+        contentView.backgroundColor = .componentTextbox
+        contentView.layer.cornerRadius = 15
         self.contentView.addSubview(conainerView)
         
         [
@@ -198,7 +199,7 @@ extension HomeBoardCollectionViewCell {
             $0.top.equalTo(profileView.snp.top)
             $0.bottom.equalTo(commentImageView.snp.bottom)
             $0.leading.trailing.equalToSuperview()
-//                .inset(24)
+                .inset(24)
             $0.top.bottom.equalToSuperview().inset(16)
         }
     }

@@ -163,8 +163,8 @@ extension HomeViewController {
 
 extension HomeViewController: UISearchBarDelegate {
     public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        let nextVC = HomeSearchViewController()
-        self.navigationController?.pushViewController(nextVC, animated: true)
+//        let nextVC = HomeSearchViewController()
+//        self.navigationController?.pushViewController(nextVC, animated: true)
     }
 }
 

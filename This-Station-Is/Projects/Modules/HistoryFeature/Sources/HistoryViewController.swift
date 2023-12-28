@@ -22,9 +22,7 @@ public class HistoryViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let trashButton = UIBarButtonItem(image: UIImage(named: "trash"), style: .plain, target: self, action: #selector(toggleEditMode))
-        trashButton.tintColor = .textMain
-        navigationItem.rightBarButtonItem = trashButton
+        setNavigationBar()
     }
     
     public override func viewDidLoad() {
@@ -32,6 +30,14 @@ public class HistoryViewController: UIViewController {
         setView()
         setLayout()
         setDelegate()
+    }
+    
+    private func setNavigationBar() {
+        title = "알림"
+        
+        let trashButton = UIBarButtonItem(image: UIImage(named: "trash"), style: .plain, target: self, action: #selector(toggleEditMode))
+        trashButton.tintColor = .textMain
+        navigationItem.rightBarButtonItem = trashButton
     }
 }
 

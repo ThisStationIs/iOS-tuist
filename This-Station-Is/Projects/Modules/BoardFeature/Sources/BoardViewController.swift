@@ -10,6 +10,7 @@ import UIKit
 import SnapKit
 import Then
 import UI
+import HomeFeature
 
 public class BoardViewController: UIViewController {
     
@@ -31,7 +32,8 @@ public class BoardViewController: UIViewController {
         $0.addGestureRecognizer(gesture)
     }
     
-    private let searchBar = UISearchBar().then {
+    private lazy var searchBar = UISearchBar().then {
+        $0.delegate = self
         $0.setImage(UIImage(named: "search"), for: .search, state: .normal)
         $0.searchTextField.attributedPlaceholder = NSAttributedString(string: "찾으시는게 있나요?", attributes: [NSAttributedString.Key.foregroundColor : UIColor.textSub])
         $0.searchTextField.textColor = .textMain
@@ -118,6 +120,15 @@ public class BoardViewController: UIViewController {
     
     private func setTableHeaderView() {
         
+    }
+}
+
+extension BoardViewController: UISearchBarDelegate {
+    public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        let nextVC = HomeSearchViewController()
+//        nextVC.lineInfo = self.viewModel.lineInfo
+        self.navigationController?.pushViewController(nextVC, animated: true)
+        searchBar.resignFirstResponder()
     }
 }
 

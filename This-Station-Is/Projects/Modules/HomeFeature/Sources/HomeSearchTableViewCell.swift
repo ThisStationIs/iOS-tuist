@@ -34,6 +34,7 @@ class HomeSearchTableViewCell: UITableViewCell {
 
 extension HomeSearchTableViewCell {
     private func setView() {
+        self.backgroundColor = .white
         contentView.addSubview(historyLabel)
         contentView.addSubview(deleteButton)
     }

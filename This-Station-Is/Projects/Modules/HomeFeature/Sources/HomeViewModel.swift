@@ -17,19 +17,6 @@ class HomeViewModel {
     }
 }
 
-public struct ResponseWrapper<Response: Decodable>: Decodable {
-    public let code: String
-    public let message: String
-    public let data: Response
-    
-    private enum CodingKeys: String, CodingKey {
-        case code
-        case message
-        case data
-    }
-}
-
-
 struct RecentPosts: Decodable {
     let posts: [Posts]
     private enum CodingKeys: String, CodingKey {

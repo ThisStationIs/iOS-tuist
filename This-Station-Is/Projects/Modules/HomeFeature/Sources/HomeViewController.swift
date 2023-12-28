@@ -12,12 +12,11 @@ import SnapKit
 import Then
 import Network
 
-import BoardFeature
-
 public class HomeViewController: UIViewController {
     private let searchBar = UISearchBar().then {
         $0.placeholder = "키워드를 검색해보세요"
     }
+    private let scrollView = UIScrollView()
     private let hotBoardLabel = UILabel().then {
         $0.text = "🔥 이번 주 HOT 게시글!"
         $0.textColor = .textMain
@@ -35,11 +34,14 @@ public class HomeViewController: UIViewController {
         $0.font = .systemFont(ofSize: 18, weight: .semibold)
     }
     private let newBoardTableView = UITableView().then {
-        $0.register(BoardTableViewCell.self, forCellReuseIdentifier: "BoardTableViewCell")
+//        $0.register(BoardTableViewCell.self, forCellReuseIdentifier: "BoardTableViewCell")
+        $0.isScrollEnabled = false
         $0.rowHeight = UITableView.automaticDimension
         $0.estimatedRowHeight = 216
     }
 
+    private var recentBoards: [String] = ["1","1","1"]
+    
     let viewModel = HomeViewModel()
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -67,22 +69,31 @@ public class HomeViewController: UIViewController {
 extension HomeViewController {
     private func setView() {
         view.backgroundColor = .white
+        view.addSubview(scrollView)
         [
             hotBoardLabel,
             hotBoardCollectionView,
             newBoardLabel,
             newBoardTableView
         ].forEach {
-            view.addSubview($0)
+            scrollView.addSubview($0)
         }
     }
     
     private func setLayout() {
-        hotBoardLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
+        scrollView.snp.makeConstraints {
+            $0.top.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
-                .inset(24)
+            $0.width.equalTo(view.bounds.width)
         }
+        
+        hotBoardLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+                .offset(24)
+            $0.width.equalTo(scrollView)
+        }
+        
         hotBoardCollectionView.snp.makeConstraints {
             $0.top.equalTo(hotBoardLabel.snp.bottom)
             $0.leading.equalToSuperview()
@@ -95,10 +106,12 @@ extension HomeViewController {
                 .offset(24)
             $0.leading.trailing.equalTo(hotBoardLabel)
         }
+        
         newBoardTableView.snp.makeConstraints {
             $0.top.equalTo(newBoardLabel.snp.bottom)
             $0.leading.trailing.equalTo(hotBoardLabel)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(216 * recentBoards.count)
         }
     }
     
@@ -141,7 +154,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = BoardTableViewCell(reuseIdentifier: "")
-        return cell
+//        let cell = BoardTableViewCell(reuseIdentifier: "")
+        return UITableViewCell()
     }
 }

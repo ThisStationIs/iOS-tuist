@@ -11,7 +11,6 @@ import UI
 
 class HomeSearchTableViewCell: UITableViewCell {
     private let historyLabel = UILabel().then {
-        $0.text = "line name"
         $0.textColor = .textMain
         $0.font = .systemFont(ofSize: 16)
     }
@@ -26,6 +25,10 @@ class HomeSearchTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setData(_ title: String) {
+        historyLabel.text = title
     }
 }
 

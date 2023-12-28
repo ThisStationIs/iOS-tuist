@@ -14,8 +14,7 @@ import Network
 
 public class HomeViewController: UIViewController {
     private let searchBar = UISearchBar().then {
-//        $0.placeholder = "키워드를 검색해보세요"
-        $0.placeholder = "검색 기능은 준비중이에요"
+        $0.placeholder = "키워드를 검색해보세요"
     }
     private let scrollView = UIScrollView()
     private let hotBoardLabel = UILabel().then {
@@ -164,8 +163,10 @@ extension HomeViewController {
 
 extension HomeViewController: UISearchBarDelegate {
     public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-//        let nextVC = HomeSearchViewController()
-//        self.navigationController?.pushViewController(nextVC, animated: true)
+        let nextVC = HomeSearchViewController()
+        nextVC.lineInfo = self.lineInfo
+        self.navigationController?.pushViewController(nextVC, animated: true)
+        searchBar.resignFirstResponder()
     }
 }
 

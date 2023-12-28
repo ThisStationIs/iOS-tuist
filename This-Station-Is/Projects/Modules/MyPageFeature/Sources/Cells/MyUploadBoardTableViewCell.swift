@@ -46,14 +46,23 @@ class MyUploadBoardTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    init(reuseIdentifier: String?) {
+    init(reuseIdentifier: String?, data: Post) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
         setLayout()
+        setData(data: data)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setData(data: Post) {
+        lineCategoryBadge.title = data.subwayLineName
+        cateogryBadge.title = data.categoryName
+        contentLabel.text = data.preview
+        commentCountLabel.text = "\(data.commentCount)"
+        writeDate.text = replaceDateFormatter(date: data.createdAt)
     }
     
     private func setUI() {

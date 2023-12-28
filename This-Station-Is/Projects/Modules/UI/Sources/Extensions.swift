@@ -11,7 +11,7 @@ import UIKit
 enum DateFormatType: String {
     // 23.03.09 17:37
     case dateTime = "yy.MM.dd HH:mm"
-    case fullDate = "yyyy:mm:dd HH:mm:ss"
+    case fullDate = "yyyy.mm.dd hh:mm:ss"
 }
 
 extension DateFormatter {
@@ -25,8 +25,8 @@ extension DateFormatter {
     
     func changeStringToDate(_ string: String, format: DateFormatType) -> Date {
         self.dateFormat = format.rawValue
-        self.locale = Locale(identifier: "ko")
-        self.timeZone = TimeZone(identifier: "KST")
+//        self.locale = Locale(identifier: "ko")
+        self.timeZone = TimeZone(identifier: "UTC")
         guard let date = self.date(from: string) else { return Date() }
         
         return date

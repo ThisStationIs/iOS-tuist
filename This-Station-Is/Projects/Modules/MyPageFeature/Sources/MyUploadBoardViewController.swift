@@ -19,11 +19,38 @@ class MyUploadBoardViewController: UIViewController {
         $0.backgroundColor = .white
         $0.separatorStyle = .none
     }
-
+    
+    var viewModel: MyPageViewModel!
+    
+    init(viewModel: MyPageViewModel) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.viewModel = viewModel
+        
+        viewModel.getMyUploadBoardData { [self] in
+            setUI()
+            setLayout()
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.backgroundColor = .white
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.textMain]
+        self.changeStatusBarBgColor(bgColor: .white)
+        
+        let leftBarButton = UIBarButtonItem(image: UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(selectLeftBarButton))
+        leftBarButton.tintColor = .black
+        self.navigationItem.leftBarButtonItem = leftBarButton
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUI()
-        setLayout()
     }
     
     @objc func selectLeftBarButton() {
@@ -31,16 +58,8 @@ class MyUploadBoardViewController: UIViewController {
     }
     
     private func setUI() {
-        self.title = "게시글 작성"
-        self.navigationController?.navigationBar.backgroundColor = .white
-        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.textMain]
+        self.title = "내가 쓴 글"
         self.view.backgroundColor = .white
-        self.changeStatusBarBgColor(bgColor: .white)
-        
-        let leftBarButton = UIBarButtonItem(image: UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(selectLeftBarButton))
-        leftBarButton.tintColor = .black
-        self.navigationItem.leftBarButtonItem = leftBarButton
-        
         self.view.addSubview(mainTableView)
     }
     
@@ -54,7 +73,7 @@ class MyUploadBoardViewController: UIViewController {
 
 extension MyUploadBoardViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return viewModel.myUploadBoardData.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -62,13 +81,14 @@ extension MyUploadBoardViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier = "\(indexPath.row)"
+        let data = viewModel.myUploadBoardData[indexPath.row]
+        let identifier = "\(indexPath.row)_\(data.postId)"
         
         if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
             return reuseCell
         }
         
-        let cell = MyUploadBoardTableViewCell.init(reuseIdentifier: identifier)
+        let cell = MyUploadBoardTableViewCell.init(reuseIdentifier: identifier, data: data)
         
         return cell
     }

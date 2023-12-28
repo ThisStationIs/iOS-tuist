@@ -52,6 +52,7 @@ class SelectLineTableViewCell: UITableViewCell {
         self.contentView.addSubview(selectLineView)
         
         var menuChildren: [UIMenuElement] = []
+        menuChildren.append(UIAction(title: "호선을 선택해주세요.", handler: actionClosure))
         for i in 0..<viewModel.lineInfo.count {
             menuChildren.append(UIAction(title: viewModel.lineInfo[i].name, handler: actionClosure))
         }

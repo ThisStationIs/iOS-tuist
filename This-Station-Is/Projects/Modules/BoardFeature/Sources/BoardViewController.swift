@@ -38,7 +38,10 @@ public class BoardViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.changeStatusBarBgColor(bgColor: .white)
-        self.mainBoardTableView.reloadData()
+        
+        viewModel.getBoardData {
+            self.mainBoardTableView.reloadData()
+        }
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -50,10 +53,11 @@ public class BoardViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.getBoardData { [self] in
-            setUI()
-            setLayout()
-        }
+        setUI()
+        setLayout()
+//        viewModel.getBoardData { [self] in
+//
+//        }
     }
     
     @objc func selectTableHeaderView() {

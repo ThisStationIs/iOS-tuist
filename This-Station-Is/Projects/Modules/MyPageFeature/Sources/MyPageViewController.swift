@@ -18,6 +18,8 @@ public class MyPageViewController: UIViewController {
     private let myActivityMenus: [String] = ["내 활동", "내가 쓴 글", "내가 쓴 댓글"]
     private let thisStationIsMenus: [String] = ["이번역은", "문의하기"]
     
+    private let viewModel = MyPageViewModel()
+    
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.changeStatusBarBgColor(bgColor: .primaryNormal)
@@ -125,11 +127,11 @@ extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 && indexPath.row == 1 {
-            let myUploadBoardViewController = MyUploadBoardViewController()
+            let myUploadBoardViewController = MyUploadBoardViewController(viewModel: viewModel)
             myUploadBoardViewController.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(myUploadBoardViewController, animated: true)
         } else if indexPath.section == 0 && indexPath.row == 2 {
-            let myCommentViewController = MyCommentViewController()
+            let myCommentViewController = MyCommentViewController(viewModel: viewModel)
             myCommentViewController.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(myCommentViewController, animated: true)
         }

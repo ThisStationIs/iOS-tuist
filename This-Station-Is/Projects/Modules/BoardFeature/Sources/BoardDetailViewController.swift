@@ -32,6 +32,7 @@ class BoardDetailViewController: UIViewController {
         $0.tintColor = .textSub
         $0.textColor = .textMain
         $0.layer.cornerRadius = 18
+        $0.padding = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
     }
     
     private lazy var sendButton = UIButton().then {

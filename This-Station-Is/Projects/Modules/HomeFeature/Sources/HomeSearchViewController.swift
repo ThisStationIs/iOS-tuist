@@ -21,10 +21,11 @@ public class HomeSearchViewController: UIViewController {
     }
     private let searchHistoryTableView = UITableView().then {
         $0.register(HomeSearchTableViewCell.self, forCellReuseIdentifier: "HomeSearchTableViewCell")
+        $0.backgroundColor = .white
     }
     private let searchTableView = UITableView().then {
         $0.isHidden = true
-        
+        $0.backgroundColor = .white
         $0.register(HomeBoardTableViewCell.self, forCellReuseIdentifier: "HomeBoardTableViewCell")
         
         $0.isScrollEnabled = false

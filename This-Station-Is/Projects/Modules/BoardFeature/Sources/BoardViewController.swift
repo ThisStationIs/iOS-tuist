@@ -22,7 +22,10 @@ public class BoardViewController: UIViewController {
         $0.separatorStyle = .none
     }
     
-    private let categoryView = CateogryView()
+    private lazy var categoryView = CateogryView().then {
+        $0.categoryTapGesture = categoryTapGesture
+    }
+    
     private lazy var tableHeaderView = BoardTableHeaderView(viewModel: viewModel).then {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(selectTableHeaderView))
         $0.addGestureRecognizer(gesture)
@@ -38,6 +41,8 @@ public class BoardViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        // TODO: 스크롤 올리면 내려오지 않음 문제 해결 필요
+//        self.navigationController?.hidesBarsOnSwipe = true
         self.changeStatusBarBgColor(bgColor: .white)
         
         viewModel.getBoardData {
@@ -50,6 +55,11 @@ public class BoardViewController: UIViewController {
         
         // 호선 업데이트
         tableHeaderView.setUpLineView()
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+//        self.navigationController?.hidesBarsOnSwipe = false
     }
 
     public override func viewDidLoad() {
@@ -75,16 +85,26 @@ public class BoardViewController: UIViewController {
 //        bottomSheetView.show()
     }
     
+    private func categoryTapGesture(badgeView: FilterBadge) {
+        badgeView.isSelect.toggle()
+        
+        badgeView.isSelect ? viewModel.addSelectCategory(category: categoryView.cateogryArray[badgeView.tag], tag: badgeView.tag) : viewModel.removeSelectCategory(category: categoryView.cateogryArray[badgeView.tag], tag: badgeView.tag)
+        
+        // 태그가 첫번째 태그를 선택한게 아니면 첫번째 태그 삭제
+        if badgeView.tag == 0 {
+            categoryView.categoryBadgeArray.forEach { $0.isSelect = false }
+            categoryView.categoryBadgeArray[0].isSelect = true
+        } else {
+            categoryView.categoryBadgeArray[0].isSelect = false
+        }
+    }
+    
     private func setUI() {
         self.view.backgroundColor = .white
         self.navigationItem.titleView = searchBar
         
         let filterButton = UIBarButtonItem(image: UIImage(named: "filter")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectFilterButton))
 //        self.navigationItem.rightBarButtonItem = filterButton
-        
-        // TODO: 스크롤 올리면 내려오지 않음 문제 해결 필요
-        self.navigationController?.hidesBarsOnSwipe = true
-        
         self.view.addSubview(mainBoardTableView)
     }
     
@@ -132,7 +152,7 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         } else {
             let post = viewModel.boardArray[indexPath.row - 1]
-            let identifier = "LIST_\(indexPath.row)_\(post.postId)"
+            let identifier = "LIST_\(indexPath.row)_\(post.postId)_\(post.commentCount)"
             
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell

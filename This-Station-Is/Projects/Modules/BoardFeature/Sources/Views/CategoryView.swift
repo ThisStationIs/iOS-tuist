@@ -15,11 +15,13 @@ public class CateogryView: UIView {
         $0.showsHorizontalScrollIndicator = false
     }
     
-    private let cateogryArray: [String] = ["전체", "연착정보", "분실물", "사건사고", "알쓸신잡"]
-    private var categoryBadgeArray: [FilterBadge] = []
+    public let cateogryArray: [String] = ["전체", "연착정보", "분실물", "사건사고", "알쓸신잡"]
+    public var categoryBadgeArray: [FilterBadge] = []
+    public var categoryTapGesture: ((_ badgeView: FilterBadge) -> ())!
     
-    @objc func selectGesuture() {
-        
+    @objc func selectGesuture(_ sender: UIGestureRecognizer) {
+        guard let badgeView = sender.view as? FilterBadge else { return }
+        categoryTapGesture(badgeView)
     }
     
     public init() {
@@ -41,6 +43,11 @@ public class CateogryView: UIView {
             badge.title = cateogryArray[i]
             badge.setType(.outline)
             badge.tag = i
+            
+            if i == 0 {
+                badge.isSelect = true
+            }
+            
             let gesture = UITapGestureRecognizer(target: self, action: #selector(selectGesuture))
             badge.addGestureRecognizer(gesture)
             

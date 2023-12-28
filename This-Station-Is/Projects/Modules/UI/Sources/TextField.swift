@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 
 public class TextField: UITextField {
-    let padding = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8)
+    public var padding = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8)
     
     public lazy var underLineView: UIView = {
         let lineView = UIView()

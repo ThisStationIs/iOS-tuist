@@ -37,6 +37,7 @@ public class BoardViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.changeStatusBarBgColor(bgColor: .white)
         self.mainBoardTableView.reloadData()
     }
     
@@ -65,20 +66,14 @@ public class BoardViewController: UIViewController {
 //        let bottomSheetView = BottomSheetView(defaultHeight: 270, title: "게시판 정렬")
 //        bottomSheetView.addContentView(BoardFilterView())
 //        bottomSheetView.show()
-        
-        // TODO: 테스트
-        let boardUploadViewController = BoardUploadViewController(viewModel: viewModel)
-        boardUploadViewController.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(boardUploadViewController, animated: true)
     }
     
     private func setUI() {
         self.view.backgroundColor = .white
         self.navigationItem.titleView = searchBar
-        self.changeStatusBarBgColor(bgColor: UIColor.white)
         
         let filterButton = UIBarButtonItem(image: UIImage(named: "filter")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectFilterButton))
-        self.navigationItem.rightBarButtonItem = filterButton
+//        self.navigationItem.rightBarButtonItem = filterButton
         
         // TODO: 스크롤 올리면 내려오지 않음 문제 해결 필요
         self.navigationController?.hidesBarsOnSwipe = true
@@ -97,20 +92,6 @@ public class BoardViewController: UIViewController {
     private func setTableHeaderView() {
         
     }
-    
-    func changeStatusBarBgColor(bgColor: UIColor?) {
-         if #available(iOS 13.0, *) {
-             let window = UIApplication.shared.windows.first
-             let statusBarManager = window?.windowScene?.statusBarManager
-             
-             let statusBarView = UIView(frame: statusBarManager?.statusBarFrame ?? .zero)
-             statusBarView.backgroundColor = bgColor
-             window?.addSubview(statusBarView)
-         } else {
-             let statusBarView = UIApplication.shared.value(forKey: "statusBar") as? UIView
-             statusBarView?.backgroundColor = bgColor
-         }
-     }
 }
 
 extension BoardViewController: UITableViewDelegate, UITableViewDataSource {

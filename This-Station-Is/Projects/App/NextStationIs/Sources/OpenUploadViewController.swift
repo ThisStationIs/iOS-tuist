@@ -18,7 +18,9 @@ class OpenUploadViewController: UITabBarController {
         
         let uploadViewController = UINavigationController(rootViewController: BoardUploadViewController(viewModel: boardViewModel))
         uploadViewController.modalPresentationStyle = .fullScreen
-        self.present(uploadViewController, animated: true)
+        self.present(uploadViewController, animated: true) {
+            self.tabBarController?.selectedIndex = 1
+        }
     }
     
     override func viewDidLoad() {

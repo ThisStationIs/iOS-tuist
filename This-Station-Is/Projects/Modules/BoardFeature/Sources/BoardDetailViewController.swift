@@ -52,6 +52,18 @@ class BoardDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let leftBarButton = UIBarButtonItem(image: UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(selectLeftBarButton))
+        leftBarButton.tintColor = .black
+        self.navigationItem.leftBarButtonItem = leftBarButton
+    
+        let moreButton = UIBarButtonItem(image: UIImage(named: "more")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectMoreButton))
+
+        self.navigationItem.rightBarButtonItem = moreButton
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.getDetailBoardData(id: id) { [self] in
@@ -85,6 +97,10 @@ class BoardDetailViewController: UIViewController {
         let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let editAction = UIAlertAction(title: "수정하기", style: .default)
         let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
+        alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
+            action in
+                 // Called when user taps outside
+        }))
         alertView.addAction(editAction)
         alertView.addAction(deleteAction)
         
@@ -95,14 +111,6 @@ class BoardDetailViewController: UIViewController {
         self.navigationItem.title = ""
         self.view.backgroundColor = .white
         self.navigationController?.hidesBarsOnSwipe = false
-        
-        let leftBarButton = UIBarButtonItem(image: UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(selectLeftBarButton))
-        leftBarButton.tintColor = .black
-        self.navigationItem.leftBarButtonItem = leftBarButton
-    
-        let moreButton = UIBarButtonItem(image: UIImage(named: "more")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectMoreButton))
-
-        self.navigationItem.rightBarButtonItem = moreButton
         
         self.view.addSubview(detilaTableView)
         self.view.addSubview(bottomView)

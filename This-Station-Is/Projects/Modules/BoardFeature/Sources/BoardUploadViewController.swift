@@ -43,6 +43,7 @@ public class BoardUploadViewController: UIViewController {
     
     @objc func selectLeftBarButton() {
         self.navigationController?.popViewController(animated: true)
+        self.dismiss(animated: true)
     }
     
     @objc func selectUploadPost() {
@@ -71,6 +72,7 @@ public class BoardUploadViewController: UIViewController {
         self.viewModel.postBoardData(uploadData: uploadBoardData) {
             //
             self.navigationController?.popViewController(animated: true)
+            self.dismiss(animated: true)
         }
         
     }

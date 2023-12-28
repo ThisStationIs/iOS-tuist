@@ -20,6 +20,7 @@ public class MyPageViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.changeStatusBarBgColor(bgColor: .primaryNormal)
         setupNavi()
     }
 
@@ -75,7 +76,6 @@ extension MyPageViewController {
         navigationItem.rightBarButtonItem = rightBarItemForSetting
     }
     
-    
 }
 
 extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
@@ -121,6 +121,18 @@ extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = indexPath.row
         return row == 0 ? 45 : 40
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 && indexPath.row == 1 {
+            let myUploadBoardViewController = MyUploadBoardViewController()
+            myUploadBoardViewController.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(myUploadBoardViewController, animated: true)
+        } else if indexPath.section == 0 && indexPath.row == 2 {
+            let myCommentViewController = MyCommentViewController()
+            myCommentViewController.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(myCommentViewController, animated: true)
+        }
     }
     
 }

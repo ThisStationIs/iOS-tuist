@@ -21,7 +21,7 @@ public class BoardViewModel: NSObject {
     var selectedCategoryArray: [String] = []
     var canSelect: Bool = false
     
-    let ACCESS_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDE6NTU6MTciLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI4IDAxOjU1OjE3In0.oSfKvYL1kzqcl4MToHCuVa7n0PcTBtCCTowowa6QFwPjYuLMrt_sv6z6OHBcBq61QizCl8Fp4bgMuuK2UeRGhg"
+    let ACCESS_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDI6MzY6MDQiLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI5IDAyOjM2OjA0In0.emd0bOvM077ExVd4XdqrfkPhhlcKCSoupzAYSdwEbPqPOJOavYBFTc1I6dqGcdMo5UQTah-NFjhcZ241pXvX8g"
     
     // 선택한 호선 저장
     public func addSelectLine(lineInfo: Lines, tag: Int) {

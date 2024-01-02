@@ -11,6 +11,7 @@ import Then
 import SnapKit
 
 import UI
+import Network
 
 public class LoginViewController: UIViewController {
     private let headerImage = UIImageView().then {
@@ -45,10 +46,13 @@ public class LoginViewController: UIViewController {
         $0.titleLabel?.font = .systemFont(ofSize: 14)
     }
     
+    private let viewModel = LoginViewModel()
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         setView()
         setLayout()
+        setBinding()
     }
 }
 
@@ -119,5 +123,39 @@ extension LoginViewController {
         findPwButton.snp.makeConstraints {
             $0.width.equalTo(100)
         }
+    }
+    
+    private func setBinding() {
+        loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func loginButtonTapped() {
+        guard let email = idInputBox.textField.text,
+              let pw = pwInputBox.textField.text else {
+            print("### email or pw or both is empty")
+            return
+        }
+        
+        let endPoint = viewModel.postLogin(email: email, password: pw)
+        let tesEndPoint = viewModel.postLogin(email: "casey.kim403@gmail.com", password: "Newlink!234")
+        APIServiceManager().request(with: tesEndPoint) { result in
+            switch result {
+            case .success(let success):
+                self.setUserData(success.data.nickName, success.data.accessToken, success.data.refreshToken)
+            case .failure(let failure):
+                print("### postLogin is failed: \(failure)")
+            }
+        }
+    }
+    
+    private func setUserData(
+        _ nickName: String,
+        _ at: String,
+        _ rt: String
+    ) {
+        UserDefaults.standard.setValue(nickName, forKey: "nickName")
+        UserDefaults.standard.setValue(at, forKey: "accessToken")
+        UserDefaults.standard.setValue(rt, forKey: "refreshToken")
     }
 }

@@ -57,36 +57,6 @@ public class BottomSheetView: UIView {
         self.removeFromSuperview()
     }
     
-    public func addContentView(_ contentView: UIView) {
-        containerView.addSubview(contentView)
-        contentView.snp.makeConstraints {
-            $0.top.equalTo(separatorView.snp.bottom).offset(24)
-            $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview()
-        }
-    }
-    
-    public func show() {
-        guard let rootViewController = UIApplication.topViewController() else { return }
-        rootViewController.view.addSubview(self)
-        
-        let safeAreaHeight: CGFloat = self.safeAreaLayoutGuide.layoutFrame.height
-         let bottomPadding: CGFloat = self.safeAreaInsets.bottom
-        
-        self.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        self.containerView.snp.updateConstraints {
-            $0.top.equalTo(self.safeAreaLayoutGuide).inset((safeAreaHeight + bottomPadding) - defaultHeight)
-        }
-        
-        // TODO: 애니메이션 추가
-//        UIView.animate(withDuration: 0.25, delay: 1, options: .curveEaseIn) {
-//            self.layoutIfNeeded()
-//        }
-    }
-    
     private func setUI() {
         self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds
             .width, height: UIScreen.main.bounds.height)
@@ -136,6 +106,53 @@ public class BottomSheetView: UIView {
             $0.height.equalTo(1)
             $0.top.equalTo(titleLabel.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview().inset(24)
+        }
+    }
+}
+
+public extension BottomSheetView {
+    func show() {
+        guard let rootViewController = UIApplication.topViewController() else { return }
+        rootViewController.view.addSubview(self)
+        
+        let safeAreaHeight: CGFloat = self.safeAreaLayoutGuide.layoutFrame.height
+         let bottomPadding: CGFloat = self.safeAreaInsets.bottom
+        
+        self.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        self.containerView.snp.updateConstraints {
+            $0.top.equalTo(self.safeAreaLayoutGuide).inset((safeAreaHeight + bottomPadding) - defaultHeight)
+        }
+        
+        // TODO: 애니메이션 추가
+//        UIView.animate(withDuration: 0.25, delay: 1, options: .curveEaseIn) {
+//            self.layoutIfNeeded()
+//        }
+    }
+    
+    func addContentView(_ contentView: UIView) {
+        containerView.addSubview(contentView)
+        contentView.snp.makeConstraints {
+            $0.top.equalTo(separatorView.snp.bottom).offset(24)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
+    }
+    
+    func updateTitleSetting(
+        font: UIFont,
+        textAlignment: NSTextAlignment
+    ) {
+        titleLabel.font = font
+        titleLabel.textAlignment = textAlignment
+        
+        if textAlignment == .left {
+            titleLabel.snp.remakeConstraints {
+                $0.leading.equalToSuperview()
+                    .offset(24)
+            }
         }
     }
 }

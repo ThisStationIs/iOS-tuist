@@ -10,9 +10,14 @@ import Foundation
 
 public struct SignUpModel {
     let email: String
-    let certDivisionCode: String = "SIGN_UP"
-    
-    public init(email: String) {
-        self.email = email
-    }
+    let authCode: String = "SIGN_UP"
+    let checkEmailEncrypt: String
+    let password: String
+    let passwordConfirm: String
+    let termsAgreementRequestList: [TermsAgreementRequest]
+}
+
+public struct TermsAgreementRequest {
+    let terms: String
+    let agreed: Bool
 }

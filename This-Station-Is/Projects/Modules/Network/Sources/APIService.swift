@@ -33,7 +33,7 @@ public class APIServiceManager: APIService {
                 })
             }.resume()
         } catch {
-            completion(.failure(NetworkError.common))
+            completion(.failure(NetworkError.requestError))
         }
     }
     
@@ -47,18 +47,18 @@ public class APIServiceManager: APIService {
         // TODO: 에러 조건 추가
         guard let response = response as? HTTPURLResponse else {
             print("😈 response : \(response?.description)")
-            completion(.failure(NetworkError.common))
+            completion(.failure(NetworkError.noResponse))
             return
         }
 
         guard (200...299).contains(response.statusCode) else {
             print("😈 statusCode : \(response.statusCode)")
-            completion(.failure(NetworkError.common))
+            completion(.failure(NetworkError.statusCodeError))
             return
         }
 
         guard let data = data else {
-            completion(.failure(NetworkError.common))
+            completion(.failure(NetworkError.noData))
             return
         }
         
@@ -71,7 +71,7 @@ public class APIServiceManager: APIService {
             print("### decodedData is \(decodedData)")
             return .success(decodedData)
         } catch {
-            return .failure(NetworkError.common)
+            return .failure(NetworkError.decodeError)
 //        TODO: hmm...
         }
     }

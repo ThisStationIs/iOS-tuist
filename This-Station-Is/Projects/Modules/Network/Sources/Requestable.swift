@@ -46,7 +46,7 @@ extension Requestable {
     
     private func getUrl() throws -> URL {
         let fullPath = "\(baseURL)/\(path)"
-        guard var urlComponents = URLComponents(string: fullPath) else { throw NetworkError.common }
+        guard var urlComponents = URLComponents(string: fullPath) else { throw NetworkError.urlError }
         
         var urlQueryItems = [URLQueryItem]()
         if let queryPrameters = try queryPrameters?.toDictionary() {
@@ -56,7 +56,7 @@ extension Requestable {
         }
         
         urlComponents.queryItems = urlQueryItems.isEmpty ? nil : urlQueryItems
-        guard let url = urlComponents.url else { throw NetworkError.common }
+        guard let url = urlComponents.url else { throw NetworkError.urlError }
         return url
     }
 }

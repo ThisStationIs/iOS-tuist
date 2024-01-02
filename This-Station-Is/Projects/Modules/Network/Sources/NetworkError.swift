@@ -10,4 +10,12 @@ import Foundation
 
 enum NetworkError: Error {
     case common
+    
+    case noResponse
+    case noData
+    
+    case statusCodeError
+    case decodeError
+    case requestError
+    case urlError
 }

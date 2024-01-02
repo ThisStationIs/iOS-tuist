@@ -29,7 +29,7 @@ public class Endpoint<R>: RequestResponsable {
         method: HttpMethod = .get,
         queryPrameters: Encodable? = nil,
         bodyParameters: Encodable? = nil,
-        headers: [String: String]? = [:],
+        headers: [String: String]? = ["Content-Type": "application/json"],
         sampleData: Data? = nil
     ) {
         self.baseURL = baseURL

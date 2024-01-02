@@ -77,7 +77,7 @@ extension LoginViewController {
     
     private func setLayout() {
         headerImage.snp.makeConstraints {
-            $0.top.equalToSuperview()
+            $0.top.equalTo(view.safeAreaLayoutGuide)
                 .offset(56)
             $0.leading.trailing.equalToSuperview()
         }

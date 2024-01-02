@@ -85,7 +85,7 @@ extension InputFindEmailViewController {
 
 extension InputFindEmailViewController: UITextFieldDelegate {
     public func textFieldDidEndEditing(_ textField: UITextField) {
-        let viewModel = InputEmailViewModel()
+        let viewModel = SignUpViewModel()
         guard let text = textField.text else { return }
     
         switch viewModel.isValidEmail(input: text) {

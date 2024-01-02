@@ -15,7 +15,9 @@ enum IsValidEmail {
     case isUsed
 }
 
-class InputEmailViewModel {
+class SignUpViewModel {
+//    var model: SignUpModel()
+    
     init() {}
     
     func isValidEmail(input: String) -> IsValidEmail {
@@ -36,6 +38,6 @@ class InputEmailViewModel {
     }
 }
 
-extension InputEmailViewModel {
+extension SignUpViewModel {
     
 }

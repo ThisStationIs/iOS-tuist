@@ -27,7 +27,7 @@ public class InputEmailViewController: UIViewController {
         $0.isEnabled = false
     }
     
-    let viewModel = InputEmailViewModel()
+    let viewModel = SignUpViewModel()
     
     weak var delegate: InputEmailDelegate?
     
@@ -90,8 +90,8 @@ extension InputEmailViewController {
     @objc
     private func bottomButtonTapped() {
         guard let email = emailInputBox.textField.text else { return }
-        let signUpModel = SignUpModel(email: email)
-        delegate?.moveToNextWithEmail(model: signUpModel)
+        // TODO: change to coordinator
+        //        delegate?.moveToNextWithEmail(model: signUpModel)
     }
 }
 

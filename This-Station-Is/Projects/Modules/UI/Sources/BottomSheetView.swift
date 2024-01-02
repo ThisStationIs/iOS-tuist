@@ -28,6 +28,7 @@ public class BottomSheetView: UIView {
         $0.text = ""
         $0.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         $0.textColor = .textMain
+        $0.numberOfLines = 0
     }
     
     let separatorView = UIView().then {

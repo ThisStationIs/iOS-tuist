@@ -127,6 +127,7 @@ extension LoginViewController {
     
     private func setBinding() {
         loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        joinButton.addTarget(self, action: #selector(joinButtonTapped), for: .touchUpInside)
     }
     
     @objc
@@ -157,5 +158,11 @@ extension LoginViewController {
         UserDefaults.standard.setValue(nickName, forKey: "nickName")
         UserDefaults.standard.setValue(at, forKey: "accessToken")
         UserDefaults.standard.setValue(rt, forKey: "refreshToken")
+    }
+    
+    @objc
+    private func joinButtonTapped() {
+        let nextVC = InputEmailViewController()
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
 }

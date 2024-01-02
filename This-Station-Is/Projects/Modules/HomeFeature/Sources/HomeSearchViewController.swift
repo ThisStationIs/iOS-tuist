@@ -47,7 +47,7 @@ public class HomeSearchViewController: UIViewController {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
 
-        setNavigation()
+        setNavigation(tintColor: .textMain)
         loadSearchHistory()
         
         APIServiceManager().request(with: viewModel.getPosts()) { result in
@@ -75,18 +75,18 @@ public class HomeSearchViewController: UIViewController {
         self.tabBarController?.tabBar.isHidden = false
     }
     
-    private func setNavigation() {
-        navigationItem.titleView = searchBar
-        setLeftBarButton()
-    }
+//    private func setNavigation() {
+//        navigationItem.titleView = searchBar
+//        setLeftBarButton()
+//    }
     
-    private func setLeftBarButton() {
-        let customBackImage = UIImage(named: "arrow-up")?.withRenderingMode(.alwaysTemplate)
-        
-        let backButton = UIBarButtonItem(image: customBackImage, style: .plain, target: self, action: #selector(backButtonTapped))
-        backButton.tintColor = .textMain
-        navigationItem.leftBarButtonItem = backButton
-    }
+//    private func setLeftBarButton() {
+//        let customBackImage = UIImage(named: "arrow-up")?.withRenderingMode(.alwaysTemplate)
+//
+//        let backButton = UIBarButtonItem(image: customBackImage, style: .plain, target: self, action: #selector(backButtonTapped))
+//        backButton.tintColor = .textMain
+//        navigationItem.leftBarButtonItem = backButton
+//    }
     
     func saveSearchHistory() {
         let defaults = UserDefaults.standard
@@ -142,11 +142,11 @@ extension HomeSearchViewController {
     }
     
     // 왼쪽 버튼 탭 동작
-    @objc
-    private func backButtonTapped() {
-        // 여기에 백 버튼을 탭했을 때의 동작을 작성하세요.
-        navigationController?.popViewController(animated: true)
-    }
+//    @objc
+//    private func backButtonTapped() {
+//        // 여기에 백 버튼을 탭했을 때의 동작을 작성하세요.
+//        navigationController?.popViewController(animated: true)
+//    }
 }
 
 extension HomeSearchViewController: UITableViewDelegate, UITableViewDataSource {

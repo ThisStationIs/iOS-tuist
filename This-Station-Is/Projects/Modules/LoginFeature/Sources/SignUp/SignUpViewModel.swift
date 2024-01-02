@@ -16,7 +16,8 @@ enum IsValidEmail {
 }
 
 class SignUpViewModel {
-//    var model: SignUpModel()
+    var model: SignUpModel = SignUpModel.shared
+    static let shared = SignUpViewModel()
     
     init() {}
     
@@ -39,5 +40,7 @@ class SignUpViewModel {
 }
 
 extension SignUpViewModel {
-    
+    func getTerms() {
+        
+    }
 }

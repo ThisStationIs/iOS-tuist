@@ -9,12 +9,36 @@
 import Foundation
 
 public struct SignUpModel {
-    let email: String
-    let authCode: String = "SIGN_UP"
-    let checkEmailEncrypt: String
-    let password: String
-    let passwordConfirm: String
-    let termsAgreementRequestList: [TermsAgreementRequest]
+    static let shared = SignUpModel()
+    
+    var email: String = "" {
+        didSet {
+            print("### model is changed: \(self)")
+        }
+    }
+    var authCode: String = "SIGN_UP"
+    var checkEmailEncrypt: String = "" {
+        didSet {
+            print("### model is changed: \(self)")
+        }
+    }
+    var password: String = "" {
+        didSet {
+            print("### model is changed: \(self)")
+        }
+    }
+    var passwordConfirm: String = "" {
+        didSet {
+            print("### model is changed: \(self)")
+        }
+    }
+    var termsAgreementRequestList: [TermsAgreementRequest] = [] {
+        didSet {
+            print("### model is changed: \(self)")
+        }
+    }
+    
+    init() {}
 }
 
 public struct TermsAgreementRequest {

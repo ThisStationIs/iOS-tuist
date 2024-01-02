@@ -31,6 +31,10 @@ public class InputEmailViewController: UIViewController {
     
     weak var delegate: InputEmailDelegate?
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavigation(tintColor: .textMain)
+    }
     public override func viewDidLoad() {
         super.viewDidLoad()
         setView()

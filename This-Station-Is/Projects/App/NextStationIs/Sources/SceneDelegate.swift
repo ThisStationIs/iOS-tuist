@@ -1,4 +1,5 @@
 import UIKit
+import LoginFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -7,7 +8,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = MainTabBarController()
+        let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
+        print("### isLogin: \(isLogin)")
+        window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController())
+        
         window?.makeKeyAndVisible()
     }
 

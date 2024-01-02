@@ -27,6 +27,8 @@ public class InputEmailViewController: UIViewController {
         $0.isEnabled = false
     }
     
+    let bottomSheet = BottomSheetView(defaultHeight: 490, title: "이번 역은 서비스 약관에\n동의해주세요!")
+    
     let viewModel = SignUpViewModel()
     
     weak var delegate: InputEmailDelegate?
@@ -41,6 +43,7 @@ public class InputEmailViewController: UIViewController {
         setLayout()
         setDelegate()
         setBinding()
+        setBottomSheet()
     }
 }
 
@@ -87,9 +90,39 @@ extension InputEmailViewController {
         bottomButton.addTarget(self, action: #selector(bottomButtonTapped), for: .touchUpInside)
     }
     
+    private func setBottomSheet() {
+        let sheetBottomButton = Button().then {
+            $0.title = "확인"
+            $0.isEnabled = false
+        }
+        
+        self.bottomSheet.updateTitleSetting(
+            font: .systemFont(ofSize: 24, weight: .semibold),
+            textAlignment: .left)
+        
+        [
+            sheetBottomButton
+        ].forEach {
+            bottomSheet.addContentView($0)
+        }
+        
+        sheetBottomButton.snp.updateConstraints {
+            $0.leading.trailing.equalToSuperview()
+                .inset(24)
+            $0.bottom.equalToSuperview()
+                .inset(40)
+        }
+        
+    }
+    
     @objc
     private func bottomButtonTapped() {
         guard let email = emailInputBox.textField.text else { return }
+        viewModel.model.email = email
+        
+        
+        bottomSheet.show()
+//        self.navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
         // TODO: change to coordinator
         //        delegate?.moveToNextWithEmail(model: signUpModel)
     }

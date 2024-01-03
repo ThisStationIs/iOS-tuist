@@ -23,6 +23,11 @@ public class InputFindEmailViewController: UIViewController {
         $0.isEnabled = false
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavigation(tintColor: .textMain)
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         setView()

@@ -128,6 +128,7 @@ extension LoginViewController {
     private func setBinding() {
         loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         joinButton.addTarget(self, action: #selector(joinButtonTapped), for: .touchUpInside)
+        findPwButton.addTarget(self, action: #selector(findPwButtonTapped), for: .touchUpInside)
     }
     
     @objc
@@ -163,6 +164,12 @@ extension LoginViewController {
     @objc
     private func joinButtonTapped() {
         let nextVC = InputEmailViewController()
+        self.navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc
+    private func findPwButtonTapped() {
+        let nextVC = InputFindEmailViewController()
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
 }

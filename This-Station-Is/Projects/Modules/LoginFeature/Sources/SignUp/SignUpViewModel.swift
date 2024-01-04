@@ -41,14 +41,6 @@ class SignUpViewModel {
         return emailPred.evaluate(with: input)
     }
     
-    private func isUsedEmail(input: String) -> Bool {
-        postDuplicatedEmail(input) { result in
-            result
-        }
-        
-        return true
-    }
-    
     func isValidNumber(input: String) -> Bool {
         
         return true
@@ -81,8 +73,22 @@ extension SignUpViewModel {
         let isDuplicated: Bool
     }
     
-    func getTerms() {
-        
+    func getTerms(_ terms: String, completion: @escaping((String) -> Void)) {
+        let endpoint = Endpoint<ResponseWrapper<TermsResponse>>(
+            path: "api/v1/term/\(terms)"
+        )
+        APIServiceManager().request(with: endpoint) { result in
+            switch result {
+            case .success(let success):
+                completion(success.data.downloadableUrl)
+            case .failure(let failure):
+                completion("")
+            }
+        }
+    }
+    
+    struct TermsResponse: Decodable {
+        let downloadableUrl: String
     }
     
     func postCertNumber(

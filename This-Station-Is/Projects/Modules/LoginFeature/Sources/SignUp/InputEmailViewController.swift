@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import WebKit
+
 import UI
 import SnapKit
 import Then
@@ -27,10 +29,32 @@ public class InputEmailViewController: UIViewController {
     }
     private let bottomButton = Button().then {
         $0.title = "다음"
+//        $0.isEnabled = false
+    }
+    
+    let allAgreementButton = UIButton().then {
+        $0.setImage(UIImage(named: "uncheck"), for: .normal)
+        $0.setTitle("  전체동의", for: .normal)
+        $0.setTitleColor(UIColor.textMain, for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+    }
+    let firstTermView = TermsAgreementView().then {
+        $0.setTitle(title: "이용약관 동의")
+    }
+    let secondTermView = TermsAgreementView().then {
+        $0.setTitle(title: "개인정보 수집 및 동의")
+    }
+    let sheetBottomButton = Button().then {
+        $0.title = "확인"
         $0.isEnabled = false
     }
     
-    let bottomSheet = BottomSheetView(defaultHeight: 490, title: "이번 역은 서비스 약관에\n동의해주세요!")
+    let bottomSheet = BottomSheetView(defaultHeight: 394, title: "이번 역은 서비스 약관에\n동의해주세요!")
+    var isRequiredCount: Int = 0 {
+        didSet {
+            updateTermButtons()
+        }
+    }
     
     let viewModel = SignUpViewModel()
     
@@ -95,29 +119,60 @@ extension InputEmailViewController {
     }
     
     private func setBottomSheet() {
-        let sheetBottomButton = Button().then {
-            $0.title = "확인"
-            $0.isEnabled = false
-        }
+        
         
         self.bottomSheet.updateTitleSetting(
             font: .systemFont(ofSize: 24, weight: .semibold),
             textAlignment: .left)
         
         [
+            allAgreementButton,
+            firstTermView,
+            secondTermView,
             sheetBottomButton
         ].forEach {
-            bottomSheet.addContentView($0)
+            bottomSheet.addContentViewForSignup($0)
         }
         
-        sheetBottomButton.snp.updateConstraints {
+        allAgreementButton.snp.makeConstraints {
+            $0.top.equalTo(bottomSheet.titleLabel.snp.bottom)
+                .offset(24)
+            $0.leading.equalToSuperview()
+                .offset(24)
+            $0.height.equalTo(24)
+        }
+
+        firstTermView.snp.makeConstraints {
+            $0.top.equalTo(allAgreementButton.snp.bottom)
+                .offset(49)
+            $0.leading.trailing.equalToSuperview()
+                .inset(24)
+            $0.height.equalTo(24)
+        }
+
+        secondTermView.snp.makeConstraints {
+            $0.top.equalTo(firstTermView.snp.bottom)
+                .offset(24)
+            $0.leading.trailing.equalToSuperview()
+                .inset(24)
+            $0.height.equalTo(24)
+        }
+
+        sheetBottomButton.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
                 .inset(24)
             $0.bottom.equalToSuperview()
                 .inset(40)
+            $0.height.equalTo(48)
         }
         
+        allAgreementButton.addTarget(self, action: #selector(allAgreementButtonTapped), for: .touchUpInside)
+        firstTermView.checkButton.addTarget(self, action: #selector(checkBoxTapped), for: .touchUpInside)
+        firstTermView.arrowButton.addTarget(self, action: #selector(firstArrowButtonTapped), for: .touchUpInside)
+        secondTermView.checkButton.addTarget(self, action: #selector(checkBoxTapped), for: .touchUpInside)
+        secondTermView.arrowButton.addTarget(self, action: #selector(secondArrowButtonTapped), for: .touchUpInside)
         sheetBottomButton.addTarget(self, action: #selector(moveToNextPage), for: .touchUpInside)
+        
     }
     
     @objc
@@ -125,17 +180,74 @@ extension InputEmailViewController {
         guard let email = emailInputBox.textField.text else { return }
         viewModel.model.email = email
         
-        
         bottomSheet.show()
-//        self.navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
         // TODO: change to coordinator
         //        delegate?.moveToNextWithEmail(model: signUpModel)
+    }
+    
+    
+    @objc
+    private func allAgreementButtonTapped() {
+        allAgreementButton.isSelected.toggle()
+        isRequiredCount = allAgreementButton.isSelected ? 2 : 0
+    }
+    
+    @objc
+    private func checkBoxTapped(_ sender: CheckBox) {
+        sender.isCheck.toggle()
+        if sender.isCheck { isRequiredCount += 1 }
+        else {
+            guard isRequiredCount > 0 else { return }
+            isRequiredCount -= 1
+        }
+    }
+    
+    @objc
+    private func firstArrowButtonTapped(_ sender: UIButton) {
+        let webVC = TermWebViewController()
+        viewModel.getTerms("TERMS01") { url in
+            webVC.setWebView(url)
+        }
+        self.present(webVC, animated: true)
+    }
+    
+    @objc
+    private func secondArrowButtonTapped(_ sender: UIButton) {
+        let webVC = TermWebViewController()
+        viewModel.getTerms("TERMS02") { url in
+            webVC.setWebView(url)
+        }
+        self.present(webVC, animated: true)
     }
     
     @objc
     private func moveToNextPage() {
         let nextVC = InputCertNumberViewController()
         self.navigationController?.pushViewController(nextVC, animated: true)
+        bottomSheet.selectSelfView()
+    }
+    
+    func updateTermButtons() {
+        allAgreementButton.isSelected = isRequiredCount == 2 ? true : false
+        allAgreementButton.setImage(UIImage(named: isRequiredCount == 2 ? "check" : "uncheck"), for: .normal)
+
+        if isRequiredCount == 0 {
+            [
+                firstTermView,
+                secondTermView
+            ].forEach {
+                $0.checkButton.isCheck = false
+            }
+        } else if isRequiredCount == 2 {
+            [
+                firstTermView,
+                secondTermView
+            ].forEach {
+                $0.checkButton.isCheck = true
+            }
+        }
+        
+        sheetBottomButton.isEnabled = isRequiredCount == 2 ? true : false
     }
 }
 
@@ -175,5 +287,75 @@ extension InputEmailViewController: UITextFieldDelegate {
             self.emailInputBox.setErrorText(errorText)
         }
         
+    }
+}
+
+class TermsAgreementView: UIView {
+    let checkButton = CheckBox()
+    
+    let badge = CategoryBadge().then {
+        $0.title = "필수"
+        $0.badgeTitleLabel.textColor = .primaryNormal
+        $0.backgroundColor = .primaryNormal.withAlphaComponent(0.1)
+    }
+    
+    let title = UILabel().then {
+        $0.textColor = .textMain
+        $0.font = .systemFont(ofSize: 14)
+    }
+    
+    let arrowButton = UIButton().then {
+        $0.setImage(UIImage(named: "arrowRight"), for: .normal)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setView()
+        setLayout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setView() {
+        [
+            checkButton,
+            badge,
+            title,
+            arrowButton
+        ].forEach {
+            self.addSubview($0)
+        }
+    }
+    
+    private func setLayout() {
+        checkButton.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.width.height.equalTo(24)
+        }
+        
+        badge.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(checkButton.snp.trailing)
+                .offset(8)
+        }
+        
+        title.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(badge.snp.trailing)
+                .offset(8)
+        }
+        
+        arrowButton.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.width.equalTo(24)
+        }
+    }
+    
+    func setTitle(title: String) {
+        self.title.text = title
     }
 }

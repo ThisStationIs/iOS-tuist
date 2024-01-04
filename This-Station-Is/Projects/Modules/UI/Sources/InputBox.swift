@@ -12,7 +12,8 @@ import SnapKit
 public class InputBox: UIView {
     
     public let textField: TextField = {
-       let textField = TextField()
+        let textField = TextField()
+        textField.autocapitalizationType = .none
         return textField
     }()
     

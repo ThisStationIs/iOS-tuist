@@ -222,6 +222,11 @@ extension InputEmailViewController {
     
     @objc
     private func moveToNextPage() {
+        viewModel.model.termsAgreementRequestList = [
+            TermsAgreementRequest(terms: "TERMS01", agreed: true),
+            TermsAgreementRequest(terms: "TERMS02", agreed: true)
+        ]
+        
         let nextVC = InputCertNumberViewController()
         self.navigationController?.pushViewController(nextVC, animated: true)
         bottomSheet.selectSelfView()

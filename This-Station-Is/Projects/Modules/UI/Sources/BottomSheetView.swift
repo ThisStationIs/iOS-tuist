@@ -70,6 +70,8 @@ public class BottomSheetView: UIView {
         self.addSubview(visualEffectView)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(selectSelfView))
+        tapGesture.delegate = self
+        tapGesture.cancelsTouchesInView = false
         self.addGestureRecognizer(tapGesture)
         
         self.addSubview(containerView)
@@ -155,5 +157,14 @@ public extension BottomSheetView {
                     .offset(24)
             }
         }
+    }
+}
+
+extension BottomSheetView: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view?.isDescendant(of: self.containerView) == true {
+            return false
+        }
+        return true
     }
 }

@@ -34,12 +34,12 @@ public class InputCertNumberViewController: UIViewController {
         $0.isEnabled = false
     }
     
-    let viewModel: InputCertNumberViewModel
+    let viewModel: SignUpViewModel
     var signUpModel: SignUpModel
     
-    public init(model: SignUpModel) {
-        self.signUpModel = model
-        self.viewModel = InputCertNumberViewModel()
+    public init() {
+        self.signUpModel = SignUpModel.shared
+        self.viewModel = SignUpViewModel.shared
         super.init(nibName: nil, bundle: nil)
     }
     

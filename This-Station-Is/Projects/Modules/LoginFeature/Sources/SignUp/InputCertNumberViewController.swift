@@ -118,6 +118,7 @@ extension InputCertNumberViewController {
     
     private func setBinding() {
         sendButton.addTarget(self, action: #selector(sendButtonClicked), for: .touchUpInside)
+        bottomButton.addTarget(self, action: #selector(bottomButtonTapped), for: .touchUpInside)
     }
     
     @objc
@@ -142,6 +143,12 @@ extension InputCertNumberViewController {
             alert.addAction(title: "확인", style: .default)
             alert.present()
         }
+    }
+    
+    @objc
+    func bottomButtonTapped() {
+        let nextVC = InputPasswordViewController()
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
 }
 

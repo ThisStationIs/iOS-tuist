@@ -15,23 +15,33 @@ enum IsValidPassword {
 }
 
 class InputPasswordViewModel {
-    var isValidCount: Int = 0
+    var isValidCount: Int = 0 {
+        didSet {
+            print(self.isValidCount)
+        }
+    }
+    
+    func isValidPassword(
+        firstInput: String,
+        secondInput: String
+    ) -> Bool {
+        guard isValidEnglish(input: firstInput) else { return false }
+        guard isValidCount(input: firstInput) else { return false }
+        guard isCorrect(firstInput: firstInput, secondInput: secondInput) else { return false }
+        return true
+    }
     
     func isValidEnglish(input: String) -> Bool {
         if input.contains(where: { $0.isLowercase }) && input.contains(where: { $0.isUppercase }) {
-            isValidCount += 1
             return true
         }
-        isValidCount = 0
         return false
     }
     
     func isValidCount(input: String) -> Bool {
         if 8...16 ~= input.count ? true : false {
-            isValidCount += 1
             return true
         }
-        isValidCount = 0
         return false
     }
     
@@ -40,10 +50,8 @@ class InputPasswordViewModel {
         secondInput: String
     ) -> Bool {
         if firstInput == secondInput ? true : false {
-            isValidCount += 1
             return true
         }
-        isValidCount = 0
         return false
     }
 }

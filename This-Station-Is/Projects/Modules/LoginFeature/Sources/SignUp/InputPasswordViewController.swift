@@ -40,6 +40,12 @@ public class InputPasswordViewController: UIViewController {
     }
     
     let viewModel = InputPasswordViewModel()
+    var signUpModel: SignUpModel = SignUpModel.shared
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavigation(tintColor: .textMain)
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -133,6 +139,7 @@ extension InputPasswordViewController {
     private func setBinding() {
         passwordInputBoxHideButton.addTarget(self, action: #selector(passwordInputBoxHideButtonTapped), for: .touchUpInside)
         passwordReInputBoxHideButton.addTarget(self, action: #selector(passwordReInputBoxHideButtonTapped), for: .touchUpInside)
+        bottomButton.addTarget(self, action: #selector(bottomButtonTapped), for: .touchUpInside)
     }
     
     @objc
@@ -143,6 +150,15 @@ extension InputPasswordViewController {
     @objc
     private func passwordReInputBoxHideButtonTapped() {
         passwordReInputBoxHideButton.updateIsSecureTextEntry(textField: passwordReInputBox.textField)
+    }
+    
+    @objc
+    private func bottomButtonTapped() {
+        signUpModel.password = passwordInputBox.textField.text ?? ""
+        signUpModel.passwordConfirm = passwordReInputBox.textField.text ?? ""
+
+        let nextVC = SelectLineViewController()
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
 }
 
@@ -156,7 +172,8 @@ extension InputPasswordViewController: UITextFieldDelegate {
         
         correctLabelWithLeftImage.updateState(isEnable: viewModel.isCorrect(
             firstInput: passwordInputBox.textField.text ?? "", secondInput: passwordReInputBox.textField.text ?? "") ? true : false)
-        bottomButton.isEnabled = viewModel.isValidCount == 3 ? true : false
+        bottomButton.isEnabled = viewModel.isValidPassword(
+            firstInput: passwordInputBox.textField.text ?? "", secondInput: passwordReInputBox.textField.text ?? "") ? true : false
     }
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {

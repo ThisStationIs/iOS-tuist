@@ -11,6 +11,8 @@ import UI
 import SnapKit
 import Then
 
+import Network
+
 public class InputFindEmailViewController: UIViewController {
     private let descriptionLabel = BigDescriptionLabel().then {
         $0.text = "회원님이 사용하시는\n아이디를 입력해주세요."
@@ -22,6 +24,8 @@ public class InputFindEmailViewController: UIViewController {
         $0.title = "인증메일 발송"
         $0.isEnabled = false
     }
+    
+    private let viewModel = SignUpViewModel()
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -82,6 +86,20 @@ extension InputFindEmailViewController {
     
     @objc
     private func bottomButtonTapped() {
+        guard let email = emailInputBox.textField.text else { return }
+        let endpoint = viewModel.postFindPassword(email: email)
+        APIServiceManager().request(with: endpoint) { result in
+            switch result {
+            case .success(let success):
+                print("### postFindPassword is successed: \(success)")
+                self.showToast()
+            case .failure(let failure):
+                print("### postFindPassword is failed: \(failure)")
+            }
+        }
+    }
+    
+    private func showToast() {
         let toast = Toast(type: .success)
         toast.toastText.text = "메일이 발송되었습니다."
         toast.show()
@@ -90,14 +108,17 @@ extension InputFindEmailViewController {
 
 extension InputFindEmailViewController: UITextFieldDelegate {
     public func textFieldDidEndEditing(_ textField: UITextField) {
-        let viewModel = SignUpViewModel()
         guard let text = textField.text else { return }
     
-        switch viewModel.isValidEmail(input: text) {
-        case .isValid, .isUsed:
-            updateInputBoxState(isEnabled: true, errorText: nil)
-        case .isNotValid:
-            updateInputBoxState(isEnabled: false, errorText: "이메일 형식이 아니에요.")
+        viewModel.isValidEmail(input: text) { isValid in
+            switch isValid {
+            case .isValid:
+                self.updateInputBoxState(isEnabled: true, errorText: nil)
+            case .isNotValid:
+                self.updateInputBoxState(isEnabled: false, errorText: "이메일 형식이 아니에요.")
+            case .isUsed:
+                self.updateInputBoxState(isEnabled: false, errorText: "이미 존재하는 아이디에요.")
+            }
         }
     }
     

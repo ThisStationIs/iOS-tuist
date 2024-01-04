@@ -11,6 +11,8 @@ import UI
 import SnapKit
 import Then
 
+import Network
+
 protocol InputEmailDelegate: AnyObject {
     func moveToNextWithEmail(model: SignUpModel)
 }
@@ -21,6 +23,7 @@ public class InputEmailViewController: UIViewController {
     }
     private let emailInputBox = InputBox(title: "이메일").then {
         $0.setTextFieldPlaceholder(placeholder: "이메일 형식으로 입력해주세요.")
+    
     }
     private let bottomButton = Button().then {
         $0.title = "다음"
@@ -37,6 +40,7 @@ public class InputEmailViewController: UIViewController {
         super.viewWillAppear(animated)
         setNavigation(tintColor: .textMain)
     }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         setView()
@@ -113,6 +117,7 @@ extension InputEmailViewController {
                 .inset(40)
         }
         
+        sheetBottomButton.addTarget(self, action: #selector(moveToNextPage), for: .touchUpInside)
     }
     
     @objc
@@ -126,6 +131,12 @@ extension InputEmailViewController {
         // TODO: change to coordinator
         //        delegate?.moveToNextWithEmail(model: signUpModel)
     }
+    
+    @objc
+    private func moveToNextPage() {
+        let nextVC = InputCertNumberViewController()
+        self.navigationController?.pushViewController(nextVC, animated: true)
+    }
 }
 
 extension InputEmailViewController: UITextFieldDelegate {
@@ -135,14 +146,16 @@ extension InputEmailViewController: UITextFieldDelegate {
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
         guard let text = textField.text else { return }
-    
-        switch viewModel.isValidEmail(input: text) {
-        case .isValid:
-            updateInputBoxState(isEnabled: true, errorText: nil)
-        case .isNotValid:
-            updateInputBoxState(isEnabled: false, errorText: "이메일 형식이 아니에요.")
-        case .isUsed:
-            updateInputBoxState(isEnabled: false, errorText: "이미 존재하는 아이디에요.")
+        
+        viewModel.isValidEmail(input: text) { isValid in
+            switch isValid {
+            case .isValid:
+                self.updateInputBoxState(isEnabled: true, errorText: nil)
+            case .isNotValid:
+                self.updateInputBoxState(isEnabled: false, errorText: "이메일 형식이 아니에요.")
+            case .isUsed:
+                self.updateInputBoxState(isEnabled: false, errorText: "이미 존재하는 아이디에요.")
+            }
         }
     }
     
@@ -155,9 +168,12 @@ extension InputEmailViewController: UITextFieldDelegate {
         isEnabled: Bool,
         errorText: String?
     ) {
-        bottomButton.isEnabled = isEnabled
-        emailInputBox.isError = !isEnabled
-        guard let errorText = errorText else { return }
-        emailInputBox.setErrorText(errorText)
+        DispatchQueue.main.async {
+            self.bottomButton.isEnabled = isEnabled
+            self.emailInputBox.isError = !isEnabled
+            guard let errorText = errorText else { return }
+            self.emailInputBox.setErrorText(errorText)
+        }
+        
     }
 }

@@ -40,11 +40,6 @@ class SignUpViewModel {
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: input)
     }
-    
-    func isValidNumber(input: String) -> Bool {
-        
-        return true
-    }
 }
 
 extension SignUpViewModel {
@@ -91,15 +86,60 @@ extension SignUpViewModel {
         let downloadableUrl: String
     }
     
-    func postCertNumber(
-        email: String,
-        certDivisionCode: String = "SIGN_UP"
-    ) {
+    func postCertNumber(input: String, completion: @escaping((CertNumberResponse) -> Void)) {
+        let endpoint = Endpoint<ResponseWrapper<CertNumberResponse>> (
+            path: "api/v1/user/send/email/cert/number",
+            method: .post,
+            bodyParameters: CertNumberRequest(email: input)
+        )
         
+        APIServiceManager().request(with: endpoint) { result in
+            switch result {
+            case .success(let success):
+                completion(success.data)
+            case .failure(let failure):
+                print("### postCertNumber is failed :\(failure)")
+            }
+        }
     }
     
-    struct CertNumberResponse {
+    struct CertNumberRequest: Encodable {
+        let email: String
+        let certDivisionCode: String = "SIGN_UP"
+    }
+    
+    struct CertNumberResponse: Decodable {
         let sendEmailEncrypt: String
+        let sendCount: Int
+    }
+    
+    func postCheckCertNumber(_ request: CheckCertNumberRequest, completion: @escaping ((String) -> Void)) {
+        let endpoint = Endpoint<ResponseWrapper<CheckCertNumberResponse>> (
+            path: "api/v1/user/check/email/cert/number",
+            method: .post,
+            bodyParameters: request
+        )
+        
+        APIServiceManager().request(with: endpoint) { result in
+            switch result {
+            case .success(let success):
+                completion(success.data.checkEmailEncrypt)
+            case .failure(let failure):
+                completion("failed")
+                print("### postCheckCertNumber is failed :\(failure)")
+            }
+        }
+    }
+    
+    struct CheckCertNumberRequest: Encodable {
+        let email: String
+        let authCode: String
+        let sendEmailEncrypt: String
+        let certDivisionCode: String = "SIGN_UP"
+    }
+    
+    struct CheckCertNumberResponse: Decodable {
+        let checkEmailEncrypt: String
     }
 }
 

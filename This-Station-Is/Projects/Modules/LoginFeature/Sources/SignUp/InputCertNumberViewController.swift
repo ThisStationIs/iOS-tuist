@@ -37,6 +37,8 @@ public class InputCertNumberViewController: UIViewController {
     let viewModel: SignUpViewModel
     var signUpModel: SignUpModel
     
+    var sendEmailEncrypt: String = ""
+    
     public init() {
         self.signUpModel = SignUpModel.shared
         self.viewModel = SignUpViewModel.shared
@@ -45,6 +47,11 @@ public class InputCertNumberViewController: UIViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavigation(tintColor: .textMain)
     }
     
     public override func viewDidLoad() {
@@ -115,9 +122,26 @@ extension InputCertNumberViewController {
     
     @objc
     private func sendButtonClicked() {
-        let alert = AlertView(title: "인증메일 발송", message: "인증메일이 발송되었습니다.")
-        alert.addAction(title: "확인", style: .default)
-        alert.present()
+        viewModel.postCertNumber(input: signUpModel.email) { response in
+            guard response.sendCount < 10 else {
+                self.showAlertView(title: "인증번호 발송 횟수 초과", message: "10분 뒤 재시도해주세요.")
+                return
+            }
+            
+            self.showAlertView(title: "인증메일 발송", message: "인증메일이 발송되었습니다.")
+            self.sendEmailEncrypt = response.sendEmailEncrypt
+        }
+    }
+    
+    private func showAlertView(
+        title: String,
+        message: String
+    ) {
+        DispatchQueue.main.async {
+            let alert = AlertView(title: title, message: message)
+            alert.addAction(title: "확인", style: .default)
+            alert.present()
+        }
     }
 }
 
@@ -128,13 +152,26 @@ extension InputCertNumberViewController: UITextFieldDelegate {
     public func textFieldDidEndEditing(_ textField: UITextField) {
         guard let text = textField.text else { return }
         guard text.count == 6 else { return }
-        guard !viewModel.isValidNumber(input: text) else {
-            bottomButton.isEnabled = false
-            certNumberInputBox.isError = true
-            certNumberInputBox.setErrorText("인증번호가 일치하지 않아요.")
-            return
-        }
-        bottomButton.isEnabled = true
+        
+        viewModel.postCheckCertNumber(SignUpViewModel.CheckCertNumberRequest(
+            email: signUpModel.email,
+            authCode: text,
+            sendEmailEncrypt: self.sendEmailEncrypt)) { res in
+                guard res != "failed" else {
+                    DispatchQueue.main.async {
+                        self.bottomButton.isEnabled = false
+                        self.certNumberInputBox.isError = true
+                        self.certNumberInputBox.setErrorText("인증번호가 일치하지 않아요.")
+                    }
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.bottomButton.isEnabled = true
+                    self.certNumberInputBox.isError = false
+                }
+                self.signUpModel.checkEmailEncrypt = res
+            }
     }
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {

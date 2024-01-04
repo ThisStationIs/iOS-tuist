@@ -24,7 +24,7 @@ public class Endpoint<R>: RequestResponsable {
     
     public init(
         baseURL: String =
-        "http://ec2-54-180-121-196.ap-northeast-2.compute.amazonaws.com",
+        "http://ec2-13-125-189-62.ap-northeast-2.compute.amazonaws.com",
         path: String = "",
         method: HttpMethod = .get,
         queryPrameters: Encodable? = nil,

@@ -24,7 +24,7 @@ public class BottomSheetView: UIView {
         $0.layer.cornerRadius = $0.frame.height / 2
     }
     
-    let titleLabel = UILabel().then {
+    public let titleLabel = UILabel().then {
         $0.text = ""
         $0.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         $0.textColor = .textMain
@@ -53,7 +53,8 @@ public class BottomSheetView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func selectSelfView() {
+    @objc
+    public func selectSelfView() {
         guard let _ = self.superview else { return }
         self.removeFromSuperview()
     }
@@ -144,6 +145,10 @@ public extension BottomSheetView {
         }
     }
     
+    func addContentViewForSignup(_ view: UIView) {
+        containerView.addSubview(view)
+    }
+    
     func updateTitleSetting(
         font: UIFont,
         textAlignment: NSTextAlignment
@@ -153,6 +158,7 @@ public extension BottomSheetView {
         
         if textAlignment == .left {
             titleLabel.snp.remakeConstraints {
+                $0.top.equalTo(indicatorView.snp.bottom).offset(24)
                 $0.leading.equalToSuperview()
                     .offset(24)
             }

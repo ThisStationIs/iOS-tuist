@@ -1,5 +1,7 @@
 import UIKit
 import LoginFeature
+import Network
+import CommonProtocol
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -10,9 +12,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
         print("### isLogin: \(isLogin)")
-        window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController())
+        DataManager.shared.getSubwayLine {
+            DispatchQueue.main.async {
+                self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: SelectLineViewController())
+                self.window?.makeKeyAndVisible()
+            }
+        }
         
-        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -43,3 +49,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 }
+

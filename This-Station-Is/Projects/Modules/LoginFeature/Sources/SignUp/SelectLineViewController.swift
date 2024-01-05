@@ -10,6 +10,7 @@ import UIKit
 import UI
 import SnapKit
 import Then
+import CommonProtocol
 
 public class SelectLineViewController: UIViewController {
     private let descriptionLabel = BigDescriptionLabel().then {
@@ -21,6 +22,13 @@ public class SelectLineViewController: UIViewController {
     private let bottomButton = Button().then {
         $0.title = "가입완료"
         $0.isEnabled = false
+    }
+    
+    private let viewModel = SignUpViewModel.shared
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavigation(tintColor: .textMain)
     }
     
     public override func viewDidLoad() {
@@ -76,11 +84,12 @@ extension SelectLineViewController {
 
 extension SelectLineViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 12
+        return DataManager.shared.lineInfos.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SelectLineCollectionViewCell", for: indexPath) as! SelectLineCollectionViewCell
+        cell.configureCell(DataManager.shared.lineInfos[indexPath.row])
         return cell
     }
     

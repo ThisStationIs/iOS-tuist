@@ -122,7 +122,14 @@ class BoardDetailViewController: UIViewController {
     }
     
     private func reportHandler(_ action: UIAlertAction) {
-        let reportViewController = ReportViewController(postId: viewModel.detailBoardData.postId)
+        var id = 0
+        
+        if action.accessibilityLabel ?? "" == "Comment" {
+            id = Int(action.accessibilityValue ?? "") ?? 0
+        } else {
+            id = viewModel.detailBoardData.postId
+        }
+        let reportViewController = ReportViewController(postId: id)
         self.navigationController?.pushViewController(reportViewController, animated: true)
     }
     
@@ -205,6 +212,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
             let cell = CommentTableViewCell(reuseIdentifier: identifier, commentData: commentData)
             cell.backgroundColor = .white
             cell.selectionStyle = .none
+            cell.reportHandler = reportHandler
             return cell
         }
     }

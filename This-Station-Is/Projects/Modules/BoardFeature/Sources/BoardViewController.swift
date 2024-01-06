@@ -49,9 +49,7 @@ public class BoardViewController: UIViewController {
         self.changeStatusBarBgColor(bgColor: .white)
         self.navigationController?.navigationBar.barTintColor = .white
         
-        viewModel.getBoardData {
-            self.mainBoardTableView.reloadData()
-        }
+        getFilterData()
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -91,6 +89,19 @@ public class BoardViewController: UIViewController {
         badgeView.isSelect.toggle()
         if badgeView.isSelect {
             viewModel.addSelectCategory(category: categoryView.categoryArray[badgeView.tag].name, tag: badgeView.tag)
+            getFilterData()
+        }
+    }
+    
+    private func getFilterData() {
+        // 선택 되어있는 호선 id만 가져오기
+        var selectedLineId: [Int] = viewModel.selectedLineArray.map { $0.id }
+        // 선택 되어있는 카테고리 가져오기
+        var selectedCategory: Int = viewModel.selectedCategory?.id ?? 10
+
+        // 필터 적용된 데이터?
+        viewModel.getFilterBoardData(keyword: "", categoryId: selectedCategory, subwayLineIds: selectedLineId) {
+            self.mainBoardTableView.reloadData()
         }
     }
     

@@ -98,8 +98,11 @@ class SelectSubwayLineViewController: UIViewController {
     }
     
     @objc func selectApplyButton() {
+        // 호선 정보 저장된 게시글 목록 불러오기
+        
         // 적용 버튼
-        self.navigationController?.popViewController(animated: true   )
+        
+        self.navigationController?.popViewController(animated: true)
     }
     
     private func setUI() {

@@ -18,7 +18,7 @@ public class BoardViewModel: NSObject {
     var uploadBoardData: [String: Any] = [:]
     
     var selectedLineArray: [DataManager.Line] = []
-    var selectedCategory: CategoryData!
+    var selectedCategory: CategoryData?
 //    var selectedCategory: [String] = []
     var canSelect: Bool = false
     
@@ -181,6 +181,31 @@ extension BoardViewModel {
             method: .post,
             bodyParameters: commentData,
             headers: headers
+        )
+    }
+    
+    // 필터 적용
+    public func getFilterBoardData(keyword: String, categoryId: Int, subwayLineIds: [Int], completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: getFilterData(keyword: keyword, categoryId: categoryId, subwayLineIds: subwayLineIds.first ?? 0)) { result in
+            switch result {
+            case .success(let success):
+                print(success)
+//                self.detailBoardData = success.data
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func getFilterData(keyword: String, categoryId: Int, subwayLineIds: Int) -> Endpoint<ResponseWrapper<FilterPostsData>> {
+        
+        print("api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(subwayLineIds)")
+        
+        return Endpoint(
+            path: "api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(subwayLineIds)"
         )
     }
 }

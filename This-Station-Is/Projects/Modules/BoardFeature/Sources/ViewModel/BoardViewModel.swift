@@ -17,8 +17,27 @@ public class BoardViewModel: NSObject {
     var commentData: [Comments] = []
     var uploadBoardData: [String: Any] = [:]
     
-    var selectedLineArray: [DataManager.Line] = []
-    var selectedCategory: CategoryData?
+    var selectedLineArray: [DataManager.Line] = [] {
+        didSet {
+            print("selectedLine 변경 \(selectedLineArray)")
+            let encoder = JSONEncoder()
+            if let encoded = try? encoder.encode(selectedLineArray){
+                UserDefaults.standard.setValue(encoded, forKey: "selectedLineArray")
+            }
+        }
+    }
+    
+    var selectedCategory: CategoryData? {
+        didSet {
+            print("selectedCategory 변경 \(selectedCategory)")
+            // 카테고리 UserDefault 에 저장
+            let encoder = JSONEncoder()
+            // encoded는 Data형
+            if let encoded = try? encoder.encode(selectedCategory) {
+                UserDefaults.standard.setValue(encoded, forKey: "selectedCategory")
+            }
+        }
+    }
 //    var selectedCategory: [String] = []
     var canSelect: Bool = false
     

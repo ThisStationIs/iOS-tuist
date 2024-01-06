@@ -24,7 +24,7 @@ public class BoardViewController: UIViewController {
         $0.separatorStyle = .none
     }
     
-    private lazy var categoryView = CateogryView().then {
+    private lazy var categoryView = CateogryView(viewModel: viewModel).then {
         $0.categoryTapGesture = categoryTapGesture
     }
     
@@ -45,11 +45,31 @@ public class BoardViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // TODO: 스크롤 올리면 내려오지 않음 문제 해결 필요
-//        self.navigationController?.hidesBarsOnSwipe = true
+        //        self.navigationController?.hidesBarsOnSwipe = true
         self.changeStatusBarBgColor(bgColor: .white)
         self.navigationController?.navigationBar.barTintColor = .white
         
-        getFilterData()
+        // UserDefault 에서 값 가져오기
+        if let savedData = UserDefaults.standard.object(forKey: "selectedCategory") as? Data {
+            if let savedObject = try? JSONDecoder().decode(CategoryData.self, from: savedData) {
+                self.viewModel.selectedCategory = savedObject
+            }
+        }
+        
+        print(self.viewModel.selectedCategory)
+        
+        // TODO: 호선 선택 저장된 배열이 안 옴 ㅠ
+        if let savedData = UserDefaults.standard.object(forKey: "selectedLineArray") as? Data {
+            if let savedObject = try? JSONDecoder().decode([DataManager.Line].self, from: savedData){
+                self.viewModel.selectedLineArray = savedObject
+            }
+        }
+        
+        print(self.viewModel.selectedLineArray)
+        
+        DispatchQueue.main.async {
+            self.getFilterData()
+        }
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -88,16 +108,16 @@ public class BoardViewController: UIViewController {
     private func categoryTapGesture(badgeView: FilterBadge) {
         badgeView.isSelect.toggle()
         if badgeView.isSelect {
-            viewModel.addSelectCategory(category: categoryView.categoryArray[badgeView.tag].name, tag: badgeView.tag)
+            viewModel.addSelectCategory(category: categoryView.categoryArray[badgeView.tag].name, tag: categoryView.categoryArray[badgeView.tag].id)
             getFilterData()
         }
     }
     
     private func getFilterData() {
         // 선택 되어있는 호선 id만 가져오기
-        var selectedLineId: [Int] = viewModel.selectedLineArray.map { $0.id }
+        let selectedLineId: [Int] = viewModel.selectedLineArray.map { $0.id }
         // 선택 되어있는 카테고리 가져오기
-        var selectedCategory: Int = viewModel.selectedCategory?.id ?? 10
+        let selectedCategory: Int = viewModel.selectedCategory?.id ?? 10
 
         // 필터 적용된 데이터?
         viewModel.getFilterBoardData(keyword: "", categoryId: selectedCategory, subwayLineIds: selectedLineId) {

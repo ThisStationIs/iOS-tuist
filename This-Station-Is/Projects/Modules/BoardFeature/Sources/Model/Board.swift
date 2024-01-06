@@ -136,7 +136,7 @@ struct UploadBoardResponse: Decodable {
     let createdAt: String
 }
 
-struct CategoryData {
+struct CategoryData: Encodable, Decodable {
     let id: Int
     let name: String
 }

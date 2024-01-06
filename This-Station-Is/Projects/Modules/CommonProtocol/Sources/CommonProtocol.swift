@@ -38,7 +38,7 @@ public class DataManager {
         let lines: [Line]
     }
 
-    public struct Line: Decodable {
+    public struct Line: Decodable, Encodable {
         public let id: Int
         public let name: String
         public let colorCode: String
@@ -63,6 +63,7 @@ extension DataManager {
             switch result {
             case .success(let success):
                 self.categoryInfos = success.data.categorys
+                print(self.categoryInfos)
                 completion()
             case .failure(let failure):
                 print("### failure is \(failure)")

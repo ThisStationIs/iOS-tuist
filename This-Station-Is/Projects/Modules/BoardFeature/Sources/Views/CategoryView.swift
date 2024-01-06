@@ -19,6 +19,7 @@ public class CateogryView: UIView {
     public var categoryBadgeArray: [FilterBadge] = []
     public var categoryTapGesture: ((_ badgeView: FilterBadge) -> ())!
     public var categoryArray: [DataManager.Category] = DataManager.shared.categoryInfos
+    private var viewModel: BoardViewModel!
     
     @objc func selectGesuture(_ sender: UIGestureRecognizer) {
         guard let badgeView = sender.view as? FilterBadge else { return }
@@ -27,8 +28,9 @@ public class CateogryView: UIView {
         categoryTapGesture(badgeView)
     }
     
-    public init() {
+    public init(viewModel: BoardViewModel) {
         super.init(frame: .zero)
+        self.viewModel = viewModel
         setUI()
         setLayout()
     }
@@ -46,8 +48,9 @@ public class CateogryView: UIView {
             badge.title = categoryArray[i].name
             badge.setType(.outline)
             badge.tag = i
+            badge.isSelect = categoryArray[i].id == viewModel.selectedCategory?.id ? true : false
             
-            if i == 0 {
+            if i == 0 && viewModel.selectedCategory?.id == 0 {
                 badge.isSelect = true
             }
             

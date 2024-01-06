@@ -8,23 +8,28 @@
 
 import Foundation
 import Network
+import CommonProtocol
 
 public class BoardViewModel: NSObject {
     
     var boardArray: [Post] = []
     var detailBoardData: DetailPost!
-    var lineInfo: [Lines] = []
     var commentData: [Comments] = []
     var uploadBoardData: [String: Any] = [:]
     
-    var selectedLineArray: [Lines] = []
+    var selectedLineArray: [DataManager.Line] = []
     var selectedCategoryArray: [String] = []
+//    var selectedCategory: [String] = []
     var canSelect: Bool = false
     
-    let ACCESS_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDI6MzY6MDQiLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI5IDAyOjM2OjA0In0.emd0bOvM077ExVd4XdqrfkPhhlcKCSoupzAYSdwEbPqPOJOavYBFTc1I6dqGcdMo5UQTah-NFjhcZ241pXvX8g"
+    var ACCESS_TOKEN: String = "" {
+        didSet {
+            UserDefaults.standard.string(forKey: "accessToken")
+        }
+    }
     
     // 선택한 호선 저장
-    public func addSelectLine(lineInfo: Lines, tag: Int) {
+    public func addSelectLine(lineInfo: DataManager.Line, tag: Int) {
         // 5개만 선택 가능하도록
         if selectedLineArray.count < 5 {
             selectedLineArray.append(lineInfo)
@@ -37,7 +42,7 @@ public class BoardViewModel: NSObject {
     }
     
     // 선택한 호선 삭제
-    public func removeSelectLine(lineInfo: Lines, tag: Int) {
+    public func removeSelectLine(lineInfo: DataManager.Line, tag: Int) {
         canSelect = true
         selectedLineArray = selectedLineArray.filter { $0.id != lineInfo.id }
         
@@ -68,27 +73,6 @@ public class BoardViewModel: NSObject {
 }
 
 extension BoardViewModel {
-    // 호선 정보 가져오기
-    public func getSubwayLine(completion: @escaping (() -> ())) {
-        // /api/v1/subway/lines
-        APIServiceManager().request(with: getLine()) { result in
-            switch result {
-            case .success(let success):
-                self.lineInfo = success.data.lines
-                DispatchQueue.main.async {
-                    completion()
-                }
-            case .failure(let failure):
-                print("### failure is \(failure)")
-            }
-        }
-    }
-    
-    private func getLine() -> Endpoint<SubwayLineModel> {
-        return Endpoint(
-            path: "api/v1/subway/lines"
-        )
-    }
     
     // 게시판 리스트 가져오기
     public func getBoardData(completion: @escaping (() -> ())) {

@@ -8,6 +8,7 @@
 
 import UIKit
 import BoardFeature
+import CommonProtocol
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -21,8 +22,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let naviagationController = UINavigationController(rootViewController: BoardViewController())
         naviagationController.view.backgroundColor = .white
         
-        self.window?.rootViewController = naviagationController
-        self.window?.makeKeyAndVisible()
+        DataManager.shared.getSubwayLine {
+            DispatchQueue.main.async {
+                self.window?.rootViewController = naviagationController
+                self.window?.makeKeyAndVisible()
+            }
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

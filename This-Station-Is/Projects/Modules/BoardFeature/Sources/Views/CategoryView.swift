@@ -21,6 +21,8 @@ public class CateogryView: UIView {
     
     @objc func selectGesuture(_ sender: UIGestureRecognizer) {
         guard let badgeView = sender.view as? FilterBadge else { return }
+        // 현재 선택된 카테고리 외의 전부 삭제
+        categoryBadgeArray.forEach { $0.isSelect = false }
         categoryTapGesture(badgeView)
     }
     

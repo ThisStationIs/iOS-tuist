@@ -11,6 +11,7 @@ import SnapKit
 import Then
 import UI
 import HomeFeature
+import CommonProtocol
 
 public class BoardViewController: UIViewController {
     
@@ -66,10 +67,8 @@ public class BoardViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.getSubwayLine { [self] in
-            setUI()
-            setLayout()
-        }
+        setUI()
+        setLayout()
 //        viewModel.getBoardData { [self] in
 //
 //        }
@@ -89,16 +88,15 @@ public class BoardViewController: UIViewController {
     
     private func categoryTapGesture(badgeView: FilterBadge) {
         badgeView.isSelect.toggle()
-        
-        badgeView.isSelect ? viewModel.addSelectCategory(category: categoryView.cateogryArray[badgeView.tag], tag: badgeView.tag) : viewModel.removeSelectCategory(category: categoryView.cateogryArray[badgeView.tag], tag: badgeView.tag)
-        
-        // 태그가 첫번째 태그를 선택한게 아니면 첫번째 태그 삭제
-        if badgeView.tag == 0 {
-            categoryView.categoryBadgeArray.forEach { $0.isSelect = false }
-            categoryView.categoryBadgeArray[0].isSelect = true
-        } else {
-            categoryView.categoryBadgeArray[0].isSelect = false
-        }
+//        badgeView.isSelect ? viewModel.addSelectCategory(category: categoryView.cateogryArray[badgeView.tag], tag: badgeView.tag) : viewModel.removeSelectCategory(category: categoryView.cateogryArray[badgeView.tag], tag: badgeView.tag)
+//
+//        // 태그가 첫번째 태그를 선택한게 아니면 첫번째 태그 삭제
+//        if badgeView.tag == 0 {
+//            categoryView.categoryBadgeArray.forEach { $0.isSelect = false }
+//            categoryView.categoryBadgeArray[0].isSelect = true
+//        } else {
+//            categoryView.categoryBadgeArray[0].isSelect = false
+//        }
     }
     
     private func setUI() {
@@ -169,7 +167,7 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
                 return reuseCell
             }
             
-            let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post, colorInfos: viewModel.lineInfo)
+            let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post, colorInfos: DataManager.shared.lineInfos)
            
             
             return cell

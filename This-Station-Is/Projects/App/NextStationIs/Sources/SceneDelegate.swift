@@ -8,13 +8,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        // 다크모드 해제
+        window?.overrideUserInterfaceStyle = .light
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
         print("### isLogin: \(isLogin)")
         DataManager.shared.getSubwayLine {
             DispatchQueue.main.async {
-                self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: SelectLineViewController())
+                self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController())
                 self.window?.makeKeyAndVisible()
             }
         }

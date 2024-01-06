@@ -208,7 +208,7 @@ extension BoardViewModel {
         APIServiceManager().request(with: getFilterData(keyword: keyword, categoryId: categoryId, subwayLineIds: subwayLineIds.first ?? 0)) { result in
             switch result {
             case .success(let success):
-                print(success)
+                self.boardArray = success.data.posts
 //                self.detailBoardData = success.data
                 DispatchQueue.main.async {
                     completion()
@@ -221,10 +221,37 @@ extension BoardViewModel {
     
     private func getFilterData(keyword: String, categoryId: Int, subwayLineIds: Int) -> Endpoint<ResponseWrapper<FilterPostsData>> {
         
-        print("api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(subwayLineIds)")
+        let headers: [String: String] = [
+            "Content-Type": "application/json"
+        ]
+        
+        var path = "api/v1/filter/posts"
+        
+//        // 키워드가 있으면
+//        if !keyword.isEmpty {
+//            // ?keyword
+//            path += "keyword=\(keyword)"
+//        }
+//
+//        // categoryId가 전체가 아니면
+//        if categoryId != -1 {
+//            // 키워드가 비어있지 않으면 & 추가
+//            path += "\(!keyword.isEmpty ? "&" : "")categoryId=\(categoryId)"
+//        }
+//
+//        print("❗❗\(path)")
+    
+        
+        let queryItems = [URLQueryItem(name: "keyword", value: "\(keyword)"), URLQueryItem(name: "categoryId", value: "\(categoryId)")]
+        var urlComps = URLComponents(string: path)!
+        urlComps.queryItems = queryItems
+        let result = urlComps.url!
+        
+        print(result)
         
         return Endpoint(
-            path: "api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(subwayLineIds)"
+            path: "\(result)",
+            headers: headers
         )
     }
 }

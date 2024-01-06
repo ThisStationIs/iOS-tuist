@@ -95,17 +95,35 @@ class BoardDetailViewController: UIViewController {
     }
     
     @objc func selectMoreButton() {
-        let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let editAction = UIAlertAction(title: "수정하기", style: .default)
-        let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
-        alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
-            action in
-                 // Called when user taps outside
-        }))
-        alertView.addAction(editAction)
-        alertView.addAction(deleteAction)
-        
-        self.present(alertView, animated: true)
+        // 내 게시글일 경우
+        let userNickName = UserDefaults.standard.string(forKey: "nickName")
+        if viewModel.detailBoardData.authorNickname == userNickName {
+            let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                    let editAction = UIAlertAction(title: "수정하기", style: .default)
+                    let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
+                    alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
+                        action in
+                             // Called when user taps outside
+                    }))
+                    alertView.addAction(editAction)
+                    alertView.addAction(deleteAction)
+                    
+                    self.present(alertView, animated: true)
+        } else {
+            let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                    let editAction = UIAlertAction(title: "신고하기", style: .default, handler: reportHandler)
+                    alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
+                        action in
+                             // Called when user taps outside
+                    }))
+                    alertView.addAction(editAction)
+                    self.present(alertView, animated: true)
+        }
+    }
+    
+    private func reportHandler(_ action: UIAlertAction) {
+        let reportViewController = ReportViewController(postId: viewModel.detailBoardData.postId)
+        self.navigationController?.pushViewController(reportViewController, animated: true)
     }
     
     private func setUI() {

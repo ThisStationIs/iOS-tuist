@@ -52,6 +52,7 @@ public class CateogryView: UIView {
             
             if i == 0 && viewModel.selectedCategory?.id == 0 {
                 badge.isSelect = true
+                viewModel.addSelectCategory(category: "전체", tag: -1)
             }
             
             let gesture = UITapGestureRecognizer(target: self, action: #selector(selectGesuture))

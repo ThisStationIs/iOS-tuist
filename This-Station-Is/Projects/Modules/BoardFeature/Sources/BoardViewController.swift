@@ -108,7 +108,11 @@ public class BoardViewController: UIViewController {
     private func categoryTapGesture(badgeView: FilterBadge) {
         badgeView.isSelect.toggle()
         if badgeView.isSelect {
-            viewModel.addSelectCategory(category: categoryView.categoryArray[badgeView.tag].name, tag: categoryView.categoryArray[badgeView.tag].id)
+            if badgeView.tag == 0 {
+                viewModel.addSelectCategory(category: "전체", tag: -1)
+            } else {
+                viewModel.addSelectCategory(category: categoryView.categoryArray[badgeView.tag].name, tag: categoryView.categoryArray[badgeView.tag].id)
+            }
             getFilterData()
         }
     }
@@ -121,7 +125,9 @@ public class BoardViewController: UIViewController {
 
         // 필터 적용된 데이터?
         viewModel.getFilterBoardData(keyword: "", categoryId: selectedCategory, subwayLineIds: selectedLineId) {
-            self.mainBoardTableView.reloadData()
+            DispatchQueue.main.async {
+                self.mainBoardTableView.reloadData()
+            }
         }
     }
     
@@ -187,7 +193,7 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         } else {
             let post = viewModel.boardArray[indexPath.row - 1]
-            let identifier = "LIST_\(indexPath.row)_\(post.postId)_\(post.commentCount)"
+            let identifier = "LIST_\(indexPath.row)_\(post.postId)_\(post.commentCount)_\(self.viewModel.boardArray.count)"
             
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell

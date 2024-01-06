@@ -8,6 +8,7 @@
 
 import UIKit
 import UI
+import CommonProtocol
 
 public class CateogryView: UIView {
     
@@ -15,9 +16,9 @@ public class CateogryView: UIView {
         $0.showsHorizontalScrollIndicator = false
     }
     
-    public let cateogryArray: [String] = ["전체", "연착정보", "분실물", "사건사고", "알쓸신잡"]
     public var categoryBadgeArray: [FilterBadge] = []
     public var categoryTapGesture: ((_ badgeView: FilterBadge) -> ())!
+    public var categoryArray: [DataManager.Category] = DataManager.shared.categoryInfos
     
     @objc func selectGesuture(_ sender: UIGestureRecognizer) {
         guard let badgeView = sender.view as? FilterBadge else { return }
@@ -40,9 +41,9 @@ public class CateogryView: UIView {
         self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 40)
         self.addSubview(cateogryScrollView)
         
-        for i in 0..<cateogryArray.count {
+        for i in 0..<categoryArray.count {
             let badge = FilterBadge()
-            badge.title = cateogryArray[i]
+            badge.title = categoryArray[i].name
             badge.setType(.outline)
             badge.tag = i
             

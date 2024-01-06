@@ -18,13 +18,13 @@ public class BoardViewModel: NSObject {
     var uploadBoardData: [String: Any] = [:]
     
     var selectedLineArray: [DataManager.Line] = []
-    var selectedCategoryArray: [String] = []
+    var selectedCategory: CategoryData!
 //    var selectedCategory: [String] = []
     var canSelect: Bool = false
     
-    var ACCESS_TOKEN: String = "" {
+    var ACCESS_TOKEN: String = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDI6MzY6MDQiLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI5IDAyOjM2OjA0In0.emd0bOvM077ExVd4XdqrfkPhhlcKCSoupzAYSdwEbPqPOJOavYBFTc1I6dqGcdMo5UQTah-NFjhcZ241pXvX8g" {
         didSet {
-            UserDefaults.standard.string(forKey: "accessToken")
+//            UserDefaults.standard.string(forKey: "accessToken")
         }
     }
     
@@ -51,24 +51,8 @@ public class BoardViewModel: NSObject {
     
     // 선택한 카테고리 저장
     public func addSelectCategory(category: String, tag: Int) {
-        if category != "전체" {
-            selectedCategoryArray.append(category)
-            print("👾 추가 완료 : \(selectedCategoryArray)")
-        } else {
-            selectedCategoryArray.removeAll()
-        }
-    }
-    
-    // 선택한 카테고리 삭제, 전체 선택 시 전부 삭제
-    public func removeSelectCategory(category: String, tag: Int) {
-        // 전체 선택 시 선택한 카테고리 전부 해제
-        if tag == 0 {
-            selectedCategoryArray.removeAll()
-        } else {
-            selectedCategoryArray = selectedCategoryArray.filter { $0 != category }
-        }
-        
-        print("🗑 삭제 완료 : \(selectedCategoryArray)")
+        selectedCategory = CategoryData(id: tag, name: category)
+        print("👾 추가 완료 : \(selectedCategory)")
     }
 }
 

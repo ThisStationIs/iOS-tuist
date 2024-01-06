@@ -77,7 +77,7 @@ public class HomeViewController: UIViewController {
             }
         }
         
-        APIServiceManager().request(with: viewModel.getHomeHotPosts()) { result in
+        APIServiceManager() .request(with: viewModel.getHomeHotPosts()) { result in
             switch result {
             case .success(let success):
                 print("### success: \(success)")

@@ -47,6 +47,7 @@ public class BoardViewController: UIViewController {
         // TODO: 스크롤 올리면 내려오지 않음 문제 해결 필요
 //        self.navigationController?.hidesBarsOnSwipe = true
         self.changeStatusBarBgColor(bgColor: .white)
+        self.navigationController?.navigationBar.barTintColor = .white
         
         viewModel.getBoardData {
             self.mainBoardTableView.reloadData()
@@ -88,15 +89,9 @@ public class BoardViewController: UIViewController {
     
     private func categoryTapGesture(badgeView: FilterBadge) {
         badgeView.isSelect.toggle()
-//        badgeView.isSelect ? viewModel.addSelectCategory(category: categoryView.cateogryArray[badgeView.tag], tag: badgeView.tag) : viewModel.removeSelectCategory(category: categoryView.cateogryArray[badgeView.tag], tag: badgeView.tag)
-//
-//        // 태그가 첫번째 태그를 선택한게 아니면 첫번째 태그 삭제
-//        if badgeView.tag == 0 {
-//            categoryView.categoryBadgeArray.forEach { $0.isSelect = false }
-//            categoryView.categoryBadgeArray[0].isSelect = true
-//        } else {
-//            categoryView.categoryBadgeArray[0].isSelect = false
-//        }
+        if badgeView.isSelect {
+            viewModel.addSelectCategory(category: categoryView.categoryArray[badgeView.tag].name, tag: badgeView.tag)
+        }
     }
     
     private func setUI() {

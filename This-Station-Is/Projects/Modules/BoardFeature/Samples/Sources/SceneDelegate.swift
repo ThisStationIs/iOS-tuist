@@ -23,9 +23,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         naviagationController.view.backgroundColor = .white
         
         DataManager.shared.getSubwayLine {
-            DispatchQueue.main.async {
-                self.window?.rootViewController = naviagationController
-                self.window?.makeKeyAndVisible()
+            DataManager.shared.getCategory {
+                DispatchQueue.main.async {
+                    self.window?.rootViewController = naviagationController
+                    self.window?.makeKeyAndVisible()
+                }
             }
         }
     }

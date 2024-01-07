@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         print("### isLogin: \(isLogin)")
         DataManager.shared.getSubwayLine {
             DispatchQueue.main.async {
-                self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: SelectLineViewController())
+                self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController())
                 self.window?.makeKeyAndVisible()
             }
         }

@@ -17,12 +17,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         DataManager.shared.getSubwayLine {
             DataManager.shared.getCategory {
                 DispatchQueue.main.async {
-//                    self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: SelectLineViewController())
+    //                    self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: SelectLineViewController())
                     self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController()
                     )
-//                    self.window?.rootViewController = MainTabBarController()
-//                    self.window?.makeKeyAndVisible()
-                }
+                    self.window?.makeKeyAndVisible()
             }
         }
     }

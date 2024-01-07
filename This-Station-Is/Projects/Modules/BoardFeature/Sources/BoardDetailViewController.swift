@@ -121,7 +121,6 @@ class BoardDetailViewController: UIViewController {
     
     private func reportHandler(_ action: UIAlertAction) {
         var id = 0
-        
         if action.accessibilityLabel ?? "" == "Comment" {
             id = Int(action.accessibilityValue ?? "") ?? 0
         } else {

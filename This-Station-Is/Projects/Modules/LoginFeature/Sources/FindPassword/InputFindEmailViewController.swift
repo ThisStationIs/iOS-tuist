@@ -25,7 +25,7 @@ public class InputFindEmailViewController: UIViewController {
         $0.isEnabled = false
     }
     
-    private let viewModel = SignUpViewModel()
+    private let viewModel = SignUpViewModel.shared
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

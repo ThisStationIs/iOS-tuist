@@ -56,7 +56,7 @@ public class InputEmailViewController: UIViewController {
         }
     }
     
-    let viewModel = SignUpViewModel()
+    let viewModel = SignUpViewModel.shared
     
     weak var delegate: InputEmailDelegate?
     

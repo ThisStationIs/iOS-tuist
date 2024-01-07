@@ -41,7 +41,7 @@ public struct SignUpModel {
     init() {}
 }
 
-public struct TermsAgreementRequest {
+public struct TermsAgreementRequest: Encodable {
     let terms: String
     let agreed: Bool
 }

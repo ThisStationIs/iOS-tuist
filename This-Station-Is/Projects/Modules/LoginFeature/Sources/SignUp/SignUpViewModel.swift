@@ -141,6 +141,43 @@ extension SignUpViewModel {
     struct CheckCertNumberResponse: Decodable {
         let checkEmailEncrypt: String
     }
+    
+    func postSignUp(completion: @escaping (() -> Void)) {
+        let model = SignUpModel.shared
+        let endpoint = Endpoint<ResponseWrapper<SignUpResponse>> (
+            path: "api/v1/user/sign/up",
+            method: .post,
+            bodyParameters: SignUpRequest(
+                email: model.email,
+                authCode: model.authCode,
+                checkEmailEncrypt: model.checkEmailEncrypt,
+                password: model.password,
+                passwordConfirm: model.passwordConfirm,
+                termsAgreementRequestList: model.termsAgreementRequestList)
+        )
+        
+        APIServiceManager().request(with: endpoint) { result in
+            switch result {
+            case .success(let success):
+                print("### success is \(success)")
+                completion()
+            case .failure(let failure):
+                print("### postCheckCertNumber is failed :\(failure)")
+            }
+        }
+    }
+    
+    struct SignUpRequest: Encodable {
+        let email: String
+        let authCode: String
+        let checkEmailEncrypt: String
+        let password: String
+        let passwordConfirm: String
+        let termsAgreementRequestList: [TermsAgreementRequest]
+    }
+    
+    struct SignUpResponse: Decodable {
+    }
 }
 
 // MARK: - about find password

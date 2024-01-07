@@ -41,10 +41,10 @@ class CommentTableViewCell: UITableViewCell {
         $0.addTarget(self, action: #selector(selectMoreButton), for: .touchUpInside)
     }
     
-    var commentData: Comments?
+    var commentData: Comment?
     var reportHandler: ((UIAlertAction) -> Void)?
     
-    public init(reuseIdentifier: String?, commentData: Comments) {
+    public init(reuseIdentifier: String?, commentData: Comment) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         self.commentData = commentData
         setUI()
@@ -58,8 +58,8 @@ class CommentTableViewCell: UITableViewCell {
     
     @objc func selectMoreButton() {
         // 내 게시글일 경우
-        let userNickName = UserDefaults.standard.string(forKey: "nickName")
-        if commentData?.authorNickname == userNickName {
+        let userId = UserDefaults.standard.integer(forKey: "userId")
+        if commentData?.userId == userId {
             let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
             alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
@@ -85,7 +85,7 @@ class CommentTableViewCell: UITableViewCell {
         }
     }
     
-    private func setData(commentData: Comments) {
+    private func setData(commentData: Comment) {
         /*
          "commentId": 1,
          "nickname": "밝은고양이",
@@ -94,7 +94,7 @@ class CommentTableViewCell: UITableViewCell {
          "createdAt": "2023-12-27T03:42:22",
          "lastUpdatedAt": "2023-12-27T03:42:22"
          */
-        profileName.text = commentData.authorNickname
+        profileName.text = commentData.nickname
         commentLabel.text = commentData.content
         writeDate.text = replaceDateFormatter(date: commentData.lastUpdatedAt)
     }

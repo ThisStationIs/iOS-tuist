@@ -144,7 +144,7 @@ extension LoginViewController {
         APIServiceManager().request(with: tesEndPoint) { result in
             switch result {
             case .success(let success):
-                self.setUserData(success.data.nickName, success.data.accessToken, success.data.refreshToken)
+                self.setUserData(success.data.userId, success.data.nickName, success.data.accessToken, success.data.refreshToken)
             case .failure(let failure):
                 print("### postLogin is failed: \(failure)")
             }
@@ -152,10 +152,12 @@ extension LoginViewController {
     }
     
     private func setUserData(
+        _ userId: Int,
         _ nickName: String,
         _ at: String,
         _ rt: String
     ) {
+        UserDefaults.standard.setValue(userId, forKey: "userId")
         UserDefaults.standard.setValue(nickName, forKey: "nickName")
         UserDefaults.standard.setValue(at, forKey: "accessToken")
         UserDefaults.standard.setValue(rt, forKey: "refreshToken")

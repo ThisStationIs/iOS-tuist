@@ -68,10 +68,8 @@ class BoardDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.getDetailBoardData(id: id) { [self] in
-            viewModel.getCommentData(id: id) { [self] in
-                setUI()
-                setLayout()
-            }
+            setUI()
+            setLayout()
         }
     }
     
@@ -96,8 +94,8 @@ class BoardDetailViewController: UIViewController {
     
     @objc func selectMoreButton() {
         // 내 게시글일 경우
-        let userNickName = UserDefaults.standard.string(forKey: "nickName")
-        if viewModel.detailBoardData.authorNickname == userNickName {
+        let userId = UserDefaults.standard.integer(forKey: "userId")
+        if viewModel.detailBoardData.userId == userId {
             let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
                     let editAction = UIAlertAction(title: "수정하기", style: .default)
                     let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
@@ -203,7 +201,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.selectionStyle = .none
             return cell
         } else {
-            let commentData = viewModel.commentData[indexPath.row]
+            let commentData = viewModel.detailBoardData.comments[indexPath.row]
             let identifier = "COMMENT_\(indexPath.section)_\(indexPath.row)_\(commentData.commentId)"
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell

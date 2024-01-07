@@ -27,6 +27,7 @@ public class FinishSignUpViewController: UIViewController {
         super.viewDidLoad()
         setView()
         setLayout()
+        setBinding()
     }
 }
 
@@ -61,6 +62,16 @@ extension FinishSignUpViewController {
             $0.bottom.equalToSuperview()
                 .inset(24)
         }
+    }
+    
+    private func setBinding() {
+        bottomButton.addTarget(self, action: #selector(bottomButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func bottomButtonTapped() {
+        UserDefaults.standard.setValue(true, forKey: "isLogin")
+        NotificationCenter.default.post(name: NSNotification.Name("MoveToMain"), object: nil)
     }
 }
 

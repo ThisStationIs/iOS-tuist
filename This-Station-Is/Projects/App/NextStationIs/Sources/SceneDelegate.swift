@@ -10,18 +10,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
+        
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
+        NotificationCenter.default.addObserver(self, selector: #selector(updateRootViewController), name: NSNotification.Name(rawValue: "MoveToMain"), object: nil)
         print("### isLogin: \(isLogin)")
         DataManager.shared.getSubwayLine {
             DispatchQueue.main.async {
-//                    self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: SelectLineViewController())
                 self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController()
                 )
                 self.window?.makeKeyAndVisible()
             }
         }
-        
     }
+    
+    @objc func updateRootViewController(notification: NSNotification) {
+        DispatchQueue.main.async {
+            self.window?.rootViewController = MainTabBarController()
+            self.window?.makeKeyAndVisible()
+        }
+    }
+
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

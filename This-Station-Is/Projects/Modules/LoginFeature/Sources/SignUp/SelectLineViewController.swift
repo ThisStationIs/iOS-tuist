@@ -21,7 +21,7 @@ public class SelectLineViewController: UIViewController {
     }
     private let bottomButton = Button().then {
         $0.title = "가입완료"
-        $0.isEnabled = false
+//        $0.isEnabled = false
     }
     
     private let viewModel = SignUpViewModel.shared
@@ -36,6 +36,7 @@ public class SelectLineViewController: UIViewController {
         setView()
         setLayout()
         setDelegate()
+        setBinding()
     }
 }
 
@@ -79,6 +80,17 @@ extension SelectLineViewController {
     private func setDelegate() {
         lineCollectionView.dataSource = self
         lineCollectionView.delegate = self
+    }
+    
+    private func setBinding() {
+        bottomButton.addTarget(self, action: #selector(bottomButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func bottomButtonTapped() {
+        viewModel.postSignUp {
+            print("### hi")
+        }
     }
 }
 

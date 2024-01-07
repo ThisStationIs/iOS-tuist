@@ -143,7 +143,6 @@ extension SignUpViewModel {
     }
     
     func postSignUp(completion: @escaping (() -> Void)) {
-        let model = SignUpModel.shared
         let endpoint = Endpoint<ResponseWrapper<SignUpResponse>> (
             path: "api/v1/user/sign/up",
             method: .post,

@@ -13,14 +13,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
         print("### isLogin: \(isLogin)")
         DataManager.shared.getSubwayLine {
-            DataManager.shared.getCategory {
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
 //                    self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: SelectLineViewController())
-                    self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController()
-                    )
-//                    self.window?.rootViewController = MainTabBarController()
-//                    self.window?.makeKeyAndVisible()
-                }
+                self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController()
+                )
+                self.window?.makeKeyAndVisible()
             }
         }
         

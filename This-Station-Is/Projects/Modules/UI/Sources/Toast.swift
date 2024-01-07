@@ -118,7 +118,7 @@ public class Toast: UIView {
 }
 
 extension UIApplication {
-    class func topViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+    public class func topViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
         if let navigationController = base as? UINavigationController {
             return topViewController(base: navigationController.visibleViewController)
         }

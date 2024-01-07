@@ -122,7 +122,7 @@ class BoardDetailViewController: UIViewController {
     private func reportHandler(_ action: UIAlertAction) {
         var id = 0
         
-        self.present(alertView, animated: true)
+//        self.present(alertView, animated: true)
     }
     
     private func setUI() {

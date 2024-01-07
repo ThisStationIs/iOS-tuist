@@ -36,7 +36,15 @@ class CommentTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    public init(reuseIdentifier: String?, commentData: Comments) {
+    private lazy var moreButton = UIButton().then {
+        $0.setImage(UIImage(named: "more"), for: .normal)
+        $0.addTarget(self, action: #selector(selectMoreButton), for: .touchUpInside)
+    }
+    
+    var commentData: Comment?
+    var reportHandler: ((UIAlertAction) -> Void)?
+    
+    public init(reuseIdentifier: String?, commentData: Comment) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
         setLayout()
@@ -47,7 +55,36 @@ class CommentTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setData(commentData: Comments) {
+    @objc func selectMoreButton() {
+        // 내 게시글일 경우
+        let userId = UserDefaults.standard.integer(forKey: "userId")
+        if commentData?.userId == userId {
+            let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
+            alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
+                action in
+                // Called when user taps outside
+            }))
+            alertView.addAction(deleteAction)
+            
+            guard let rootViewController = UIApplication.topViewController() else { return }
+            rootViewController.present(alertView, animated: true)
+        } else {
+            let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            let editAction = UIAlertAction(title: "신고하기", style: .default, handler: reportHandler)
+            editAction.accessibilityValue = "\(commentData?.commentId ?? 0)"
+            editAction.accessibilityLabel = "Comment"
+            alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
+                action in
+                // Called when user taps outside
+            }))
+            alertView.addAction(editAction)
+            guard let rootViewController = UIApplication.topViewController() else { return }
+            rootViewController.present(alertView, animated: true)
+        }
+    }
+    
+    private func setData(commentData: Comment) {
         /*
          "commentId": 1,
                  "nickname": "밝은고양이",
@@ -56,7 +93,7 @@ class CommentTableViewCell: UITableViewCell {
                  "createdAt": "2023-12-27T03:42:22",
                  "lastUpdatedAt": "2023-12-27T03:42:22"
          */
-        profileName.text = commentData.authorNickname
+        profileName.text = commentData.nickname
         commentLabel.text = commentData.content
         writeDate.text = replaceDateFormatter(date: commentData.lastUpdatedAt)
     }

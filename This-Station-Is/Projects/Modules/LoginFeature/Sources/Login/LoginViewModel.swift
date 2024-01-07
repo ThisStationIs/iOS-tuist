@@ -37,11 +37,13 @@ extension LoginViewModel {
     }
     
     struct LoginResponse: Decodable {
+        let userId: Int
         let nickName: String
         let accessToken: String
         let refreshToken: String
 
         private enum CodingKeys: String, CodingKey {
+            case userId
             case nickName = "nickname"
             case accessToken
             case refreshToken

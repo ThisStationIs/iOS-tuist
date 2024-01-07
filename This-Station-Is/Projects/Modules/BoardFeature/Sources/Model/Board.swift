@@ -43,6 +43,7 @@ struct BoardData: Decodable {
 
 public struct Post: Decodable {
     let postId: Int
+    let userId: Int
     let authorNickname: String
     let subwayLineName: String
     let categoryName: String
@@ -73,6 +74,7 @@ public struct DetailPost: Decodable {
          "lastUpdatedAt": "2023-12-27T03:38:34"
      */
     let postId: Int
+    let userId: Int
     let authorNickname: String
     let subwayLineId: Int
     let subwayLineName: String
@@ -91,6 +93,7 @@ public struct DetailPost: Decodable {
 
 struct Comment: Decodable {
     let commentId: Int
+    let userId: Int
     let nickname: String
     let content: String
     let isReported: Bool

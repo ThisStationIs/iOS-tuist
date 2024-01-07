@@ -68,10 +68,8 @@ class BoardDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.getDetailBoardData(id: id) { [self] in
-            viewModel.getCommentData(id: id) { [self] in
-                setUI()
-                setLayout()
-            }
+            setUI()
+            setLayout()
         }
     }
     
@@ -95,15 +93,34 @@ class BoardDetailViewController: UIViewController {
     }
     
     @objc func selectMoreButton() {
-        let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let editAction = UIAlertAction(title: "수정하기", style: .default)
-        let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
-        alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
-            action in
-                 // Called when user taps outside
-        }))
-        alertView.addAction(editAction)
-        alertView.addAction(deleteAction)
+        // 내 게시글일 경우
+        let userId = UserDefaults.standard.integer(forKey: "userId")
+        if viewModel.detailBoardData.userId == userId {
+            let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                    let editAction = UIAlertAction(title: "수정하기", style: .default)
+                    let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
+                    alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
+                        action in
+                             // Called when user taps outside
+                    }))
+                    alertView.addAction(editAction)
+                    alertView.addAction(deleteAction)
+                    
+                    self.present(alertView, animated: true)
+        } else {
+            let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                    let editAction = UIAlertAction(title: "신고하기", style: .default, handler: reportHandler)
+                    alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
+                        action in
+                             // Called when user taps outside
+                    }))
+                    alertView.addAction(editAction)
+                    self.present(alertView, animated: true)
+        }
+    }
+    
+    private func reportHandler(_ action: UIAlertAction) {
+        var id = 0
         
         self.present(alertView, animated: true)
     }
@@ -178,7 +195,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.selectionStyle = .none
             return cell
         } else {
-            let commentData = viewModel.commentData[indexPath.row]
+            let commentData = viewModel.detailBoardData.comments[indexPath.row]
             let identifier = "COMMENT_\(indexPath.section)_\(indexPath.row)_\(commentData.commentId)"
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell

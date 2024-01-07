@@ -34,14 +34,11 @@ public class InputCertNumberViewController: UIViewController {
         $0.isEnabled = false
     }
     
-    let viewModel: SignUpViewModel
-    var signUpModel: SignUpModel
+    let viewModel = SignUpViewModel.shared
     
     var sendEmailEncrypt: String = ""
     
     public init() {
-        self.signUpModel = SignUpModel.shared
-        self.viewModel = SignUpViewModel.shared
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -123,7 +120,7 @@ extension InputCertNumberViewController {
     
     @objc
     private func sendButtonClicked() {
-        viewModel.postCertNumber(input: signUpModel.email) { response in
+        viewModel.postCertNumber(input: viewModel.model.email) { response in
             guard response.sendCount < 10 else {
                 self.showAlertView(title: "인증번호 발송 횟수 초과", message: "10분 뒤 재시도해주세요.")
                 return
@@ -161,7 +158,7 @@ extension InputCertNumberViewController: UITextFieldDelegate {
         guard text.count == 6 else { return }
         
         viewModel.postCheckCertNumber(SignUpViewModel.CheckCertNumberRequest(
-            email: signUpModel.email,
+            email: viewModel.model.email,
             authCode: text,
             sendEmailEncrypt: self.sendEmailEncrypt)) { res in
                 guard res != "failed" else {
@@ -177,7 +174,7 @@ extension InputCertNumberViewController: UITextFieldDelegate {
                     self.bottomButton.isEnabled = true
                     self.certNumberInputBox.isError = false
                 }
-                self.signUpModel.checkEmailEncrypt = res
+                self.viewModel.model.checkEmailEncrypt = res
             }
     }
     

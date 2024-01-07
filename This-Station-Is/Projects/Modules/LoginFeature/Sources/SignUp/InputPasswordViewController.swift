@@ -39,8 +39,9 @@ public class InputPasswordViewController: UIViewController {
         $0.isEnabled = false
     }
     
-    let viewModel = InputPasswordViewModel()
-    var signUpModel: SignUpModel = SignUpModel.shared
+    let inputPasswordViewModel = InputPasswordViewModel()
+    let viewModel = SignUpViewModel.shared
+    
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -154,8 +155,8 @@ extension InputPasswordViewController {
     
     @objc
     private func bottomButtonTapped() {
-        signUpModel.password = passwordInputBox.textField.text ?? ""
-        signUpModel.passwordConfirm = passwordReInputBox.textField.text ?? ""
+        viewModel.model.password = passwordInputBox.textField.text ?? ""
+        viewModel.model.passwordConfirm = passwordReInputBox.textField.text ?? ""
 
         let nextVC = SelectLineViewController()
         self.navigationController?.pushViewController(nextVC, animated: true)
@@ -166,13 +167,13 @@ extension InputPasswordViewController: UITextFieldDelegate {
     public func textFieldDidEndEditing(_ textField: UITextField) {
         if textField == passwordInputBox.textField {
             guard let text = textField.text else { return }
-            englishLabelWithLeftImage.updateState(isEnable: viewModel.isValidEnglish(input: text))
-            countLabelWithLeftImage.updateState(isEnable: viewModel.isValidCount(input: text))
+            englishLabelWithLeftImage.updateState(isEnable: inputPasswordViewModel.isValidEnglish(input: text))
+            countLabelWithLeftImage.updateState(isEnable: inputPasswordViewModel.isValidCount(input: text))
         }
         
-        correctLabelWithLeftImage.updateState(isEnable: viewModel.isCorrect(
+        correctLabelWithLeftImage.updateState(isEnable: inputPasswordViewModel.isCorrect(
             firstInput: passwordInputBox.textField.text ?? "", secondInput: passwordReInputBox.textField.text ?? "") ? true : false)
-        bottomButton.isEnabled = viewModel.isValidPassword(
+        bottomButton.isEnabled = inputPasswordViewModel.isValidPassword(
             firstInput: passwordInputBox.textField.text ?? "", secondInput: passwordReInputBox.textField.text ?? "") ? true : false
     }
     

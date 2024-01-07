@@ -17,11 +17,12 @@ public class SelectLineViewController: UIViewController {
         $0.text = "평소 이용하시는\n지하철 호선을 선택해주세요."
     }
     private let lineCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
+        $0.allowsMultipleSelection = true
         $0.register(SelectLineCollectionViewCell.self, forCellWithReuseIdentifier: "SelectLineCollectionViewCell")
     }
     private let bottomButton = Button().then {
         $0.title = "가입완료"
-//        $0.isEnabled = false
+        $0.isEnabled = false
     }
     
     private let viewModel = SignUpViewModel.shared
@@ -89,7 +90,10 @@ extension SelectLineViewController {
     @objc
     private func bottomButtonTapped() {
         viewModel.postSignUp {
-            print("### hi")
+            let nextVC = FinishSignUpViewController()
+            DispatchQueue.main.async {
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            }
         }
     }
 }
@@ -106,8 +110,35 @@ extension SelectLineViewController: UICollectionViewDataSource, UICollectionView
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! SelectLineCollectionViewCell
+        cell.selectedCell(DataManager.shared.lineInfos[indexPath.row])
+        updateButtonStatus(collectionView)
+    }
+
+    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! SelectLineCollectionViewCell
+        cell.unselectedCell()
         
     }
+    
+    private func updateButtonStatus(_ collectionView: UICollectionView) {
+        if let selectedItems = collectionView.indexPathsForSelectedItems, selectedItems.count > 0 {
+            // 선택된 셀이 한 개 이상이면 버튼을 활성화합니다.
+            bottomButton.isEnabled = true
+        } else {
+            // 선택된 셀이 없으면 버튼을 비활성화합니다.
+            bottomButton.isEnabled = false
+        }
+    }
+
+    public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        if let selectedItems = collectionView.indexPathsForSelectedItems, selectedItems.count >= 5 {
+            return selectedItems.contains(indexPath)
+        } else {
+            return true
+        }
+    }
+
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let padding: CGFloat = 24

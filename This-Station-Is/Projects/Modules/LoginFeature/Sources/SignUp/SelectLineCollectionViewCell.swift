@@ -50,4 +50,13 @@ extension SelectLineCollectionViewCell {
         nameLabel.textColor = UIColor(hexCode: data.colorCode)
         nameLabel.backgroundColor = UIColor(hexCode: data.colorCode).withAlphaComponent(0.1)
     }
+    
+    func selectedCell(_ data: DataManager.Line) {
+        contentView.layer.borderWidth = 1
+        contentView.layer.borderColor = UIColor(hexCode: data.colorCode).cgColor
+    }
+    
+    func unselectedCell() {
+        contentView.layer.borderWidth = 0
+    }
 }

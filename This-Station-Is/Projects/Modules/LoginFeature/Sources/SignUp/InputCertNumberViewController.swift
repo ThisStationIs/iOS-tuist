@@ -174,6 +174,7 @@ extension InputCertNumberViewController: UITextFieldDelegate {
                     self.bottomButton.isEnabled = true
                     self.certNumberInputBox.isError = false
                 }
+                self.viewModel.model.authCode = text
                 self.viewModel.model.checkEmailEncrypt = res
             }
     }

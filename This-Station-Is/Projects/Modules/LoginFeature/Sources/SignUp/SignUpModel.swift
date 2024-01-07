@@ -16,7 +16,11 @@ public struct SignUpModel {
             print("### model is changed: \(self)")
         }
     }
-    var authCode: String = "SIGN_UP"
+    var authCode: String = "" {
+        didSet {
+            print("### model is changed: \(self)")
+        }
+    }
     var checkEmailEncrypt: String = "" {
         didSet {
             print("### model is changed: \(self)")

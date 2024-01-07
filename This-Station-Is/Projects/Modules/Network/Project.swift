@@ -1,11 +1,14 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
+import UtilityPlugin
 
 let project = Project.makeModule(
     name: "Network",
     product: .staticLibrary,
     deploymentTarget: .iOS(targetVersion: "15.0", devices: [.iphone]),
-    dependencies: [],
+    dependencies: [
+        .Module.ThirdPartyManager
+    ],
     infoPlist: configureInfoPlist()
 )
 

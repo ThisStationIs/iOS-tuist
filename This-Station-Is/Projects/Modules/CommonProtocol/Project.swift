@@ -6,7 +6,9 @@ let project = Project.makeModule(
     name: "CommonProtocol",
     product: .staticLibrary,
     deploymentTarget: .iOS(targetVersion: "15.0", devices: [.iphone]),
-    dependencies: [],
+    dependencies: [
+        .Module.Network
+    ],
     infoPlist: configureInfoPlist()
 )
 

@@ -162,7 +162,7 @@ extension SignUpViewModel {
                 print("### success is \(success)")
                 completion()
             case .failure(let failure):
-                print("### postCheckCertNumber is failed :\(failure)")
+                print("### postSignUp is failed :\(failure)")
             }
         }
     }

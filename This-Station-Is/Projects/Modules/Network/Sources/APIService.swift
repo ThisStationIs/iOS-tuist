@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 public protocol APIService {
     func request<R: Decodable, E: RequestResponsable>(with endpoint: E, completion: @escaping (Result<R, Error>) -> Void) where E.Response == R
@@ -24,6 +25,7 @@ public class APIServiceManager: APIService {
             let urlRequest = try endpoint.getUrlRequest()
             session.dataTask(with: urlRequest) {  data, response, error in
                 self.checkError(with: data, response, error, completion: { result in
+                    print("### json: \(JSON(data))")
                     switch result {
                     case .success(let success):
                         completion(self.decode(data: success))

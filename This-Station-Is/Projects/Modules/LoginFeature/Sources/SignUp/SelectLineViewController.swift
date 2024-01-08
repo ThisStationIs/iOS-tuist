@@ -90,8 +90,8 @@ extension SelectLineViewController {
     @objc
     private func bottomButtonTapped() {
         viewModel.postSignUp {
-            let nextVC = FinishSignUpViewController()
             DispatchQueue.main.async {
+                let nextVC = FinishSignUpViewController()
                 self.navigationController?.pushViewController(nextVC, animated: true)
             }
         }

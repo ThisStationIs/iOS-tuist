@@ -26,6 +26,7 @@ public class FinishChangePasswordViewController: UIViewController {
         super.viewDidLoad()
         setView()
         setLayout()
+        setBinding()
     }
 }
 
@@ -60,5 +61,14 @@ extension FinishChangePasswordViewController {
             $0.bottom.equalToSuperview()
                 .inset(24)
         }
+    }
+    
+    private func setBinding() {
+        bottomButton.addTarget(self, action: #selector(bottomButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func bottomButtonTapped() {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToLogin"), object: nil)
     }
 }

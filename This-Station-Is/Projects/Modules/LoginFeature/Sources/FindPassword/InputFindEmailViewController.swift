@@ -92,6 +92,8 @@ extension InputFindEmailViewController {
             switch result {
             case .success(let success):
                 print("### postFindPassword is successed: \(success)")
+                let encrypt = success.data.sendEmailEncrypt
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "encryptKeyForFindPassword"), object: encrypt)
                 DispatchQueue.main.async {
                     self.showToast()
                 }
@@ -115,11 +117,12 @@ extension InputFindEmailViewController: UITextFieldDelegate {
         viewModel.isValidEmail(input: text) { isValid in
             switch isValid {
             case .isValid:
-                self.updateInputBoxState(isEnabled: true, errorText: nil)
+                break
+//                self.updateInputBoxState(isEnabled: true, errorText: nil)
             case .isNotValid:
                 self.updateInputBoxState(isEnabled: false, errorText: "이메일 형식이 아니에요.")
             case .isUsed:
-                self.updateInputBoxState(isEnabled: false, errorText: "이미 존재하는 아이디에요.")
+                self.updateInputBoxState(isEnabled: true, errorText: nil)
             }
         }
     }

@@ -3,6 +3,7 @@ import LoginFeature
 import Network
 import CommonProtocol
 import IQKeyboardManagerSwift
+import UI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -20,7 +21,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         
         let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
-        NotificationCenter.default.addObserver(self, selector: #selector(updateRootViewController), name: NSNotification.Name(rawValue: "MoveToMain"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(updateRootViewControllerToTabBar), name: NSNotification.Name(rawValue: "MoveToMain"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateRootViewControllerToLogin), name: NSNotification.Name(rawValue: "MoveToLogin"), object: nil)
+        
         print("### isLogin: \(isLogin)")
         DataManager.shared.getSubwayLine {
             DispatchQueue.main.async {
@@ -31,13 +35,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-    @objc func updateRootViewController(notification: NSNotification) {
+    @objc func updateRootViewControllerToTabBar(notification: NSNotification) {
         DispatchQueue.main.async {
             self.window?.rootViewController = MainTabBarController()
             self.window?.makeKeyAndVisible()
         }
     }
 
+    @objc func updateRootViewControllerToLogin() {
+        DispatchQueue.main.async {
+            self.window?.rootViewController = UINavigationController(rootViewController: LoginViewController())
+            self.window?.makeKeyAndVisible()
+        }
+    }
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
@@ -72,15 +82,15 @@ extension SceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else { return }
         guard let components = NSURLComponents(url: url, resolvingAgainstBaseURL: true),
-              let path = components.path,
+              let host = components.host,
               let params = components.queryItems else {
             print("Invalid URL or path missing")
             return
         }
 
-        if path == "new-password" {
+        if host == "new-password" {
             DispatchQueue.main.async {
-                let resetPasswordViewController = InputNewPasswordViewController()
+                let resetPasswordViewController = UINavigationController(rootViewController: InputNewPasswordViewController())
                 self.window?.rootViewController = resetPasswordViewController
                 self.window?.makeKeyAndVisible()
             }

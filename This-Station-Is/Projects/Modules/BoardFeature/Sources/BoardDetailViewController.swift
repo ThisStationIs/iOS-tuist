@@ -121,8 +121,13 @@ class BoardDetailViewController: UIViewController {
     
     private func reportHandler(_ action: UIAlertAction) {
         var id = 0
-        
-//        self.present(alertView, animated: true)
+        if action.accessibilityLabel ?? "" == "Comment" {
+            id = Int(action.accessibilityValue ?? "") ?? 0
+        } else {
+            id = viewModel.detailBoardData.postId
+        }
+        let reportViewController = ReportViewController(postId: id)
+        self.navigationController?.pushViewController(reportViewController, animated: true)
     }
     
     private func setUI() {
@@ -204,6 +209,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
             let cell = CommentTableViewCell(reuseIdentifier: identifier, commentData: commentData)
             cell.backgroundColor = .white
             cell.selectionStyle = .none
+            cell.reportHandler = reportHandler
             return cell
         }
     }

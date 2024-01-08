@@ -15,10 +15,12 @@ import CommonProtocol
 public class SelectLineViewController: UIViewController {
     private let descriptionLabel = BigDescriptionLabel().then {
         $0.text = "평소 이용하시는\n지하철 호선을 선택해주세요."
+        $0.textColor = .textMain
     }
     private let lineCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
         $0.allowsMultipleSelection = true
         $0.register(SelectLineCollectionViewCell.self, forCellWithReuseIdentifier: "SelectLineCollectionViewCell")
+        $0.backgroundColor = .white
     }
     private let bottomButton = Button().then {
         $0.title = "가입완료"

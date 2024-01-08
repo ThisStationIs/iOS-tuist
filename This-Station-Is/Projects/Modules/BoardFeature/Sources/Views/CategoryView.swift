@@ -8,6 +8,7 @@
 
 import UIKit
 import UI
+import CommonProtocol
 
 public class CateogryView: UIView {
     
@@ -15,17 +16,21 @@ public class CateogryView: UIView {
         $0.showsHorizontalScrollIndicator = false
     }
     
-    public let cateogryArray: [String] = ["전체", "연착정보", "분실물", "사건사고", "알쓸신잡"]
     public var categoryBadgeArray: [FilterBadge] = []
     public var categoryTapGesture: ((_ badgeView: FilterBadge) -> ())!
+    public var categoryArray: [DataManager.Category] = DataManager.shared.categoryInfos
+    private var viewModel: BoardViewModel!
     
     @objc func selectGesuture(_ sender: UIGestureRecognizer) {
         guard let badgeView = sender.view as? FilterBadge else { return }
+        // 현재 선택된 카테고리 외의 전부 삭제
+        categoryBadgeArray.forEach { $0.isSelect = false }
         categoryTapGesture(badgeView)
     }
     
-    public init() {
+    public init(viewModel: BoardViewModel) {
         super.init(frame: .zero)
+        self.viewModel = viewModel
         setUI()
         setLayout()
     }
@@ -38,14 +43,16 @@ public class CateogryView: UIView {
         self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 40)
         self.addSubview(cateogryScrollView)
         
-        for i in 0..<cateogryArray.count {
+        for i in 0..<categoryArray.count {
             let badge = FilterBadge()
-            badge.title = cateogryArray[i]
+            badge.title = categoryArray[i].name
             badge.setType(.outline)
             badge.tag = i
+            badge.isSelect = categoryArray[i].id == viewModel.selectedCategory?.id ? true : false
             
-            if i == 0 {
+            if i == 0 && viewModel.selectedCategory?.id == 0 {
                 badge.isSelect = true
+                viewModel.addSelectCategory(category: "전체", tag: -1)
             }
             
             let gesture = UITapGestureRecognizer(target: self, action: #selector(selectGesuture))

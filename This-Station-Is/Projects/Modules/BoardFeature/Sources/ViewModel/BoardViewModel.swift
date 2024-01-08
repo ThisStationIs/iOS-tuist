@@ -8,17 +8,37 @@
 
 import Foundation
 import Network
+import CommonProtocol
 
 public class BoardViewModel: NSObject {
     
     var boardArray: [Post] = []
     var detailBoardData: DetailPost!
-    var lineInfo: [Lines] = []
     var commentData: [Comments] = []
     var uploadBoardData: [String: Any] = [:]
     
-    var selectedLineArray: [Lines] = []
-    var selectedCategoryArray: [String] = []
+    var selectedLineArray: [DataManager.Line] = [] {
+        didSet {
+            print("selectedLine 변경 \(selectedLineArray)")
+            let encoder = JSONEncoder()
+            if let encoded = try? encoder.encode(selectedLineArray){
+                UserDefaults.standard.setValue(encoded, forKey: "selectedLineArray")
+            }
+        }
+    }
+    
+    var selectedCategory: CategoryData? {
+        didSet {
+            print("selectedCategory 변경 \(selectedCategory)")
+            // 카테고리 UserDefault 에 저장
+            let encoder = JSONEncoder()
+            // encoded는 Data형
+            if let encoded = try? encoder.encode(selectedCategory) {
+                UserDefaults.standard.setValue(encoded, forKey: "selectedCategory")
+            }
+        }
+    }
+//    var selectedCategory: [String] = []
     var canSelect: Bool = false
     
     // eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDI6MzY6MDQiLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI5IDAyOjM2OjA0In0.emd0bOvM077ExVd4XdqrfkPhhlcKCSoupzAYSdwEbPqPOJOavYBFTc1I6dqGcdMo5UQTah-NFjhcZ241pXvX8g
@@ -29,7 +49,7 @@ public class BoardViewModel: NSObject {
     }
     
     // 선택한 호선 저장
-    public func addSelectLine(lineInfo: Lines, tag: Int) {
+    public func addSelectLine(lineInfo: DataManager.Line, tag: Int) {
         // 5개만 선택 가능하도록
         if selectedLineArray.count < 5 {
             selectedLineArray.append(lineInfo)
@@ -42,7 +62,7 @@ public class BoardViewModel: NSObject {
     }
     
     // 선택한 호선 삭제
-    public func removeSelectLine(lineInfo: Lines, tag: Int) {
+    public func removeSelectLine(lineInfo: DataManager.Line, tag: Int) {
         canSelect = true
         selectedLineArray = selectedLineArray.filter { $0.id != lineInfo.id }
         
@@ -51,49 +71,12 @@ public class BoardViewModel: NSObject {
     
     // 선택한 카테고리 저장
     public func addSelectCategory(category: String, tag: Int) {
-        if category != "전체" {
-            selectedCategoryArray.append(category)
-            print("👾 추가 완료 : \(selectedCategoryArray)")
-        } else {
-            selectedCategoryArray.removeAll()
-        }
-    }
-    
-    // 선택한 카테고리 삭제, 전체 선택 시 전부 삭제
-    public func removeSelectCategory(category: String, tag: Int) {
-        // 전체 선택 시 선택한 카테고리 전부 해제
-        if tag == 0 {
-            selectedCategoryArray.removeAll()
-        } else {
-            selectedCategoryArray = selectedCategoryArray.filter { $0 != category }
-        }
-        
-        print("🗑 삭제 완료 : \(selectedCategoryArray)")
+        selectedCategory = CategoryData(id: tag, name: category)
+        print("👾 추가 완료 : \(selectedCategory)")
     }
 }
 
 extension BoardViewModel {
-    // 호선 정보 가져오기
-    public func getSubwayLine(completion: @escaping (() -> ())) {
-        // /api/v1/subway/lines
-        APIServiceManager().request(with: getLine()) { result in
-            switch result {
-            case .success(let success):
-                self.lineInfo = success.data.lines
-                DispatchQueue.main.async {
-                    completion()
-                }
-            case .failure(let failure):
-                print("### failure is \(failure)")
-            }
-        }
-    }
-    
-    private func getLine() -> Endpoint<SubwayLineModel> {
-        return Endpoint(
-            path: "api/v1/subway/lines"
-        )
-    }
     
     // 게시판 리스트 가져오기
     public func getBoardData(completion: @escaping (() -> ())) {
@@ -217,6 +200,58 @@ extension BoardViewModel {
             path: "api/v1/post/\(id)/comment",
             method: .post,
             bodyParameters: commentData,
+            headers: headers
+        )
+    }
+    
+    // 필터 적용
+    public func getFilterBoardData(keyword: String, categoryId: Int, subwayLineIds: [Int], completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: getFilterData(keyword: keyword, categoryId: categoryId, subwayLineIds: subwayLineIds.first ?? 0)) { result in
+            switch result {
+            case .success(let success):
+                self.boardArray = success.data.posts
+//                self.detailBoardData = success.data
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func getFilterData(keyword: String, categoryId: Int, subwayLineIds: Int) -> Endpoint<ResponseWrapper<FilterPostsData>> {
+        
+        let headers: [String: String] = [
+            "Content-Type": "application/json"
+        ]
+        
+        var path = "api/v1/filter/posts"
+        
+//        // 키워드가 있으면
+//        if !keyword.isEmpty {
+//            // ?keyword
+//            path += "keyword=\(keyword)"
+//        }
+//
+//        // categoryId가 전체가 아니면
+//        if categoryId != -1 {
+//            // 키워드가 비어있지 않으면 & 추가
+//            path += "\(!keyword.isEmpty ? "&" : "")categoryId=\(categoryId)"
+//        }
+//
+//        print("❗❗\(path)")
+    
+        
+        let queryItems = [URLQueryItem(name: "keyword", value: "\(keyword)"), URLQueryItem(name: "categoryId", value: "\(categoryId)")]
+        var urlComps = URLComponents(string: path)!
+        urlComps.queryItems = queryItems
+        let result = urlComps.url!
+        
+        print(result)
+        
+        return Endpoint(
+            path: "\(result)",
             headers: headers
         )
     }

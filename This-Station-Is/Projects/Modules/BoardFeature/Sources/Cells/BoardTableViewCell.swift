@@ -8,6 +8,7 @@
 
 import UIKit
 import UI
+import CommonProtocol
 
 public class BoardTableViewCell: UITableViewCell {
     
@@ -63,7 +64,7 @@ public class BoardTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    public init(reuseIdentifier: String?, boardData: Post, colorInfos: [Lines]) {
+    public init(reuseIdentifier: String?, boardData: Post, colorInfos: [DataManager.Line]) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
         setLayout()
@@ -74,7 +75,7 @@ public class BoardTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setData(boardData: Post, colorInfos: [Lines]) {
+    private func setData(boardData: Post, colorInfos: [DataManager.Line]) {
         print(boardData)
         
         /*

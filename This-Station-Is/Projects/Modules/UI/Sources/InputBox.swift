@@ -76,7 +76,10 @@ public class InputBox: UIView {
 
 public extension InputBox {
     func setTextFieldPlaceholder(placeholder: String) {
-        textField.placeholder = placeholder
+        textField.attributedPlaceholder = NSAttributedString(
+            string: placeholder,
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.textTeritory]
+        )
     }
     
     func setErrorText(_ error: String) {

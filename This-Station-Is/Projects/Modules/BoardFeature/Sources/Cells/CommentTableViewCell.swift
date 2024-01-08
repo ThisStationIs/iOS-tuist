@@ -46,6 +46,7 @@ class CommentTableViewCell: UITableViewCell {
     
     public init(reuseIdentifier: String?, commentData: Comment) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        self.commentData = commentData
         setUI()
         setLayout()
         setData(commentData: commentData)
@@ -87,11 +88,11 @@ class CommentTableViewCell: UITableViewCell {
     private func setData(commentData: Comment) {
         /*
          "commentId": 1,
-                 "nickname": "밝은고양이",
-                 "content": "분실물센터 확인해보셨나요?",
-                 "isReported": false,
-                 "createdAt": "2023-12-27T03:42:22",
-                 "lastUpdatedAt": "2023-12-27T03:42:22"
+         "nickname": "밝은고양이",
+         "content": "분실물센터 확인해보셨나요?",
+         "isReported": false,
+         "createdAt": "2023-12-27T03:42:22",
+         "lastUpdatedAt": "2023-12-27T03:42:22"
          */
         profileName.text = commentData.nickname
         commentLabel.text = commentData.content
@@ -104,6 +105,7 @@ class CommentTableViewCell: UITableViewCell {
         [
             profileImageView,
             profileName,
+            moreButton,
             commentLabel,
             writeDate
         ].forEach {
@@ -120,6 +122,12 @@ class CommentTableViewCell: UITableViewCell {
         profileName.snp.makeConstraints {
             $0.left.equalTo(profileImageView.snp.right).offset(8)
             $0.centerY.equalTo(profileImageView)
+        }
+        
+        moreButton.snp.makeConstraints {
+            $0.top.equalTo(profileName.snp.top)
+            $0.trailing.equalToSuperview()
+            $0.width.height.equalTo(24)
         }
         
         commentLabel.snp.makeConstraints {

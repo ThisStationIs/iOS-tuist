@@ -11,6 +11,7 @@ import SnapKit
 import Then
 import UI
 import HomeFeature
+import CommonProtocol
 
 public class BoardViewController: UIViewController {
     
@@ -23,7 +24,7 @@ public class BoardViewController: UIViewController {
         $0.separatorStyle = .none
     }
     
-    private lazy var categoryView = CateogryView().then {
+    private lazy var categoryView = CateogryView(viewModel: viewModel).then {
         $0.categoryTapGesture = categoryTapGesture
     }
     
@@ -44,11 +45,30 @@ public class BoardViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // TODO: 스크롤 올리면 내려오지 않음 문제 해결 필요
-//        self.navigationController?.hidesBarsOnSwipe = true
+        //        self.navigationController?.hidesBarsOnSwipe = true
         self.changeStatusBarBgColor(bgColor: .white)
+        self.navigationController?.navigationBar.barTintColor = .white
         
-        viewModel.getBoardData {
-            self.mainBoardTableView.reloadData()
+        // UserDefault 에서 값 가져오기
+        if let savedData = UserDefaults.standard.object(forKey: "selectedCategory") as? Data {
+            if let savedObject = try? JSONDecoder().decode(CategoryData.self, from: savedData) {
+                self.viewModel.selectedCategory = savedObject
+            }
+        }
+        
+        print(self.viewModel.selectedCategory)
+        
+        // TODO: 호선 선택 저장된 배열이 안 옴 ㅠ
+        if let savedData = UserDefaults.standard.object(forKey: "selectedLineArray") as? Data {
+            if let savedObject = try? JSONDecoder().decode([DataManager.Line].self, from: savedData){
+                self.viewModel.selectedLineArray = savedObject
+            }
+        }
+        
+        print(self.viewModel.selectedLineArray)
+        
+        DispatchQueue.main.async {
+            self.getFilterData()
         }
     }
     
@@ -66,10 +86,8 @@ public class BoardViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.getSubwayLine { [self] in
-            setUI()
-            setLayout()
-        }
+        setUI()
+        setLayout()
 //        viewModel.getBoardData { [self] in
 //
 //        }
@@ -89,15 +107,27 @@ public class BoardViewController: UIViewController {
     
     private func categoryTapGesture(badgeView: FilterBadge) {
         badgeView.isSelect.toggle()
-        
-        badgeView.isSelect ? viewModel.addSelectCategory(category: categoryView.cateogryArray[badgeView.tag], tag: badgeView.tag) : viewModel.removeSelectCategory(category: categoryView.cateogryArray[badgeView.tag], tag: badgeView.tag)
-        
-        // 태그가 첫번째 태그를 선택한게 아니면 첫번째 태그 삭제
-        if badgeView.tag == 0 {
-            categoryView.categoryBadgeArray.forEach { $0.isSelect = false }
-            categoryView.categoryBadgeArray[0].isSelect = true
-        } else {
-            categoryView.categoryBadgeArray[0].isSelect = false
+        if badgeView.isSelect {
+            if badgeView.tag == 0 {
+                viewModel.addSelectCategory(category: "전체", tag: -1)
+            } else {
+                viewModel.addSelectCategory(category: categoryView.categoryArray[badgeView.tag].name, tag: categoryView.categoryArray[badgeView.tag].id)
+            }
+            getFilterData()
+        }
+    }
+    
+    private func getFilterData() {
+        // 선택 되어있는 호선 id만 가져오기
+        let selectedLineId: [Int] = viewModel.selectedLineArray.map { $0.id }
+        // 선택 되어있는 카테고리 가져오기
+        let selectedCategory: Int = viewModel.selectedCategory?.id ?? 10
+
+        // 필터 적용된 데이터?
+        viewModel.getFilterBoardData(keyword: "", categoryId: selectedCategory, subwayLineIds: selectedLineId) {
+            DispatchQueue.main.async {
+                self.mainBoardTableView.reloadData()
+            }
         }
     }
     
@@ -163,13 +193,13 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         } else {
             let post = viewModel.boardArray[indexPath.row - 1]
-            let identifier = "LIST_\(indexPath.row)_\(post.postId)_\(post.commentCount)"
+            let identifier = "LIST_\(indexPath.row)_\(post.postId)_\(post.commentCount)_\(self.viewModel.boardArray.count)"
             
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell
             }
             
-            let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post, colorInfos: viewModel.lineInfo)
+            let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post, colorInfos: DataManager.shared.lineInfos)
            
             
             return cell

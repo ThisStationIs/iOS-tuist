@@ -53,8 +53,14 @@ class MainTabBarController: UITabBarController {
             NSAttributedString.Key.foregroundColor : UIColor.white
         ]
         navigationBarAppearance.backgroundColor = UIColor.white
+        navigationBarAppearance.backgroundImage = UIImage()
+        navigationBarAppearance.shadowImage = UIImage()
+        
         UINavigationBar.appearance().standardAppearance = navigationBarAppearance
         UINavigationBar.appearance().compactAppearance = navigationBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navigationBarAppearance
+//        UINavigationBar.appearance().isTranslucent = false
+        UINavigationBar.appearance().clipsToBounds = true
+
     }
 }

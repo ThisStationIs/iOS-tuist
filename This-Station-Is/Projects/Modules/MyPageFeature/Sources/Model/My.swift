@@ -34,11 +34,20 @@ public struct MyCommentData: Decodable {
 }
 
 public struct Comments: Decodable {
+    /*
+     "commentId": 0,
+          "postId": 0,
+          "postTitle": "string",
+          "content": "string",
+          "isBlocked": true,
+          "likeCount": 0,
+          "createdAt": "2024-01-06T18:25:25.961Z",
+          "lastUpdatedAt": "2024-01-06T18:25:25.961Z"
+     */
     let commentId: Int
     let postId: Int
+    let postTitle: String
     let content: String
-    let authorNickname: String
-    let isDeleted: Bool
     let isBlocked: Bool
     let likeCount: Int
     let createdAt: String

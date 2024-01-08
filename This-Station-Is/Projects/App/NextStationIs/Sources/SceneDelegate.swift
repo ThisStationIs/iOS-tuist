@@ -60,3 +60,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
+extension SceneDelegate {
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
+        guard let components = NSURLComponents(url: url, resolvingAgainstBaseURL: true),
+              let path = components.path,
+              let params = components.queryItems else {
+            print("Invalid URL or path missing")
+            return
+        }
+
+        if path == "new-password" {
+            DispatchQueue.main.async {
+                let resetPasswordViewController = InputNewPasswordViewController()
+                self.window?.rootViewController = resetPasswordViewController
+                self.window?.makeKeyAndVisible()
+            }
+        }
+    }
+}

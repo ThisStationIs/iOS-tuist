@@ -139,3 +139,7 @@ struct UploadBoardResponse: Decodable {
     let createdAt: String
 }
 
+struct CategoryData: Encodable, Decodable {
+    let id: Int
+    let name: String
+}

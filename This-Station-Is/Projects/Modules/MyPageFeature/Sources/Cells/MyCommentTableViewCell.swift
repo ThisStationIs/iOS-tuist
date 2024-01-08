@@ -47,7 +47,7 @@ class MyCommentTableViewCell: UITableViewCell {
     private func setData(data: Comments) {
         contentLabel.text = "\"\(data.content)\""
         // TODO: API 에 제목도 추가 ..?
-        titleLabel.text = "[\(data.authorNickname)]"
+        titleLabel.text = "[\(data.postTitle)]"
         writeDate.text = replaceDateFormatter(date: data.lastUpdatedAt)
     }
     

@@ -8,6 +8,7 @@
 
 import UIKit
 import UI
+import CommonProtocol
 
 class SelectSubwayLineViewController: UIViewController {
     
@@ -57,13 +58,14 @@ class SelectSubwayLineViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = leftBarButton
         
         // 호선 정보 가져오기
-        viewModel.getSubwayLine {
-            self.setUI()
-            self.setLayout()
-        }
+        self.setUI()
+        self.setLayout()
     }
     
     @objc func selectLeftBarButton() {
+        // 적용 버튼을 누르지 않으면 초기화
+        viewModel.selectedLineArray = []
+        lineNameViewArray = []
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -73,8 +75,8 @@ class SelectSubwayLineViewController: UIViewController {
        
         // 호선 저장
         sender.isSelected ?
-        viewModel?.addSelectLine(lineInfo: viewModel.lineInfo[sender.tag], tag: sender.tag) :
-        viewModel?.removeSelectLine(lineInfo: viewModel.lineInfo[sender.tag], tag: sender.tag)
+        viewModel?.addSelectLine(lineInfo: DataManager.shared.lineInfos[sender.tag], tag: sender.tag) :
+        viewModel?.removeSelectLine(lineInfo: DataManager.shared.lineInfos[sender.tag], tag: sender.tag)
         
         // 선택된 호선이 5개 이상이면
         if !viewModel.canSelect {
@@ -88,16 +90,19 @@ class SelectSubwayLineViewController: UIViewController {
             return
         }
         
-        lineNameViewArray[sender.tag].backgroundColor = sender.isSelected ? UIColor(hexCode: viewModel.lineInfo[sender.tag].colorCode, alpha: 0.1) : .white
+        lineNameViewArray[sender.tag].backgroundColor = sender.isSelected ? UIColor(hexCode: DataManager.shared.lineInfos[sender.tag].colorCode, alpha: 0.1) : .white
         lineNameViewArray[sender.tag].layer.borderWidth = sender.isSelected ? 0 : 1
         
         let titleLabel = lineNameViewArray[sender.tag].subviews[0] as! UILabel
-        titleLabel.textColor = sender.isSelected ? UIColor(hexCode: viewModel.lineInfo[sender.tag].colorCode) : .textTeritory
+        titleLabel.textColor = sender.isSelected ? UIColor(hexCode: DataManager.shared.lineInfos[sender.tag].colorCode) : .textTeritory
     }
     
     @objc func selectApplyButton() {
+        // 호선 정보 저장된 게시글 목록 불러오기
+        
         // 적용 버튼
-        self.navigationController?.popViewController(animated: true   )
+        
+        self.navigationController?.popViewController(animated: true)
     }
     
     private func setUI() {
@@ -113,7 +118,7 @@ class SelectSubwayLineViewController: UIViewController {
         }
         
         // 호선 뷰 만들기
-        for i in 0..<viewModel.lineInfo.count {
+        for i in 0..<DataManager.shared.lineInfos.count {
             let lineButton = UIButton()
             lineButton.layer.cornerRadius = 32 / 2
             lineButton.layer.masksToBounds = true
@@ -123,7 +128,7 @@ class SelectSubwayLineViewController: UIViewController {
             lineButton.addTarget(self, action: #selector(selectLineButton), for: .touchUpInside)
             
             let lineLabel = UILabel()
-            lineLabel.text = viewModel.lineInfo[i].name
+            lineLabel.text = DataManager.shared.lineInfos[i].name
             lineLabel.textColor = .textTeritory
             lineLabel.font = UIFont.systemFont(ofSize: 12, weight: .medium)
             lineButton.addSubview(lineLabel)
@@ -142,11 +147,11 @@ class SelectSubwayLineViewController: UIViewController {
             // 현재 선택되어있는 호선 표시
             for j in 0..<viewModel.selectedLineArray.count {
                 // id가 같으면 선택 처리
-                if viewModel.selectedLineArray[j].id == viewModel.lineInfo[i].id {
+                if viewModel.selectedLineArray[j].id == DataManager.shared.lineInfos[i].id {
                     lineButton.isSelected = true
                     // 배경 색, 텍스트 색 변경
-                    lineLabel.textColor = UIColor(hexCode: viewModel.lineInfo[i].colorCode)
-                    lineButton.backgroundColor = UIColor(hexCode: viewModel.lineInfo[i].colorCode, alpha: 0.1)
+                    lineLabel.textColor = UIColor(hexCode: DataManager.shared.lineInfos[i].colorCode)
+                    lineButton.backgroundColor = UIColor(hexCode: DataManager.shared.lineInfos[i].colorCode, alpha: 0.1)
                     
                     lineButton.layer.borderWidth = 0
                 }

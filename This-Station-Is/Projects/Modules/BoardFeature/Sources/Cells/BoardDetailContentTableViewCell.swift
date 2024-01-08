@@ -8,6 +8,7 @@
 
 import UIKit
 import UI
+import CommonProtocol
 
 class BoardDetailContentTableViewCell: UITableViewCell {
     
@@ -108,6 +109,12 @@ class BoardDetailContentTableViewCell: UITableViewCell {
         
         profileName.text = detailData.authorNickname
         lineCategoryBadge.title = detailData.subwayLineName
+        for colorInfo in DataManager.shared.lineInfos {
+            if colorInfo.name == detailData.subwayLineName {
+                lineCategoryBadge.backgroundColor = UIColor(hexCode: colorInfo.colorCode).withAlphaComponent(0.1)
+                lineCategoryBadge.badgeTitleLabel.textColor = UIColor(hexCode: colorInfo.colorCode)
+            }
+        }
         cateogryBadge.title = detailData.categoryName
         titleLabel.text = detailData.title
         contentLabel.text = detailData.content

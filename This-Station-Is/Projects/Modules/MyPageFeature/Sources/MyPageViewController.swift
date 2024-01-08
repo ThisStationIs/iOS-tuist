@@ -64,6 +64,11 @@ public class MyPageViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         setLayout()
+        setData()
+    }
+    
+    private func setData() {
+        profileNameLabel.text = UserDefaults.standard.string(forKey: "nickName")
     }
     
     private func setUI() {

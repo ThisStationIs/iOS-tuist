@@ -43,11 +43,7 @@ public class BoardViewModel: NSObject {
     var canSelect: Bool = false
     
     // eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDI6MzY6MDQiLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI5IDAyOjM2OjA0In0.emd0bOvM077ExVd4XdqrfkPhhlcKCSoupzAYSdwEbPqPOJOavYBFTc1I6dqGcdMo5UQTah-NFjhcZ241pXvX8g
-    var ACCESS_TOKEN: String = "" {
-        didSet {
-            UserDefaults.standard.string(forKey: "accessToken")
-        }
-    }
+    var ACCESS_TOKEN: String = UserDefaults.standard.string(forKey: "accessToken") ?? ""
     
     // 선택한 호선 저장
     public func addSelectLine(lineInfo: DataManager.Line, tag: Int) {
@@ -206,7 +202,7 @@ extension BoardViewModel {
     }
     
     // 필터 적용
-    public func getFilterBoardData(keyword: String, categoryId: Int, subwayLineIds: [Int], completion: @escaping (() -> ())) {
+    public func getFilterBoardData(keyword: String, categoryId: Int, subwayLineIds: [String], completion: @escaping (() -> ())) {
         APIServiceManager().request(with: getFilterData(keyword: keyword, categoryId: categoryId, subwayLineIds: subwayLineIds)) { result in
             switch result {
             case .success(let success):
@@ -221,15 +217,18 @@ extension BoardViewModel {
         }
     }
     
-    private func getFilterData(keyword: String, categoryId: Int, subwayLineIds: [Int]) -> Endpoint<ResponseWrapper<FilterPostsData>> {
+    private func getFilterData(keyword: String, categoryId: Int, subwayLineIds: [String]) -> Endpoint<ResponseWrapper<FilterPostsData>> {
+        
+        let joinLineIds = subwayLineIds.joined(separator: ",")
         
         let headers: [String: String] = [
             "Content-Type": "application/json"
         ]
         
-        print("api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(subwayLineIds)&sortBy=RECENT&page=&size=")
+        print("api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(joinLineIds)&sortBy=RECENT&page=&size=")
+        
         return Endpoint(
-            path: "api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(subwayLineIds)&sortBy=RECENT&page=&size=",
+            path: "api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(joinLineIds)&sortBy=RECENT&page=&size=",
             headers: headers
         )
     }

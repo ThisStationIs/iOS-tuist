@@ -14,11 +14,7 @@ public class ReportViewModel: NSObject {
     var reasonData: [ReportReason] = []
     
     //"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDI6MzY6MDQiLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI5IDAyOjM2OjA0In0.emd0bOvM077ExVd4XdqrfkPhhlcKCSoupzAYSdwEbPqPOJOavYBFTc1I6dqGcdMo5UQTah-NFjhcZ241pXvX8g"
-    var ACCESS_TOKEN: String = "" {
-        didSet {
-            UserDefaults.standard.string(forKey: "accessToken")
-        }
-    }
+    var ACCESS_TOKEN: String = UserDefaults.standard.string(forKey: "accessToken") ?? ""
     
     // 신고 사유
     public func getReportReasonData(completion: @escaping (() -> ())) {

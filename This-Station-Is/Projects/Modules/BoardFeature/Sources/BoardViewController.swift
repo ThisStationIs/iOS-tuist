@@ -118,7 +118,7 @@ public class BoardViewController: UIViewController {
     
     private func getFilterData() {
         // 선택 되어있는 호선 id만 가져오기
-        let selectedLineId: [Int] = viewModel.selectedLineArray.map { $0.id }
+        let selectedLineId: [String] = viewModel.selectedLineArray.map { "\($0.id)" }
         // 선택 되어있는 카테고리 가져오기
         let selectedCategory: Int = viewModel.selectedCategory?.id ?? 10
 

@@ -9,7 +9,7 @@ let project = Project.makeModule(
     dependencies: [
         .SPM.SnapKit,
         .SPM.Then,
-        .SPM.SwiftyJSON
+        .SPM.SwiftyJSON,
         .SPM.IQKeyboardManager
     ],
     infoPlist: configureInfoPlist()

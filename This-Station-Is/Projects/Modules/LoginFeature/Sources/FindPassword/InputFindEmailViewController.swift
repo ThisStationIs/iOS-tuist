@@ -134,9 +134,11 @@ extension InputFindEmailViewController: UITextFieldDelegate {
         isEnabled: Bool,
         errorText: String?
     ) {
-        bottomButton.isEnabled = isEnabled
-        emailInputBox.isError = !isEnabled
-        guard let errorText = errorText else { return }
-        emailInputBox.setErrorText(errorText)
+        DispatchQueue.main.async {
+            self.bottomButton.isEnabled = isEnabled
+            self.emailInputBox.isError = !isEnabled
+            guard let errorText = errorText else { return }
+            self.emailInputBox.setErrorText(errorText)
+        }
     }
 }

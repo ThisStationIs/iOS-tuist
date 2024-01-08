@@ -232,4 +232,33 @@ extension SignUpViewModel {
         let sendEmailEncrypt: String
     }
 
+    func patchPassword(_ request: PasswordRequest, completion: @escaping ((Bool) -> Void)) {
+        let endpoint = Endpoint<PasswordResponse> (
+            path: "api/v1/user/password",
+            method: .patch,
+            bodyParameters: request
+        )
+        
+        APIServiceManager().request(with: endpoint) { result in
+            switch result {
+            case .success(let _):
+                completion(true)
+            case .failure(let failure):
+                completion(false)
+                print("### patchPassword is failed :\(failure)")
+            }
+        }
+    }
+    
+    struct PasswordRequest: Encodable {
+        let sendEmailEncrypt: String
+        let password: String
+        let passwordConfirm: String
+    }
+    
+    struct PasswordResponse: Decodable {
+        let code: String
+        let message: String
+        let data: String?
+    }
 }

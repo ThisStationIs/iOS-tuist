@@ -50,10 +50,12 @@ class ReportViewController: UIViewController {
     }
     
     @objc func selectReportButton() {
+        
         let alertView = AlertView(title: "신고할까요?", message: "한 번 신고가 접수되면 취소할 수 없으며,\n게시글 내용을 확인할 수 없어요.")
         alertView.addAction(title: "취소", style: .cancel)
         alertView.addAction(title: "신고", style: .destructive, handler: reportHandelr)
         alertView.present()
+        
     }
     
     @objc func selectLeftBarButton() {

@@ -136,9 +136,11 @@ extension InputCertNumberViewController {
         message: String
     ) {
         DispatchQueue.main.async {
+            
             let alert = AlertView(title: title, message: message)
             alert.addAction(title: "확인", style: .default)
             alert.present()
+            
         }
     }
     

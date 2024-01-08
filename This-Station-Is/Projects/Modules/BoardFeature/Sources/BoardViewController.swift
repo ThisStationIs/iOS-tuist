@@ -58,7 +58,6 @@ public class BoardViewController: UIViewController {
         
         print(self.viewModel.selectedCategory)
         
-        // TODO: 호선 선택 저장된 배열이 안 옴 ㅠ
         if let savedData = UserDefaults.standard.object(forKey: "selectedLineArray") as? Data {
             if let savedObject = try? JSONDecoder().decode([DataManager.Line].self, from: savedData){
                 self.viewModel.selectedLineArray = savedObject

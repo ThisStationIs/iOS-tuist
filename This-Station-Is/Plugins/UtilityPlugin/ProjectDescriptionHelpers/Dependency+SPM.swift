@@ -18,5 +18,6 @@ public extension TargetDependency.SPM {
     static let Then = TargetDependency.external(name: "Then")
     static let SnapKit = TargetDependency.external(name: "SnapKit")
     static let SwiftyJSON = TargetDependency.external(name: "SwiftyJSON")
+    static let IQKeyboardManager = TargetDependency.external(name: "IQKeyboardManagerSwift")
 }
 

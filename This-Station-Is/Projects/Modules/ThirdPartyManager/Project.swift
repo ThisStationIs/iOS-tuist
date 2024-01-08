@@ -8,7 +8,8 @@ let project = Project.makeModule(
     deploymentTarget: .iOS(targetVersion: "15.0", devices: [.iphone]),
     dependencies: [
         .SPM.SnapKit,
-        .SPM.Then
+        .SPM.Then,
+        .SPM.IQKeyboardManager
     ],
     infoPlist: configureInfoPlist()
 )

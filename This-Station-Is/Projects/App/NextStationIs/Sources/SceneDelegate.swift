@@ -2,12 +2,18 @@ import UIKit
 import LoginFeature
 import Network
 import CommonProtocol
+import IQKeyboardManagerSwift
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        
+//        IQKeyboardManager.shared.enable = true
+//        IQKeyboardManager.shared.shouldResignOnTouchOutside = true
+        
         // 다크모드 해제
         window?.overrideUserInterfaceStyle = .light
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
@@ -17,7 +23,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         DataManager.shared.getSubwayLine {
             DataManager.shared.getCategory {
                 DispatchQueue.main.async {
-                    //                    self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: SelectLineViewController())
                     self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController()
                     )
                     self.window?.makeKeyAndVisible()

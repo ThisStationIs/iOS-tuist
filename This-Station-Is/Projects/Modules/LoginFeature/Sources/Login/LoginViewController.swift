@@ -156,7 +156,7 @@ extension LoginViewController {
         }
     }
     
-    private func setUserData(
+    public func setUserData(
         _ userId: Int,
         _ nickName: String,
         _ at: String,

@@ -143,6 +143,7 @@ extension SignUpViewModel {
     }
     
     func postSignUp(completion: @escaping (() -> Void)) {
+        print("### model in sign up is \(model)")
         let endpoint = Endpoint<ResponseWrapper<SignUpResponse>> (
             path: "api/v1/user/sign/up",
             method: .post,
@@ -159,6 +160,12 @@ extension SignUpViewModel {
             switch result {
             case .success(let success):
                 print("### success is \(success)")
+                let data = success.data
+                self.setUserData(
+                    data.userId,
+                    data.nickName,
+                    data.accessToken,
+                    data.refreshToken)
                 completion()
             case .failure(let failure):
                 print("### postSignUp is failed :\(failure)")
@@ -176,6 +183,29 @@ extension SignUpViewModel {
     }
     
     struct SignUpResponse: Decodable {
+        let userId: Int
+        let nickName: String
+        let accessToken: String
+        let refreshToken: String
+
+        private enum CodingKeys: String, CodingKey {
+            case userId
+            case nickName = "nickname"
+            case accessToken
+            case refreshToken
+        }
+    }
+    
+    public func setUserData(
+        _ userId: Int,
+        _ nickName: String,
+        _ at: String,
+        _ rt: String
+    ) {
+        UserDefaults.standard.setValue(userId, forKey: "userId")
+        UserDefaults.standard.setValue(nickName, forKey: "nickName")
+        UserDefaults.standard.setValue(at, forKey: "accessToken")
+        UserDefaults.standard.setValue(rt, forKey: "refreshToken")
     }
 }
 
@@ -201,4 +231,5 @@ extension SignUpViewModel {
     struct FindPasswordResponse: Decodable {
         let sendEmailEncrypt: String
     }
+
 }

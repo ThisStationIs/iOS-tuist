@@ -52,7 +52,10 @@ public class LoginViewController: UIViewController {
         super.viewDidLoad()
         setView()
         setLayout()
+        setDelegate()
         setBinding()
+        
+        hideKeyboardWhenTappedAround()
     }
 }
 
@@ -125,6 +128,11 @@ extension LoginViewController {
         }
     }
     
+    private func setDelegate() {
+        idInputBox.textField.delegate = self
+        pwInputBox.textField.delegate = self
+    }
+    
     private func setBinding() {
         loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         joinButton.addTarget(self, action: #selector(joinButtonTapped), for: .touchUpInside)
@@ -178,5 +186,12 @@ extension LoginViewController {
     private func findPwButtonTapped() {
         let nextVC = InputFindEmailViewController()
         self.navigationController?.pushViewController(nextVC, animated: true)
+    }
+}
+
+extension LoginViewController: UITextFieldDelegate {
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

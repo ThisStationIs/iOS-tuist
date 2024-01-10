@@ -30,4 +30,15 @@ extension UIViewController {
         // 여기에 백 버튼을 탭했을 때의 동작을 작성하세요.
         navigationController?.popViewController(animated: true)
     }
+    
+    public func hideKeyboardWhenTappedAround(){
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+//        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc
+    func dismissKeyboard(){
+        view.endEditing(true)
+    }
 }

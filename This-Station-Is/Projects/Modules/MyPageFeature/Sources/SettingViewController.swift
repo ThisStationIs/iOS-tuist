@@ -63,7 +63,8 @@ class SettingViewController: UIViewController {
     }
     
     private func unregister() {
-        
+        let unregisterViewController = UnregisterViewController(viewModel: viewModel)
+        self.navigationController?.pushViewController(unregisterViewController, animated: true)
     }
     
     private func setUI() {

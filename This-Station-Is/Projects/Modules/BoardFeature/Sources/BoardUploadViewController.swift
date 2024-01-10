@@ -74,7 +74,6 @@ public class BoardUploadViewController: UIViewController {
             self.navigationController?.popViewController(animated: true)
             self.dismiss(animated: true)
         }
-        
     }
     
     private func setUI() {

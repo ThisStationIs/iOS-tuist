@@ -120,6 +120,43 @@ extension MyPageViewModel {
             headers: headers
         )
     }
+    
+    // 회원 탈퇴
+    public func deleteUnregisterData(password: String, completion: @escaping ((_ returnType: ReturnType) -> ())) {
+        APIServiceManager().request(with: deleteUnregister(password: password)) { result in
+            switch result {
+            case .success(let success):
+                UserDefaults.standard.setValue(false, forKey: "isLogin")
+                DispatchQueue.main.async {
+                    completion(.success)
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+                DispatchQueue.main.async {
+                    completion(.failure)
+                }
+            }
+        }
+    }
+    
+    private func deleteUnregister(password: String) -> Endpoint<NullResponse> {
+        let headers: [String: String] = [
+            "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
+            "Content-Type": "application/json"
+        ]
+        
+        return Endpoint(
+            path: "api/v1/user",
+            method: .delete,
+            bodyParameters: UnregisterRequest(password: password),
+            headers: headers
+        )
+    }
+    
+    struct UnregisterRequest: Encodable {
+        let password: String
+    }
+    
 }
 
 

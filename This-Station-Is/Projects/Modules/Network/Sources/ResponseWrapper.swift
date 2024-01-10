@@ -19,3 +19,4 @@ public struct ResponseWrapper<Response: Decodable>: Decodable {
         case data
     }
 }
+

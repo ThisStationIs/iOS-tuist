@@ -8,6 +8,7 @@
 
 import UIKit
 import UI
+import CommonProtocol
 
 class MyUploadBoardViewController: UIViewController {
     
@@ -27,10 +28,16 @@ class MyUploadBoardViewController: UIViewController {
         
         self.viewModel = viewModel
         
-        viewModel.getMyUploadBoardData { [self] in
-            viewModel.getSubwayLine { [self] in
-                setUI()
-                setLayout()
+        self.viewModel.getMyUploadBoardData { [self] returnType in
+            setUI()
+            setLayout()
+            
+            if returnType == .failure {
+                let emptyView = EmptyView(message: "글이 존재하지 않습니다.")
+                self.view.addSubview(emptyView)
+                emptyView.snp.makeConstraints {
+                    $0.edges.equalToSuperview()
+                }
             }
         }
     }
@@ -90,7 +97,7 @@ extension MyUploadBoardViewController: UITableViewDelegate, UITableViewDataSourc
             return reuseCell
         }
         
-        let cell = MyUploadBoardTableViewCell.init(reuseIdentifier: identifier, data: data, lineInfo: viewModel.lineInfo)
+        let cell = MyUploadBoardTableViewCell.init(reuseIdentifier: identifier, data: data, lineInfo: DataManager.shared.lineInfos)
         
         return cell
     }

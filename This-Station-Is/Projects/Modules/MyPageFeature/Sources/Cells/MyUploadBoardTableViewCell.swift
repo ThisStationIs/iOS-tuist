@@ -8,6 +8,7 @@
 
 import UIKit
 import UI
+import CommonProtocol
 
 class MyUploadBoardTableViewCell: UITableViewCell {
     
@@ -46,7 +47,7 @@ class MyUploadBoardTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    init(reuseIdentifier: String?, data: Post, lineInfo: [Lines]) {
+    init(reuseIdentifier: String?, data: Post, lineInfo: [DataManager.Line]) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
         setLayout()
@@ -57,7 +58,7 @@ class MyUploadBoardTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setData(data: Post, lineInfo: [Lines]) {
+    private func setData(data: Post, lineInfo: [DataManager.Line]) {
         lineCategoryBadge.title = data.subwayLineName
         for colorInfo in lineInfo {
             if colorInfo.name == data.subwayLineName {

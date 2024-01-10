@@ -22,6 +22,11 @@ public class MyPageViewController: UIViewController {
         $0.textColor = .white
     }
     
+    private lazy var settingButton = UIButton().then {
+        $0.setImage(UIImage(named: "setting"), for: .normal)
+        $0.addTarget(self, action: #selector(selectSettingButton), for: .touchUpInside)
+    }
+    
     private let profileImageView = UIImageView().then {
         $0.image = UIImage(named: "my_profile")
     }
@@ -62,13 +67,21 @@ public class MyPageViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        print("🍅 ACCESS_TOKEN : \(viewModel.ACCESS_TOKEN)")
         setUI()
         setLayout()
         setData()
     }
     
+    @objc func selectSettingButton() {
+        let settingViewController = SettingViewController(viewModel: viewModel)
+        settingViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(settingViewController, animated: true)
+    }
+    
     private func setData() {
         profileNameLabel.text = UserDefaults.standard.string(forKey: "nickName")
+        profileUIDLabel.text = "UID \(UserDefaults.standard.string(forKey: "userId") ?? "")"
     }
     
     private func setUI() {
@@ -77,6 +90,7 @@ public class MyPageViewController: UIViewController {
         
         [
             titleLabel,
+            settingButton,
             profileImageView,
             profileNameLabel,
             profileUIDLabel
@@ -97,6 +111,12 @@ public class MyPageViewController: UIViewController {
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(18)
             $0.leading.equalToSuperview().inset(24)
+        }
+        
+        settingButton.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.top)
+            $0.trailing.equalToSuperview().inset(24)
+            $0.width.height.equalTo(24)
         }
         
         profileImageView.snp.makeConstraints {

@@ -53,3 +53,9 @@ public struct Comments: Decodable {
     let createdAt: String
     let lastUpdatedAt: String
 }
+
+public struct NullResponse: Decodable {
+    let code: String
+    let message: String
+    let data: String?
+}

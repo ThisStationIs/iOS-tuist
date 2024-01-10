@@ -55,7 +55,7 @@ public class Toast: UIView {
             completion()
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             guard let _ = self.superview else { return }
             self.removeFromSuperview()
         }

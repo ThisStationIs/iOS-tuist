@@ -27,9 +27,17 @@ class MyCommentViewController: UIViewController {
         
         self.viewModel = viewModel
         
-        self.viewModel.getMyCommentData { [self] in
+        self.viewModel.getMyCommentData { [self] returnType in
             setUI()
             setLayout()
+            
+            if returnType == .failure {
+                let emptyView = EmptyView(message: "댓글이 존재하지 않습니다.")
+                self.view.addSubview(emptyView)
+                emptyView.snp.makeConstraints {
+                    $0.edges.equalToSuperview()
+                }
+            }
         }
     }
     

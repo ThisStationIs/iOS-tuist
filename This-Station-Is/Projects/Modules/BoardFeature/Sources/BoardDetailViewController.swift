@@ -24,7 +24,7 @@ class BoardDetailViewController: UIViewController {
         $0.backgroundColor = .white
     }
     
-    private let textField = TextField().then {
+    private lazy var textField = TextField().then {
         $0.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 48)
         $0.backgroundColor = .componentTextbox
         $0.underLineView.isHidden = true
@@ -33,6 +33,7 @@ class BoardDetailViewController: UIViewController {
         $0.textColor = .textMain
         $0.layer.cornerRadius = 18
         $0.padding = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+        $0.delegate = self
     }
     
     private lazy var sendButton = UIButton().then {
@@ -171,6 +172,15 @@ class BoardDetailViewController: UIViewController {
         }
     }
 }
+
+
+extension BoardDetailViewController: UITextFieldDelegate {
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
+
 
 extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {

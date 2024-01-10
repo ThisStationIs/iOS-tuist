@@ -39,7 +39,7 @@ public class BoardViewModel: NSObject {
             }
         }
     }
-//    var selectedCategory: [String] = []
+    //    var selectedCategory: [String] = []
     var canSelect: Bool = false
     
     // eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcklkIjoxLCJpc3N1ZWRBdCI6IjIwMjMtMTItMjggMDI6MzY6MDQiLCJleHBpcmF0aW9uQXQiOiIyMDIzLTEyLTI5IDAyOjM2OjA0In0.emd0bOvM077ExVd4XdqrfkPhhlcKCSoupzAYSdwEbPqPOJOavYBFTc1I6dqGcdMo5UQTah-NFjhcZ241pXvX8g
@@ -95,7 +95,7 @@ extension BoardViewModel {
             path: "api/v1/posts"
         )
     }
-     
+    
     // 게시판 상세
     public func getDetailBoardData(id: Int, completion: @escaping (() -> ())) {
         APIServiceManager().request(with: getDetailBoard(id: id)) { result in
@@ -123,7 +123,7 @@ extension BoardViewModel {
             switch result {
             case .success(let success):
                 print(success)
-//                self.detailBoardData = success.data
+                //                self.detailBoardData = success.data
                 DispatchQueue.main.async {
                     completion()
                 }
@@ -176,7 +176,7 @@ extension BoardViewModel {
             switch result {
             case .success(let success):
                 print(success)
-//                self.detailBoardData = success.data
+                //                self.detailBoardData = success.data
                 DispatchQueue.main.async {
                     completion()
                 }
@@ -207,7 +207,7 @@ extension BoardViewModel {
             switch result {
             case .success(let success):
                 self.boardArray = success.data.posts
-//                self.detailBoardData = success.data
+                //                self.detailBoardData = success.data
                 DispatchQueue.main.async {
                     completion()
                 }
@@ -221,15 +221,24 @@ extension BoardViewModel {
         
         let joinLineIds = subwayLineIds.joined(separator: ",")
         
-        let headers: [String: String] = [
-            "Content-Type": "application/json"
-        ]
+        let path = "api/v1/filter/posts"
         
         print("api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(joinLineIds)&sortBy=RECENT&page=&size=")
         
+        let queryItems = [
+            URLQueryItem(name: "keyword", value: "\(keyword)"),
+            URLQueryItem(name: "categoryId", value: "\(categoryId)"),
+            URLQueryItem(name: "subwayLineIds", value: "1,2,3,4,5,6")
+        ]
+        
+        var urlComps = URLComponents(string: path)!
+        urlComps.queryItems = queryItems
+        let result = urlComps.url!
+        
+        print(result)
+        
         return Endpoint(
-            path: "api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(joinLineIds)&sortBy=RECENT&page=&size=",
-            headers: headers
+            path: "\(result)"
         )
     }
 }

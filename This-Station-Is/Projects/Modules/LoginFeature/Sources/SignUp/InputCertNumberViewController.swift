@@ -37,6 +37,7 @@ public class InputCertNumberViewController: UIViewController {
     let viewModel = SignUpViewModel.shared
     
     var sendEmailEncrypt: String = ""
+    var seconsLeft: Int = 60*10
     
     public init() {
         super.init(nibName: nil, bundle: nil)
@@ -57,6 +58,32 @@ public class InputCertNumberViewController: UIViewController {
         setLayout()
         setDelegate()
         setBinding()
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
+    
+    private func timer() {
+        print("### timer")
+        DispatchQueue.main.async {
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
+                // 남은 시간에서 1초 빼기
+                print("### seconsLeft is \(self.seconsLeft)")
+                self.seconsLeft -= 1
+                
+                let minutes = self.seconsLeft/60
+                let seconds = self.seconsLeft%60
+                
+                if self.seconsLeft > 0 {
+                    self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+                }
+                else {
+                    self.timeLabel.text = "00:00"
+                    t.invalidate()
+                }
+            }
+        }
     }
 }
 
@@ -120,11 +147,17 @@ extension InputCertNumberViewController {
     
     @objc
     private func sendButtonClicked() {
+        DispatchQueue.main.async {
+            self.timeLabel.text = "10:00"
+            self.seconsLeft = 60*10
+        }
         viewModel.postCertNumber(input: viewModel.model.email) { response in
             guard response.sendCount < 10 else {
                 self.showAlertView(title: "인증번호 발송 횟수 초과", message: "10분 뒤 재시도해주세요.")
                 return
             }
+            
+            self.timer()
             
             self.showAlertView(title: "인증메일 발송", message: "인증메일이 발송되었습니다.")
             self.sendEmailEncrypt = response.sendEmailEncrypt

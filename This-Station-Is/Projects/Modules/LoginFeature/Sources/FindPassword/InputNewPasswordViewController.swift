@@ -39,6 +39,15 @@ public class InputNewPasswordViewController: UIViewController {
     }
     
     let viewModel = InputPasswordViewModel()
+    let signUpViewModel = SignUpViewModel.shared
+    
+    var encryptKey: String = ""
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavigation(tintColor: .textMain)
+        setNoti()
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +55,11 @@ public class InputNewPasswordViewController: UIViewController {
         setLayout()
         setDelegate()
         setBinding()
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeNoti()
     }
 }
 
@@ -132,6 +146,7 @@ extension InputNewPasswordViewController {
     private func setBinding() {
         passwordInputBoxHideButton.addTarget(self, action: #selector(passwordInputBoxHideButtonTapped), for: .touchUpInside)
         passwordReInputBoxHideButton.addTarget(self, action: #selector(passwordReInputBoxHideButtonTapped), for: .touchUpInside)
+        bottomButton.addTarget(self, action: #selector(bottomButtonTapped), for: .touchUpInside)
     }
     
     @objc
@@ -142,6 +157,44 @@ extension InputNewPasswordViewController {
     @objc
     private func passwordReInputBoxHideButtonTapped() {
         passwordReInputBoxHideButton.updateIsSecureTextEntry(textField: passwordReInputBox.textField)
+    }
+    
+    @objc
+    private func bottomButtonTapped() {
+        guard let pw = passwordInputBox.textField.text,
+              let pwConfirmed = passwordReInputBox.textField.text else { return }
+        
+        signUpViewModel.patchPassword(SignUpViewModel.PasswordRequest(
+            sendEmailEncrypt: self.encryptKey,
+            password: pw,
+            passwordConfirm: pwConfirmed)) { res in
+                if res {
+                    DispatchQueue.main.async {
+                        let nextVC = FinishChangePasswordViewController()
+                        self.navigationController?.pushViewController(nextVC, animated: true)
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        let alertView = AlertView(title: "에러", message: "문제가 발생했어요.\n문제가 지속되면 nthis.stop.is.contact@gmail.com으로 문의주세요.")
+                        alertView.addAction(title: "확인", style: .default)
+                        alertView.present()
+                    }
+                }
+            }
+    }
+    
+    private func setNoti() {
+        NotificationCenter.default.addObserver(self, selector: #selector(setEncrypt), name: NSNotification.Name(rawValue: "encryptKeyForFindPassword"), object: encrypt)
+    }
+    
+    @objc
+    private func setEncrypt(_ notification: NSNotification) {
+        self.encryptKey = notification.object as? String ?? ""
+        print("### encrypt is \(encryptKey)")
+    }
+    
+    private func removeNoti() {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "encryptKeyForFindPassword"), object: nil)
     }
 }
 
@@ -155,7 +208,8 @@ extension InputNewPasswordViewController: UITextFieldDelegate {
         
         correctLabelWithLeftImage.updateState(isEnable: viewModel.isCorrect(
             firstInput: passwordInputBox.textField.text ?? "", secondInput: passwordReInputBox.textField.text ?? "") ? true : false)
-        bottomButton.isEnabled = viewModel.isValidCount == 3 ? true : false
+        bottomButton.isEnabled = viewModel.isValidPassword(
+            firstInput: passwordInputBox.textField.text ?? "", secondInput: passwordReInputBox.textField.text ?? "") ? true : false
     }
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {

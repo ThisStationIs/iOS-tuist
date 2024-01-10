@@ -45,7 +45,6 @@ public class ReportViewModel: NSObject {
             switch result {
             case .success(let success):
                 print(success)
-                self.reasonData = success.data.reportReasons
                 DispatchQueue.main.async {
                     completion()
                 }
@@ -55,14 +54,18 @@ public class ReportViewModel: NSObject {
         }
     }
     
-    private func postReport(postId: Int, reportReasonId: Int) -> Endpoint<ResponseWrapper<ReportReasonsData>> {
+    private func postReport(postId: Int, reportReasonId: Int) -> Endpoint<NullResponse> {
         let headers: [String: String] = [
             "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
             "Content-Type": "application/json"
         ]
         
+        let path = "api/v1/post/\(postId)/report/\(reportReasonId)"
+        print(path)
+        
         return Endpoint(
-            path: "api/v1/post/\(postId)/report/\(reportReasonId)",
+            path: path,
+            method: .post,
             headers: headers
         )
     }

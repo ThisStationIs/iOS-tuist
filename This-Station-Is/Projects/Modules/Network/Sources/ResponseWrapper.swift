@@ -20,3 +20,8 @@ public struct ResponseWrapper<Response: Decodable>: Decodable {
     }
 }
 
+public struct NullResponse: Decodable {
+    let code: String
+    let message: String
+    let data: String?
+}

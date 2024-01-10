@@ -75,7 +75,9 @@ class ReportViewController: UIViewController {
         viewModel.postReportData(postId: postId, reportReasonId: selectedReportReasonId) {
             DispatchQueue.main.async {
                 let alertView = AlertView(title: "신고를 접수했어요.", message: "신고하신 게시글은 게시판에서\n더 이상 확인할 수 없어요.")
-                alertView.addAction(title: "확인", style: .default)
+                alertView.addAction(title: "확인", style: .default) {
+                    self.navigationController?.popViewController(animated: true)
+                }
                 alertView.present()
             }
         }

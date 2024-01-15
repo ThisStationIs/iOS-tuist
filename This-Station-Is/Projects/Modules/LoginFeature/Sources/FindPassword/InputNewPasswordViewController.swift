@@ -46,7 +46,7 @@ public class InputNewPasswordViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setNavigation(tintColor: .textMain)
-        setNoti()
+        setEncrypt()
     }
     
     public override func viewDidLoad() {
@@ -55,11 +55,6 @@ public class InputNewPasswordViewController: UIViewController {
         setLayout()
         setDelegate()
         setBinding()
-    }
-    
-    public override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        removeNoti()
     }
 }
 
@@ -183,18 +178,8 @@ extension InputNewPasswordViewController {
             }
     }
     
-    private func setNoti() {
-        NotificationCenter.default.addObserver(self, selector: #selector(setEncrypt), name: NSNotification.Name(rawValue: "encryptKeyForFindPassword"), object: encrypt)
-    }
-    
-    @objc
-    private func setEncrypt(_ notification: NSNotification) {
-        self.encryptKey = notification.object as? String ?? ""
-        print("### encrypt is \(encryptKey)")
-    }
-    
-    private func removeNoti() {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "encryptKeyForFindPassword"), object: nil)
+    private func setEncrypt() {
+        self.encryptKey = UserDefaults.standard.string(forKey: "encryptKeyForFindPassword") ?? ""
     }
 }
 

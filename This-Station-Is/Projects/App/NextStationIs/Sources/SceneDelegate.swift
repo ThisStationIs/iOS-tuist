@@ -91,11 +91,19 @@ extension SceneDelegate {
         }
 
         if host == "new-password" {
+            for param in params {
+                if param.name == "token" { updateAccessToken(param.value ?? "") }
+            }
+            
             DispatchQueue.main.async {
                 let resetPasswordViewController = UINavigationController(rootViewController: InputNewPasswordViewController())
                 self.window?.rootViewController = resetPasswordViewController
                 self.window?.makeKeyAndVisible()
             }
         }
+    }
+    
+    private func updateAccessToken(_ at: String) {
+        UserDefaults.standard.setValue(at, forKey: "accessToken")
     }
 }

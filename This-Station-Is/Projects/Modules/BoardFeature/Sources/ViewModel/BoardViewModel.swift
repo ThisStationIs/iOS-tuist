@@ -223,7 +223,8 @@ extension BoardViewModel {
         
         let joinLineIds = subwayLineIds.joined(separator: ",")
         
-        let fileterOptions = FilterOptions(keyword: keyword, categoryId: "\(categoryId)", subwayLineIds: joinLineIds)
+        // -1 일 경우 전체
+        let fileterOptions = FilterOptions(keyword: keyword, categoryId: categoryId == -1 ? "" : "\(categoryId)", subwayLineIds: joinLineIds)
         
         print(fileterOptions)
         
@@ -238,4 +239,37 @@ extension BoardViewModel {
         let categoryId: String
         let subwayLineIds: String
     }
+    
+    // 게시판 수정
+    public func putEditoardData(postId: Int, editData: EditData, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: putEditData(postId: postId, editData: editData)) { result in
+            switch result {
+            case .success(let success):
+                self.getDetailBoardData(id: postId) {
+                    DispatchQueue.main.async {
+                        completion()
+                    }
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func putEditData(postId: Int, editData: EditData) -> Endpoint<NullResponse> {
+        
+        let headers: [String: String] = [
+            "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
+            "Content-Type": "application/json"
+        ]
+        
+        return Endpoint(
+            path: "api/v1/post/\(postId)",
+            method: .put,
+            bodyParameters: editData,
+            headers: headers
+        )
+    }
+    
+   
 }

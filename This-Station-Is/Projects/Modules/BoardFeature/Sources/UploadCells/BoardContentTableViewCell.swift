@@ -47,6 +47,11 @@ class BoardContentTableViewCell: UITableViewCell {
         return text
     }
     
+    public func setDefaultContent(_ content: String) {
+        contentTextView.text = content
+        contentTextView.textViewDidBeginEditing(contentTextView)
+    }
+    
     private func setUI() {
         self.backgroundColor = .white
         self.selectionStyle = .none

@@ -60,9 +60,9 @@ class BoardDetailViewController: UIViewController {
         let leftBarButton = UIBarButtonItem(image: UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(selectLeftBarButton))
         leftBarButton.tintColor = .black
         self.navigationItem.leftBarButtonItem = leftBarButton
-    
+        
         let moreButton = UIBarButtonItem(image: UIImage(named: "more")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectMoreButton))
-
+        
         self.navigationItem.rightBarButtonItem = moreButton
     }
     
@@ -72,6 +72,11 @@ class BoardDetailViewController: UIViewController {
             setUI()
             setLayout()
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        detilaTableView.reloadData()
     }
     
     @objc func selectSendButton() {
@@ -98,25 +103,28 @@ class BoardDetailViewController: UIViewController {
         let userId = UserDefaults.standard.integer(forKey: "userId")
         if viewModel.detailBoardData.userId == userId {
             let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-                    let editAction = UIAlertAction(title: "수정하기", style: .default)
-                    let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
-                    alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
-                        action in
-                             // Called when user taps outside
-                    }))
-                    alertView.addAction(editAction)
-                    alertView.addAction(deleteAction)
-                    
-                    self.present(alertView, animated: true)
+            let editAction = UIAlertAction(title: "수정하기", style: .default, handler: boardEditHandler)
+            let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
+            alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
+                action in
+                // Called when user taps outside
+            }))
+            alertView.addAction(deleteAction)
+            // 댓글이 하나라도 달리면 수정 안됨
+            if viewModel.detailBoardData.comments.count < 1 {
+                alertView.addAction(editAction)
+            }
+            
+            self.present(alertView, animated: true)
         } else {
             let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-                    let editAction = UIAlertAction(title: "신고하기", style: .default, handler: reportHandler)
-                    alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
-                        action in
-                             // Called when user taps outside
-                    }))
-                    alertView.addAction(editAction)
-                    self.present(alertView, animated: true)
+            let editAction = UIAlertAction(title: "신고하기", style: .default, handler: reportHandler)
+            alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
+                action in
+                // Called when user taps outside
+            }))
+            alertView.addAction(editAction)
+            self.present(alertView, animated: true)
         }
     }
     
@@ -138,14 +146,20 @@ class BoardDetailViewController: UIViewController {
         
         self.view.addSubview(detilaTableView)
         self.view.addSubview(bottomView)
-      
+        
         [
             textField,
             sendButton
         ].forEach {
             bottomView.addSubview($0)
         }
-
+    }
+    
+    private func boardEditHandler(_ action: UIAlertAction) {
+        // 수정
+        let boardUploadViewController = UINavigationController(rootViewController: BoardUploadViewController(viewModel: viewModel, uploadType: .edit))
+        boardUploadViewController.modalPresentationStyle = .fullScreen
+        self.present(boardUploadViewController, animated: true)
     }
     
     private func setLayout() {
@@ -190,7 +204,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
         if section == 0 {
             return 1
         } else {
-            return viewModel.commentData.count
+            return viewModel.detailBoardData.comments.count
         }
     }
     
@@ -200,7 +214,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let identifier = "DETAIL_\(indexPath.section)_\(indexPath.row)_\(viewModel.detailBoardData.commentCount)"
+            let identifier = "DETAIL_\(indexPath.section)_\(indexPath.row)_\(viewModel.detailBoardData.commentCount)_\(viewModel.detailBoardData.lastUpdatedAt)"
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell
             }

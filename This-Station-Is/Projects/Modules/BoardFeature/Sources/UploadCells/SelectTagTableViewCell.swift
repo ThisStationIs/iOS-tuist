@@ -32,12 +32,12 @@ class SelectTagTableViewCell: UITableViewCell {
 //        }
     }
     
-    init(reuseIdentifier: String?, viewModel: BoardViewModel) {
+    init(reuseIdentifier: String?, viewModel: BoardViewModel, defaultTag: String) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         
         self.viewModel = viewModel
         
-        setUI()
+        setUI(defaultTag: defaultTag)
         setLayout()
     }
     
@@ -45,7 +45,7 @@ class SelectTagTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setUI() {
+    private func setUI(defaultTag: String) {
         self.backgroundColor = .white
         self.selectionStyle = .none
         self.contentView.addSubview(selectTagView)
@@ -56,6 +56,10 @@ class SelectTagTableViewCell: UITableViewCell {
             badgeView.setType(.outline)
             badgeView.tag = i
             badgeView.title = tagTitleArray[i]
+            if defaultTag == tagTitleArray[i] {
+                self.viewModel.uploadBoardData["categoryId"] = i + 1
+                badgeView.isSelect = true
+            }
             
             let badgeTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectBadgeTapGesture))
             badgeView.addGestureRecognizer(badgeTapGesture)

@@ -11,6 +11,11 @@ import UI
 
 public class BoardUploadViewController: UIViewController {
     
+    public enum UploadType {
+        case new
+        case edit
+    }
+    
     lazy var mainTableView = UITableView(frame: .zero, style: .grouped).then {
         $0.delegate = self
         $0.dataSource = self
@@ -22,6 +27,7 @@ public class BoardUploadViewController: UIViewController {
     
     var rightBarItemForSetting: UIBarButtonItem!
     var viewModel: BoardViewModel!
+    var uploadType: UploadType = .new
     
     var titleText: String = ""
     var contentText: String = ""
@@ -29,6 +35,12 @@ public class BoardUploadViewController: UIViewController {
     public init(viewModel: BoardViewModel) {
         super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+    }
+    
+    public init(viewModel: BoardViewModel, uploadType: UploadType) {
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
+        self.uploadType = uploadType
     }
     
     required init?(coder: NSCoder) {
@@ -56,8 +68,6 @@ public class BoardUploadViewController: UIViewController {
             self.viewModel.uploadBoardData["content"] = contentCell.getText()
         }
         
-        print("data : \(viewModel.uploadBoardData)")
-        
         // 데이터 세팅
         guard let categoryId = self.viewModel.uploadBoardData["categoryId"] as? Int,
               let subwayLineId = self.viewModel.uploadBoardData["subwayLineId"] as? Int,
@@ -67,12 +77,26 @@ public class BoardUploadViewController: UIViewController {
             return
         }
         
-        let uploadBoardData = UploadBoardData(categoryId: categoryId, subwayLineId: subwayLineId, title: title, content: content)
+        print("data : \(viewModel.uploadBoardData)")
         
-        self.viewModel.postBoardData(uploadData: uploadBoardData) {
-            //
-            self.navigationController?.popViewController(animated: true)
-            self.dismiss(animated: true)
+        // 새로 업로드 시
+        if uploadType == .new {
+            print("uploadType : New")
+            let uploadBoardData = UploadBoardData(categoryId: categoryId, subwayLineId: subwayLineId, title: title, content: content)
+            
+            self.viewModel.postBoardData(uploadData: uploadBoardData) {
+                //
+                self.navigationController?.popViewController(animated: true)
+                self.dismiss(animated: true)
+            }
+        } else {
+            print("uploadType : Edit")
+            let editData = EditData(categoryId: categoryId, subwayLineId: subwayLineId, title: title, content: content)
+            self.viewModel.putEditoardData(postId: viewModel.detailBoardData.postId, editData: editData) {
+                //
+                self.navigationController?.popViewController(animated: true)
+                self.dismiss(animated: true)
+            }
         }
     }
     
@@ -183,17 +207,27 @@ extension BoardUploadViewController: UITableViewDelegate, UITableViewDataSource 
         
         switch indexPath.section {
         case 0:
-            let cell = SelectLineTableViewCell.init(reuseIdentifier: identifier, viewModel: viewModel)
+            let cell = SelectLineTableViewCell.init(
+                reuseIdentifier: identifier,
+                viewModel: viewModel,
+                defaultLine: uploadType == .new ? "" : viewModel.detailBoardData.subwayLineName
+            )
             return cell
         case 1:
-            let cell = SelectTagTableViewCell.init(reuseIdentifier: identifier, viewModel: viewModel)
+            let cell = SelectTagTableViewCell.init(
+                reuseIdentifier: identifier,
+                viewModel: viewModel,
+                defaultTag: uploadType == .new ? "" : viewModel.detailBoardData.categoryName
+            )
             return cell
         case 2:
             let cell = BoardTitleTableViewCell.init(reuseIdentifier: identifier)
+            if uploadType != .new { cell.setDefaultTitle(viewModel.detailBoardData.title) }
             return cell
         case 3:
             let cell = BoardContentTableViewCell.init(reuseIdentifier: identifier)
             cell.delegate = self
+            if uploadType != .new { cell.setDefaultContent(viewModel.detailBoardData.content) }
             return cell
         default:
             return UITableViewCell()

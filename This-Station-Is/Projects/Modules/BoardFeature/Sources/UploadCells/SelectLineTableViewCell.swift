@@ -21,6 +21,7 @@ class SelectLineTableViewCell: UITableViewCell {
     }
     
     var viewModel: BoardViewModel!
+    var menuChildren: [UIMenuElement] = []
     
     lazy var actionClosure = { (action: UIAction) in
         print(action.title)
@@ -31,13 +32,13 @@ class SelectLineTableViewCell: UITableViewCell {
         self.viewModel.uploadBoardData["subwayLineId"] = selectedLine.id
     }
     
-    init(reuseIdentifier: String?, viewModel: BoardViewModel) {
+    init(reuseIdentifier: String?, viewModel: BoardViewModel, defaultLine: String = "") {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         
         self.viewModel = viewModel
         
         // 호선 정보 가져오기
-        setUI()
+        setUI(defaultLine: defaultLine)
         setLayout()
     }
     
@@ -45,15 +46,21 @@ class SelectLineTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setUI() {
+    private func setUI(defaultLine: String) {
         self.backgroundColor = .white
         self.selectionStyle = .none
         self.contentView.addSubview(selectLineView)
         
-        var menuChildren: [UIMenuElement] = []
+     
         menuChildren.append(UIAction(title: "호선을 선택해주세요.", handler: actionClosure))
         for i in 0..<DataManager.shared.lineInfos.count {
-            menuChildren.append(UIAction(title: DataManager.shared.lineInfos[i].name, handler: actionClosure))
+            let action = UIAction(title: DataManager.shared.lineInfos[i].name, handler: actionClosure)
+            print(defaultLine)
+            if DataManager.shared.lineInfos[i].name == defaultLine {
+                action.state = .on
+                self.viewModel.uploadBoardData["subwayLineId"] = DataManager.shared.lineInfos[i].id
+            }
+            menuChildren.append(action)
         }
         
         selectLineView.menu = UIMenu(options: .displayInline, children: menuChildren)

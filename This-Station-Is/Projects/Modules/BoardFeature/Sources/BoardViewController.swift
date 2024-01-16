@@ -88,6 +88,8 @@ public class BoardViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        print("👻👻 This is My Token! : \(viewModel.ACCESS_TOKEN)")
+        
         setUI()
         setLayout()
 //        viewModel.getBoardData { [self] in
@@ -201,7 +203,7 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         } else {
             let post = viewModel.boardArray[indexPath.row - 1]
-            let identifier = "LIST_\(indexPath.row)_\(post.postId)_\(post.commentCount)_\(self.viewModel.boardArray.count)"
+            let identifier = "LIST_\(indexPath.row)_\(post.postId)_\(post.commentCount)_\(self.viewModel.boardArray.count)_\(viewModel.boardArray.description)"
             
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell

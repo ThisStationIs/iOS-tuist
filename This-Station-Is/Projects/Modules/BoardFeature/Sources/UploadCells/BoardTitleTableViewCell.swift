@@ -33,6 +33,10 @@ class BoardTitleTableViewCell: UITableViewCell {
         return text
     }
     
+    public func setDefaultTitle(_ title: String) {
+        titleTextField.text = title
+    }
+    
     private func setUI() {
         self.backgroundColor = .white
         self.selectionStyle = .none

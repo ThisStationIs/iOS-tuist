@@ -176,16 +176,27 @@ extension HomeSearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        filteredPosts = []
-        let searchText = historys[indexPath.row]
-        
-        updateIsHiddenTableViews(true)
-        
-        filteredPosts = posts.filter { post in
-            return post.title.lowercased().contains(searchText.lowercased()) || post.title.initialConsonants().contains(searchText.lowercased())
+        if tableView == searchHistoryTableView {
+            filteredPosts = []
+            let searchText = historys[indexPath.row]
+            
+            updateIsHiddenTableViews(true)
+            
+            filteredPosts = posts.filter { post in
+                return post.title.lowercased().contains(searchText.lowercased()) || post.title.initialConsonants().contains(searchText.lowercased())
+            }
+            searchTableView.reloadData()
+            searchBar.resignFirstResponder()
+        } else {
+            guard filteredPosts.count > 0 else { return }
+            HomeViewModel().getPostDetail(filteredPosts[indexPath.row].postId) { data in
+                print("### data: \(data)")
+                let id = self.filteredPosts[indexPath.row].postId
+                
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: id)
+            }
         }
-        searchTableView.reloadData()
-        searchBar.resignFirstResponder()
+        
     }
 }
 

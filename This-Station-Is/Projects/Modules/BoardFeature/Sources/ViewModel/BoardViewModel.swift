@@ -206,6 +206,7 @@ extension BoardViewModel {
         APIServiceManager().request(with: getFilterData(keyword: keyword, categoryId: categoryId, subwayLineIds: subwayLineIds)) { result in
             switch result {
             case .success(let success):
+                print("board Data : \(success.data.posts)")
                 self.boardArray = success.data.posts
                 //                self.detailBoardData = success.data
                 DispatchQueue.main.async {
@@ -221,24 +222,19 @@ extension BoardViewModel {
         
         let joinLineIds = subwayLineIds.joined(separator: ",")
         
-        let path = "api/v1/filter/posts"
+        let fileterOptions = FilterOptions(keyword: keyword, categoryId: "\(categoryId)", subwayLineIds: joinLineIds)
         
-        print("api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(joinLineIds)&sortBy=RECENT&page=&size=")
-        
-        let queryItems = [
-            URLQueryItem(name: "keyword", value: "\(keyword)"),
-            URLQueryItem(name: "categoryId", value: "\(categoryId)"),
-            URLQueryItem(name: "subwayLineIds", value: "1,2,3,4,5,6")
-        ]
-        
-        var urlComps = URLComponents(string: path)!
-        urlComps.queryItems = queryItems
-        let result = urlComps.url!
-        
-        print(result)
+        print(fileterOptions)
         
         return Endpoint(
-            path: "\(result)"
+            path: "api/v1/filter/posts",
+            queryPrameters: fileterOptions
         )
+    }
+    
+    struct FilterOptions: Encodable {
+        let keyword: String
+        let categoryId: String
+        let subwayLineIds: String
     }
 }

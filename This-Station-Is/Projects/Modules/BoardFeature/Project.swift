@@ -10,7 +10,8 @@ let project = Project.makeModule(
         .Module.ThirdPartyManager,
         .Module.UI,
         .Module.Network,
-        .Module.HomeFeature
+        .Module.HomeFeature,
+        .Module.MyPageFeature
     ],
     infoPlist: configureInfoPlist()
 )

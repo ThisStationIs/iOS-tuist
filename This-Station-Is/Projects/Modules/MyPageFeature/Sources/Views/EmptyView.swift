@@ -9,7 +9,7 @@
 import UIKit
 import UI
 
-class EmptyView: UIView {
+public class EmptyView: UIView {
     
     private let messageLabel = UILabel().then {
         $0.text = ""
@@ -19,7 +19,7 @@ class EmptyView: UIView {
     
     private var emptyMessage: String = ""
     
-    init(message: String) {
+    public init(message: String) {
         super.init(frame: .zero)
         self.emptyMessage = message
         

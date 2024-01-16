@@ -104,7 +104,7 @@ class BoardDetailViewController: UIViewController {
         if viewModel.detailBoardData.userId == userId {
             let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             let editAction = UIAlertAction(title: "수정하기", style: .default, handler: boardEditHandler)
-            let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
+            let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive, handler: boardDeleteHandler)
             alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
                 action in
                 // Called when user taps outside
@@ -139,6 +139,29 @@ class BoardDetailViewController: UIViewController {
         self.navigationController?.pushViewController(reportViewController, animated: true)
     }
     
+    private func boardEditHandler(_ action: UIAlertAction) {
+        // 수정
+        let boardUploadViewController = UINavigationController(rootViewController: BoardUploadViewController(viewModel: viewModel, uploadType: .edit))
+        boardUploadViewController.modalPresentationStyle = .fullScreen
+        self.present(boardUploadViewController, animated: true)
+    }
+    
+    private func boardDeleteHandler(_ action: UIAlertAction) {
+        let alertView = AlertView(title: "삭제할까요?", message: "삭제한 게시글은 다시 볼 수 없어요.")
+        alertView.addAction(title: "취소", style: .cancel)
+        alertView.addAction(title: "삭제", style: .destructive) {
+            // 삭제
+            self.viewModel.deleteBoardData(postId: self.id) {
+                let alertView = AlertView(title: "게시글을 삭제했어요.", message: "")
+                alertView.addAction(title: "확인", style: .default) {
+                    self.navigationController?.popViewController(animated: true)
+                }
+                alertView.present()
+            }
+        }
+        alertView.present()
+    }
+    
     private func setUI() {
         self.navigationItem.title = ""
         self.view.backgroundColor = .white
@@ -153,13 +176,6 @@ class BoardDetailViewController: UIViewController {
         ].forEach {
             bottomView.addSubview($0)
         }
-    }
-    
-    private func boardEditHandler(_ action: UIAlertAction) {
-        // 수정
-        let boardUploadViewController = UINavigationController(rootViewController: BoardUploadViewController(viewModel: viewModel, uploadType: .edit))
-        boardUploadViewController.modalPresentationStyle = .fullScreen
-        self.present(boardUploadViewController, animated: true)
     }
     
     private func setLayout() {

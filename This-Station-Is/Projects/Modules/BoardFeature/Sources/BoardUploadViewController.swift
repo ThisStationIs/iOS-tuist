@@ -92,7 +92,7 @@ public class BoardUploadViewController: UIViewController {
         } else {
             print("uploadType : Edit")
             let editData = EditData(categoryId: categoryId, subwayLineId: subwayLineId, title: title, content: content)
-            self.viewModel.putEditoardData(postId: viewModel.detailBoardData.postId, editData: editData) {
+            self.viewModel.putEditBoardData(postId: viewModel.detailBoardData.postId, editData: editData) {
                 //
                 self.navigationController?.popViewController(animated: true)
                 self.dismiss(animated: true)

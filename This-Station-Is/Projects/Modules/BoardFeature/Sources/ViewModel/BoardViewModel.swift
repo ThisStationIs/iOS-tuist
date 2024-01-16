@@ -240,8 +240,8 @@ extension BoardViewModel {
         let subwayLineIds: String
     }
     
-    // 게시판 수정
-    public func putEditoardData(postId: Int, editData: EditData, completion: @escaping (() -> ())) {
+    // 게시글 수정
+    public func putEditBoardData(postId: Int, editData: EditData, completion: @escaping (() -> ())) {
         APIServiceManager().request(with: putEditData(postId: postId, editData: editData)) { result in
             switch result {
             case .success(let success):
@@ -271,5 +271,32 @@ extension BoardViewModel {
         )
     }
     
+    // 게시글 삭제
+    public func deleteBoardData(postId: Int, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: deleteData(postId: postId)) { result in
+            switch result {
+            case .success(let success):
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func deleteData(postId: Int) -> Endpoint<NullResponse> {
+        
+        let headers: [String: String] = [
+            "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
+            "Content-Type": "application/json"
+        ]
+        
+        return Endpoint(
+            path: "api/v1/post/\(postId)",
+            method: .delete,
+            headers: headers
+        )
+    }
    
 }

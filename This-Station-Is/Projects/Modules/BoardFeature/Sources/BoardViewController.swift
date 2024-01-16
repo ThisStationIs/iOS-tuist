@@ -12,6 +12,7 @@ import Then
 import UI
 import HomeFeature
 import CommonProtocol
+import MyPageFeature
 
 public class BoardViewController: UIViewController {
     
@@ -39,6 +40,8 @@ public class BoardViewController: UIViewController {
         $0.searchTextField.attributedPlaceholder = NSAttributedString(string: "찾으시는게 있나요?", attributes: [NSAttributedString.Key.foregroundColor : UIColor.textSub])
         $0.searchTextField.textColor = .textMain
     }
+    
+    private let emptyView = EmptyView(message: "게시글이 없습니다.")
     
     let viewModel = BoardViewModel()
     
@@ -85,6 +88,8 @@ public class BoardViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        print("👻👻 This is My Token! : \(viewModel.ACCESS_TOKEN)")
+        
         setUI()
         setLayout()
 //        viewModel.getBoardData { [self] in
@@ -121,11 +126,16 @@ public class BoardViewController: UIViewController {
         let selectedLineId: [String] = viewModel.selectedLineArray.map { "\($0.id)" }
         // 선택 되어있는 카테고리 가져오기
         let selectedCategory: Int = viewModel.selectedCategory?.id ?? 10
+        
+        print("selectedCategory : \(selectedCategory)")
+        print("selectedLineId : \(selectedLineId)")
 
         // 필터 적용된 데이터?
         viewModel.getFilterBoardData(keyword: "", categoryId: selectedCategory, subwayLineIds: selectedLineId) {
             DispatchQueue.main.async {
                 self.mainBoardTableView.reloadData()
+
+                
             }
         }
     }
@@ -137,6 +147,7 @@ public class BoardViewController: UIViewController {
         let filterButton = UIBarButtonItem(image: UIImage(named: "filter")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectFilterButton))
 //        self.navigationItem.rightBarButtonItem = filterButton
         self.view.addSubview(mainBoardTableView)
+        mainBoardTableView.backgroundView = emptyView
     }
     
     private func setLayout() {
@@ -192,7 +203,7 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         } else {
             let post = viewModel.boardArray[indexPath.row - 1]
-            let identifier = "LIST_\(indexPath.row)_\(post.postId)_\(post.commentCount)_\(self.viewModel.boardArray.count)"
+            let identifier = "LIST_\(indexPath.row)_\(post.postId)_\(post.commentCount)_\(self.viewModel.boardArray.count)_\(viewModel.boardArray.description)"
             
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell

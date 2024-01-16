@@ -102,6 +102,7 @@ extension BoardViewModel {
             switch result {
             case .success(let success):
                 self.detailBoardData = success.data
+                print("detailBoardData : \(self.detailBoardData)")
                 DispatchQueue.main.async {
                     completion()
                 }
@@ -206,6 +207,7 @@ extension BoardViewModel {
         APIServiceManager().request(with: getFilterData(keyword: keyword, categoryId: categoryId, subwayLineIds: subwayLineIds)) { result in
             switch result {
             case .success(let success):
+                print("board Data : \(success.data.posts)")
                 self.boardArray = success.data.posts
                 //                self.detailBoardData = success.data
                 DispatchQueue.main.async {
@@ -221,24 +223,110 @@ extension BoardViewModel {
         
         let joinLineIds = subwayLineIds.joined(separator: ",")
         
-        let path = "api/v1/filter/posts"
+        // -1 일 경우 전체
+        let fileterOptions = FilterOptions(keyword: keyword, categoryId: categoryId == -1 ? "" : "\(categoryId)", subwayLineIds: joinLineIds)
         
-        print("api/v1/filter/posts?keyword=\(keyword)&categoryId=\(categoryId)&subwayLineIds=\(joinLineIds)&sortBy=RECENT&page=&size=")
-        
-        let queryItems = [
-            URLQueryItem(name: "keyword", value: "\(keyword)"),
-            URLQueryItem(name: "categoryId", value: "\(categoryId)"),
-            URLQueryItem(name: "subwayLineIds", value: "1,2,3,4,5,6")
-        ]
-        
-        var urlComps = URLComponents(string: path)!
-        urlComps.queryItems = queryItems
-        let result = urlComps.url!
-        
-        print(result)
+        print(fileterOptions)
         
         return Endpoint(
-            path: "\(result)"
+            path: "api/v1/filter/posts",
+            queryPrameters: fileterOptions
         )
     }
+    
+    struct FilterOptions: Encodable {
+        let keyword: String
+        let categoryId: String
+        let subwayLineIds: String
+    }
+    
+    // 게시글 수정
+    public func putEditBoardData(postId: Int, editData: EditData, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: putEditData(postId: postId, editData: editData)) { result in
+            switch result {
+            case .success(let success):
+                self.getDetailBoardData(id: postId) {
+                    DispatchQueue.main.async {
+                        completion()
+                    }
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func putEditData(postId: Int, editData: EditData) -> Endpoint<NullResponse> {
+        
+        let headers: [String: String] = [
+            "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
+            "Content-Type": "application/json"
+        ]
+        
+        return Endpoint(
+            path: "api/v1/post/\(postId)",
+            method: .put,
+            bodyParameters: editData,
+            headers: headers
+        )
+    }
+    
+    // 게시글 삭제
+    public func deleteBoardData(postId: Int, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: deleteData(postId: postId)) { result in
+            switch result {
+            case .success(let success):
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func deleteData(postId: Int) -> Endpoint<NullResponse> {
+        
+        let headers: [String: String] = [
+            "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
+            "Content-Type": "application/json"
+        ]
+        
+        return Endpoint(
+            path: "api/v1/post/\(postId)",
+            method: .delete,
+            headers: headers
+        )
+    }
+    
+    // 댓글 삭제
+    public func deleteCommentData(postId: Int, commentId: Int, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: deleteComment(postId: postId, commentId: commentId)) { result in
+            switch result {
+            case .success(let success):
+                self.getDetailBoardData(id: postId) {
+                    DispatchQueue.main.async {
+                        completion()
+                    }
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func deleteComment(postId: Int, commentId: Int) -> Endpoint<NullResponse> {
+        
+        let headers: [String: String] = [
+            "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
+            "Content-Type": "application/json"
+        ]
+        
+        return Endpoint(
+            path: "api/v1/post/\(postId)/comment/\(commentId)",
+            method: .delete,
+            headers: headers
+        )
+    }
+   
 }

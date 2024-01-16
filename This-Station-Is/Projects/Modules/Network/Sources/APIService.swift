@@ -23,9 +23,10 @@ public class APIServiceManager: APIService {
     public func request<R, E>(with endpoint: E, completion: @escaping (Result<R, Error>) -> Void) where R : Decodable, R == E.Response, E : RequestResponsable {
         do {
             let urlRequest = try endpoint.getUrlRequest()
+            print("👀 fullPath : \(urlRequest)")
             session.dataTask(with: urlRequest) {  data, response, error in
                 self.checkError(with: data, response, error, completion: { result in
-                    print("### json: \(JSON(data))")
+//                    print("### json: \(JSON(data))")
                     switch result {
                     case .success(let success):
                         completion(self.decode(data: success))
@@ -70,7 +71,7 @@ public class APIServiceManager: APIService {
     private func decode<T: Decodable>(data: Data) -> Result<T, Error> {
         do {
             let decodedData = try JSONDecoder().decode(T.self, from: data)
-            print("### decodedData is \(decodedData)")
+//            print("### decodedData is \(decodedData)")
             return .success(decodedData)
         } catch {
             return .failure(NetworkError.decodeError)

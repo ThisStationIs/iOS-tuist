@@ -117,6 +117,13 @@ public struct UploadBoardData: Encodable {
     var content: String
 }
 
+public struct EditData: Encodable {
+    let categoryId: Int
+    let subwayLineId: Int
+    let title: String
+    let content: String
+}
+
 struct UploadBoardResponse: Decodable {
     /*
      {

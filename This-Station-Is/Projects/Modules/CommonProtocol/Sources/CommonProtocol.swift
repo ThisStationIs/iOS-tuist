@@ -63,6 +63,9 @@ extension DataManager {
             switch result {
             case .success(let success):
                 self.categoryInfos = success.data.categorys
+                // 처음에 전체 추가
+                let all = Category(id: -1, name: "전체", description: "")
+                self.categoryInfos.insert(all, at: 0)
                 print(self.categoryInfos)
                 completion()
             case .failure(let failure):

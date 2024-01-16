@@ -11,9 +11,10 @@ import UI
 
 class BoardTitleTableViewCell: UITableViewCell {
 
-    private let titleTextField = TextField().then {
+    private lazy var titleTextField = TextField().then {
         $0.attributedPlaceholder = NSAttributedString(string: "제목을 입력해주세요 (최대 20자)", attributes: [NSAttributedString.Key.foregroundColor : UIColor.textTeritory])
         $0.textColor = .textMain
+        $0.delegate = self
     }
     
     init(reuseIdentifier: String?) {
@@ -32,6 +33,10 @@ class BoardTitleTableViewCell: UITableViewCell {
         return text
     }
     
+    public func setDefaultTitle(_ title: String) {
+        titleTextField.text = title
+    }
+    
     private func setUI() {
         self.backgroundColor = .white
         self.selectionStyle = .none
@@ -44,5 +49,12 @@ class BoardTitleTableViewCell: UITableViewCell {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(24)
         }
+    }
+}
+
+extension BoardTitleTableViewCell: UITextFieldDelegate {
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

@@ -55,7 +55,8 @@ public class AlertView: UIView {
     
     public func present() {
         let rootView = UIApplication.shared.keyWindow?.rootViewController?.view
-        rootView?.addSubview(self)
+        guard let window = rootView?.superview?.superview?.superview else { return }
+        window.addSubview(self)
         self.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.trailing.bottom.equalToSuperview()

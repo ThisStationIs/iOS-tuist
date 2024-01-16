@@ -68,6 +68,10 @@ class BoardDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // 키보드
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
         viewModel.getDetailBoardData(id: id) { [self] in
             setUI()
             setLayout()
@@ -77,6 +81,28 @@ class BoardDetailViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         detilaTableView.reloadData()
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            // if keyboard size is not available for some reason, dont do anything
+            return
+        }
+        
+        // move the root view up by the distance of keyboard height
+//        self.view.frame.origin.y = 0 - keyboardSize.height
+        bottomView.snp.updateConstraints {
+            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(keyboardSize.height - 34)
+        }
+    }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+        // move back the root view origin to zero
+//        self.view.frame.origin.y = 0
+        bottomView.snp.updateConstraints {
+            $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
+        }
     }
     
     @objc func selectSendButton() {
@@ -89,6 +115,8 @@ class BoardDetailViewController: UIViewController {
             self.viewModel.getDetailBoardData(id: self.id) {
                 self.viewModel.getCommentData(id: self.id) {
                     self.detilaTableView.reloadData()
+                    self.textField.endEditing(true)
+                    NotificationCenter.default.post(name: UIResponder.keyboardWillHideNotification, object: nil)
                 }
             }
         }
@@ -128,6 +156,10 @@ class BoardDetailViewController: UIViewController {
         }
     }
     
+    @objc func selectViewTapGesture() {
+        textField.endEditing(true)
+    }
+    
     private func reportHandler(_ action: UIAlertAction) {
         var id = 0
         if action.accessibilityLabel ?? "" == "Comment" {
@@ -137,6 +169,16 @@ class BoardDetailViewController: UIViewController {
         }
         let reportViewController = ReportViewController(postId: id)
         self.navigationController?.pushViewController(reportViewController, animated: true)
+    }
+    
+    private func deleteCommentHandler(_ commentId: Int) {
+        print("commentID : \(commentId)")
+        viewModel.deleteCommentData(postId: viewModel.detailBoardData.postId, commentId: commentId) {
+            self.detilaTableView.reloadData()
+            let alertView = AlertView(title: "댓글을 삭제했어요.", message: "")
+            alertView.addAction(title: "확인", style: .default)
+            alertView.present()
+        }
     }
     
     private func boardEditHandler(_ action: UIAlertAction) {
@@ -169,6 +211,9 @@ class BoardDetailViewController: UIViewController {
         
         self.view.addSubview(detilaTableView)
         self.view.addSubview(bottomView)
+        
+        let viewTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectViewTapGesture))
+        self.view.addGestureRecognizer(viewTapGesture)
         
         [
             textField,
@@ -250,6 +295,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.backgroundColor = .white
             cell.selectionStyle = .none
             cell.reportHandler = reportHandler
+            cell.deleteCommentHandler = deleteCommentHandler
             return cell
         }
     }

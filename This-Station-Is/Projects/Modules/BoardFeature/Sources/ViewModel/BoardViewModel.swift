@@ -298,5 +298,35 @@ extension BoardViewModel {
             headers: headers
         )
     }
+    
+    // 댓글 삭제
+    public func deleteCommentData(postId: Int, commentId: Int, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: deleteComment(postId: postId, commentId: commentId)) { result in
+            switch result {
+            case .success(let success):
+                self.getDetailBoardData(id: postId) {
+                    DispatchQueue.main.async {
+                        completion()
+                    }
+                }
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func deleteComment(postId: Int, commentId: Int) -> Endpoint<NullResponse> {
+        
+        let headers: [String: String] = [
+            "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
+            "Content-Type": "application/json"
+        ]
+        
+        return Endpoint(
+            path: "api/v1/post/\(postId)/comment/\(commentId)",
+            method: .delete,
+            headers: headers
+        )
+    }
    
 }

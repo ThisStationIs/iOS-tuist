@@ -43,6 +43,8 @@ class CommentTableViewCell: UITableViewCell {
     
     var commentData: Comment?
     var reportHandler: ((UIAlertAction) -> Void)?
+    var deleteCommentHandler: ((_ commentId: Int) -> Void)?
+    
     
     public init(reuseIdentifier: String?, commentData: Comment) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
@@ -61,7 +63,7 @@ class CommentTableViewCell: UITableViewCell {
         let userId = UserDefaults.standard.integer(forKey: "userId")
         if commentData?.userId == userId {
             let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive)
+            let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive, handler: deleteHandler)
             alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
                 action in
                 // Called when user taps outside
@@ -82,6 +84,12 @@ class CommentTableViewCell: UITableViewCell {
             alertView.addAction(editAction)
             guard let rootViewController = UIApplication.topViewController() else { return }
             rootViewController.present(alertView, animated: true)
+        }
+    }
+    
+    private func deleteHandler(_ action: UIAlertAction) {
+        if let deleteCommentHandler = deleteCommentHandler {
+            deleteCommentHandler(commentData?.commentId ?? 0)
         }
     }
     

@@ -47,7 +47,7 @@ public class HomeSearchViewController: UIViewController {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
 
-        setNavigation(tintColor: .textMain)
+        self.setNavigation(tintColor: .textMain)
         loadSearchHistory()
         
         APIServiceManager().request(with: viewModel.getPosts()) { result in
@@ -75,18 +75,10 @@ public class HomeSearchViewController: UIViewController {
         self.tabBarController?.tabBar.isHidden = false
     }
     
-//    private func setNavigation() {
-//        navigationItem.titleView = searchBar
-//        setLeftBarButton()
-//    }
-    
-//    private func setLeftBarButton() {
-//        let customBackImage = UIImage(named: "arrow-up")?.withRenderingMode(.alwaysTemplate)
-//
-//        let backButton = UIBarButtonItem(image: customBackImage, style: .plain, target: self, action: #selector(backButtonTapped))
-//        backButton.tintColor = .textMain
-//        navigationItem.leftBarButtonItem = backButton
-//    }
+    public override func setNavigation(tintColor: UIColor) {
+        super.setNavigation(tintColor: tintColor)
+        navigationItem.titleView = searchBar
+    }
     
     func saveSearchHistory() {
         let defaults = UserDefaults.standard

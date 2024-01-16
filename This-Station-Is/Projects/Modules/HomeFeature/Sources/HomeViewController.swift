@@ -189,6 +189,10 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 318, height: 216)
     }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: hotBoards[indexPath.row].postId)
+    }
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
@@ -208,5 +212,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 216
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: recentBoards[indexPath.row].postId)
     }
 }

@@ -236,7 +236,11 @@ extension SignUpViewModel {
         let endpoint = Endpoint<PasswordResponse> (
             path: "api/v1/user/password",
             method: .patch,
-            bodyParameters: request
+            bodyParameters: request,
+            headers: [
+                "X-STATION-ACCESS-TOKEN": UserDefaults.standard.string(forKey: "accessToken") ?? "",
+                "Content-Type": "application/json"
+            ]
         )
         
         APIServiceManager().request(with: endpoint) { result in

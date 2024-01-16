@@ -93,7 +93,7 @@ extension InputFindEmailViewController {
             case .success(let success):
                 print("### postFindPassword is successed: \(success)")
                 let encrypt = success.data.sendEmailEncrypt
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "encryptKeyForFindPassword"), object: encrypt)
+                UserDefaults.standard.set(encrypt, forKey: "encryptKeyForFindPassword")
                 DispatchQueue.main.async {
                     self.showToast()
                 }

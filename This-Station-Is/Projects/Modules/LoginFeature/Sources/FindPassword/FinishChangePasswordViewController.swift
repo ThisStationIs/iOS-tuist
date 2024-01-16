@@ -22,6 +22,11 @@ public class FinishChangePasswordViewController: UIViewController {
         $0.isEnabled = true
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavigation(tintColor: .textMain)
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         setView()

@@ -9,7 +9,7 @@
 import UIKit
 import UI
 
-class BoardDetailViewController: UIViewController {
+public class BoardDetailViewController: UIViewController {
     
     private lazy var detilaTableView = UITableView().then {
         $0.delegate = self
@@ -54,7 +54,7 @@ class BoardDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         let leftBarButton = UIBarButtonItem(image: UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(selectLeftBarButton))
@@ -66,7 +66,7 @@ class BoardDetailViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = moreButton
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         // 키보드
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -258,10 +258,10 @@ extension BoardDetailViewController: UITextFieldDelegate {
 
 
 extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
+    public func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return 1
         } else {
@@ -269,11 +269,11 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let identifier = "DETAIL_\(indexPath.section)_\(indexPath.row)_\(viewModel.detailBoardData.commentCount)_\(viewModel.detailBoardData.lastUpdatedAt)"
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {

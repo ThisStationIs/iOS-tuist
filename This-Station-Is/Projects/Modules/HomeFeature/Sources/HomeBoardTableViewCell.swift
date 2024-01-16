@@ -14,7 +14,12 @@ import SnapKit
 import CommonProtocol
 
 class HomeBoardTableViewCell: UITableViewCell {
-    
+    private let noSearchResultLabel = UILabel().then {
+        $0.text = "검색결과가 없습니다."
+        $0.textColor = .textSub
+        $0.font = .systemFont(ofSize: 16)
+        $0.isHidden = true
+    }
     private let conainerView = UIView()
     private let profileView = UIView()
     
@@ -77,10 +82,16 @@ class HomeBoardTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func updateIsHiddenView(_ filterCount: Int) {
+        noSearchResultLabel.isHidden = filterCount == 0 ? false : true
+        conainerView.isHidden = filterCount == 0 ? true : false
+    }
+    
     func setData(
         _ data: Post,
         _ colorInfos: [Lines]
     ) {
+        updateIsHiddenView(1)
         self.profileName.text = data.authorNickname
         
         self.writeDate.text = changeFormat(input: data.createdAt)
@@ -116,6 +127,7 @@ class HomeBoardTableViewCell: UITableViewCell {
 extension HomeBoardTableViewCell {
     private func setView() {
         self.backgroundColor = .white
+        self.contentView.addSubview(noSearchResultLabel)
         self.contentView.addSubview(conainerView)
         
         [
@@ -140,6 +152,10 @@ extension HomeBoardTableViewCell {
     }
     
     private func setLayout() {
+        noSearchResultLabel.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+        }
+        
         profileImageView.snp.makeConstraints {
             $0.width.height.equalTo(32)
             $0.top.leading.equalToSuperview()

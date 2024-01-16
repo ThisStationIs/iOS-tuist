@@ -47,20 +47,17 @@ public class HomeSearchViewController: UIViewController {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
 
-        setNavigation(tintColor: .textMain)
-        loadSearchHistory()
-        
-        APIServiceManager().request(with: viewModel.getPosts()) { result in
-            switch result {
-            case .success(let success):
-                print("### success: \(success)")
-                self.posts = success.data.posts
-                
-            case .failure(let failure):
-                print("### Failure \(failure)")
-            }
+        self.setNavigation(tintColor: .textMain)
+        viewModel.loadSearchHistory { historys in
+            self.historys = historys
         }
         
+        viewModel.getPosts { posts in
+            self.posts = posts
+            DispatchQueue.main.async {
+                self.searchTableView.reloadData()
+            }
+        }
     }
     
     public override func viewDidLoad() {
@@ -75,29 +72,24 @@ public class HomeSearchViewController: UIViewController {
         self.tabBarController?.tabBar.isHidden = false
     }
     
-//    private func setNavigation() {
-//        navigationItem.titleView = searchBar
-//        setLeftBarButton()
-//    }
-    
-//    private func setLeftBarButton() {
-//        let customBackImage = UIImage(named: "arrow-up")?.withRenderingMode(.alwaysTemplate)
-//
-//        let backButton = UIBarButtonItem(image: customBackImage, style: .plain, target: self, action: #selector(backButtonTapped))
-//        backButton.tintColor = .textMain
-//        navigationItem.leftBarButtonItem = backButton
-//    }
-    
-    func saveSearchHistory() {
-        let defaults = UserDefaults.standard
-        defaults.set(historys, forKey: "SearchHistory")
+    public override func setNavigation(tintColor: UIColor) {
+        super.setNavigation(tintColor: tintColor)
+        navigationItem.titleView = searchBar
     }
 
-    func loadSearchHistory() {
-        let defaults = UserDefaults.standard
-        historys = defaults.object(forKey: "SearchHistory") as? [String] ?? [String]()
+    func updateIsHiddenTableViews(_ historyTableViewIsHidden: Bool) {
+        searchHistoryTableView.isHidden = historyTableViewIsHidden
+        searchTableView.isHidden = !historyTableViewIsHidden
+        
+        if !historyTableViewIsHidden {
+            viewModel.loadSearchHistory { historys in
+                self.historys = historys
+                DispatchQueue.main.async {
+                    self.searchTableView.reloadData()
+                }
+            }
+        }
     }
-
 }
 
 extension HomeSearchViewController {
@@ -124,7 +116,8 @@ extension HomeSearchViewController {
         }
         
         searchTableView.snp.makeConstraints {
-            $0.top.equalTo(historyTitleLabel.snp.bottom)
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+                .offset(16)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
                 .inset(24)
@@ -140,18 +133,15 @@ extension HomeSearchViewController {
         
         searchBar.delegate = self
     }
-    
-    // 왼쪽 버튼 탭 동작
-//    @objc
-//    private func backButtonTapped() {
-//        // 여기에 백 버튼을 탭했을 때의 동작을 작성하세요.
-//        navigationController?.popViewController(animated: true)
-//    }
 }
 
 extension HomeSearchViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableView == searchHistoryTableView ? historys.count : filteredPosts.count
+        if tableView == searchHistoryTableView {
+            return historys.count
+        } else {
+            return filteredPosts.count == 0 ? 1 : filteredPosts.count
+        }
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -163,53 +153,72 @@ extension HomeSearchViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "HomeBoardTableViewCell", for: indexPath) as! HomeBoardTableViewCell
             cell.selectionStyle = .none
-            cell.setData(
-                self.filteredPosts[indexPath.row],
-                self.lineInfo
-            )
+            
+            if filteredPosts.count == 0 {
+                cell.updateIsHiddenView(0)
+            } else {
+                cell.setData(
+                    self.filteredPosts[indexPath.row],
+                    self.lineInfo
+                )
+            }
+            
             return cell
         }
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView == searchHistoryTableView ? 48 : 216
+        if tableView == searchHistoryTableView {
+            return 48
+        } else {
+            return filteredPosts.count == 0 ? tableView.bounds.height : 216
+        }
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        filteredPosts = []
-        let searchText = historys[indexPath.row]
-        
-        searchHistoryTableView.isHidden = true
-        searchTableView.isHidden = false
-        
-        filteredPosts = posts.filter { post in
-            return post.title.lowercased().contains(searchText.lowercased()) || post.title.initialConsonants().contains(searchText.lowercased())
+        if tableView == searchHistoryTableView {
+            filteredPosts = []
+            let searchText = historys[indexPath.row]
+            
+            updateIsHiddenTableViews(true)
+            
+            filteredPosts = posts.filter { post in
+                return post.title.lowercased().contains(searchText.lowercased()) || post.title.initialConsonants().contains(searchText.lowercased())
+            }
+            searchTableView.reloadData()
+            searchBar.resignFirstResponder()
+        } else {
+            guard filteredPosts.count > 0 else { return }
+            HomeViewModel().getPostDetail(filteredPosts[indexPath.row].postId) { data in
+                print("### data: \(data)")
+                let id = self.filteredPosts[indexPath.row].postId
+                
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: id)
+            }
         }
-        searchTableView.reloadData()
+        
     }
 }
 
 extension HomeSearchViewController: UISearchBarDelegate {
     public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        searchHistoryTableView.isHidden = false
-        searchTableView.isHidden = true
+        updateIsHiddenTableViews(false)
         filteredPosts = []
         return true
     }
     
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchHistoryTableView.isHidden = true
-        searchTableView.isHidden = false
+        updateIsHiddenTableViews(true)
         
         if let searchText = searchBar.text {
             filteredPosts = posts.filter { post in
                 return post.title.lowercased().contains(searchText.lowercased()) || post.title.initialConsonants().contains(searchText.lowercased())
             }
+            print("### filteredPosts is \(filteredPosts)")
             historys.append(searchText)
-            saveSearchHistory()
-            searchTableView.reloadData()
+            viewModel.saveSearchHistory(self.historys)
         }
-        
+        searchTableView.reloadData()
         searchBar.resignFirstResponder()
     }
 

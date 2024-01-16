@@ -56,6 +56,23 @@ class HomeViewModel {
         let lines: [Lines]
     }
 
+    func getPostDetail(
+        _ postId: Int,
+        completion: @escaping ((PostAPIs.DetailPost) -> Void)
+    ) {
+        let endpoint = PostAPIs.getDetailBoard(id: postId)
+        
+        APIServiceManager().request(with: endpoint) { result in
+            switch result {
+            case .success(let success):
+                print("### success in getPostDetail is \(success.data)")
+                completion(success.data)
+            case .failure(let failure):
+                print("### failure in getPostDetail is \(failure)")
+            }
+        }
+        
+    }
 }
 
 public struct Lines: Decodable {

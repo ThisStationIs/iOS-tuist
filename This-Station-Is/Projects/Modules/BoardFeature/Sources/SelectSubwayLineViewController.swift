@@ -31,19 +31,15 @@ class SelectSubwayLineViewController: UIViewController {
         $0.addTarget(self, action: #selector(selectApplyButton), for: .touchUpInside)
     }
     
-//    let lineNameArray: [String] = ["1호선", "2호선", "3호선", "4호선", "5호선", "6호선", "7호선", "8호선", "9호선", "경강선", "경의중앙선", "경춘선", "공항철도", "김포골드라인", "서해선", "수인분당선", "신림선", "신분당선", "용인에버라인", "우이신설선", "인천 1호선", "인천 2호선", "의정부경전철"]
-    
-//    let lineNameArray: [LineColorSet] = [.lineOne, .lineTwo, .lineThree, .lineFour, .lineFive, .lineSix, .lineSeven, .lineEight, .lineNine, .경강선, .경의중앙선, .경춘선, .공항철도, .김포골드라인, .서해선, .수인분당선, .신림선, .신분당선, .용인에버라인, .우이신설선, .인천1호선, .인천2호선, .의정부경전철]
-    
-//    let lineNameArray: [String] = ["1호선", "2호선", "3호선", "4호선", "5호선", "6호선", "7호선", "8호선", "9호선"]
-    
     private var viewModel: BoardViewModel!
     private var lineNameViewArray: [UIButton] = []
+    private var savedLineArray: [DataManager.Line] = []
     
     init(viewModel: BoardViewModel) {
         super.init(nibName: nil, bundle: nil)
         
         self.viewModel = viewModel
+        self.savedLineArray = viewModel.selectedLineArray
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -64,7 +60,7 @@ class SelectSubwayLineViewController: UIViewController {
     
     @objc func selectLeftBarButton() {
         // 적용 버튼을 누르지 않으면 초기화
-        viewModel.selectedLineArray = []
+        self.viewModel.selectedLineArray = self.savedLineArray
         lineNameViewArray = []
         self.navigationController?.popViewController(animated: true)
     }

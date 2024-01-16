@@ -102,6 +102,7 @@ extension BoardViewModel {
             switch result {
             case .success(let success):
                 self.detailBoardData = success.data
+                print("detailBoardData : \(self.detailBoardData)")
                 DispatchQueue.main.async {
                     completion()
                 }

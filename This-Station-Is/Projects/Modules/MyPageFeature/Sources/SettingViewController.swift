@@ -55,6 +55,7 @@ class SettingViewController: UIViewController {
         alert.addAction(title: "취소", style: .cancel)
         alert.addAction(title: "로그아웃", style: .destructive) {
             self.viewModel.postLogoutData {
+                UserDefaults.standard.setValue(false, forKey: "isLogin")
                 // 로그인 화면으로 이동 MoveToLogin
                 NotificationCenter.default.post(name: NSNotification.Name("MoveToLogin"), object: nil)
             }

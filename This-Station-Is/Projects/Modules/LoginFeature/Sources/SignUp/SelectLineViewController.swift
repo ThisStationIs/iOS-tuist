@@ -91,6 +91,10 @@ extension SelectLineViewController {
     
     @objc
     private func bottomButtonTapped() {
+        guard let selectedItems = lineCollectionView.indexPathsForSelectedItems else { return }
+        for selectedItem in selectedItems {
+            DataManager.shared.userSelectedLines.append(DataManager.shared.lineInfos[selectedItem.item])
+        }
         viewModel.postSignUp {
             DispatchQueue.main.async {
                 let nextVC = FinishSignUpViewController()

@@ -15,6 +15,7 @@ public class DataManager {
     
     public var lineInfos: [Line] = []
     public var categoryInfos: [Category] = []
+    public var userSelectedLines: [Line] = []
     
     private init() {}
     

@@ -8,14 +8,15 @@
 
 import UIKit
 import UI
+import Lottie
 
 public class FinishChangePasswordViewController: UIViewController {
     private let descriptionLabel = BigDescriptionLabel().then {
         $0.text = "비밀번호 변경이\n완료되었어요!"
         $0.textAlignment = .center
     }
-    private let correctImageView = UIImageView().then {
-        $0.image = UIImage(named: "check")
+    private let successLottieAnimationView = LottieAnimationView(name: "success").then {
+        $0.contentMode = .scaleToFill
     }
     private let bottomButton = Button().then {
         $0.title = "로그인하기"
@@ -40,11 +41,14 @@ extension FinishChangePasswordViewController {
         view.backgroundColor = .white
         [
             descriptionLabel,
-            correctImageView,
+            successLottieAnimationView,
             bottomButton
         ].forEach {
             view.addSubview($0)
         }
+        
+        successLottieAnimationView.play()
+        successLottieAnimationView.loopMode = .loop
     }
     
     private func setLayout() {
@@ -55,7 +59,7 @@ extension FinishChangePasswordViewController {
                 .offset(24)
         }
         
-        correctImageView.snp.makeConstraints {
+        successLottieAnimationView.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
             $0.width.height.equalTo(UIScreen.main.bounds.width-90)
         }

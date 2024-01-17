@@ -10,13 +10,14 @@ import UIKit
 import UI
 import SnapKit
 import Then
+import Lottie
 
 public class FinishSignUpViewController: UIViewController {
     private let descriptionLabel = BigDescriptionLabel().then {
         $0.text = "이번 역에 도착했어요!\n내리실 문은 오른쪽입니다!"
     }
-    private let correctImageView = UIImageView().then {
-        $0.image = UIImage(named: "check")
+    private let successLottieAnimationView = LottieAnimationView(name: "success").then {
+        $0.contentMode = .scaleToFill
     }
     private let bottomButton = Button().then {
         $0.title = "홈으로"
@@ -40,11 +41,14 @@ extension FinishSignUpViewController {
         view.backgroundColor = .white
         [
             descriptionLabel,
-            correctImageView,
+            successLottieAnimationView,
             bottomButton
         ].forEach {
             view.addSubview($0)
         }
+        
+        successLottieAnimationView.play()
+        successLottieAnimationView.loopMode = .loop
     }
     
     private func setLayout() {
@@ -55,7 +59,7 @@ extension FinishSignUpViewController {
                 .offset(24)
         }
         
-        correctImageView.snp.makeConstraints {
+        successLottieAnimationView.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
             $0.width.height.equalTo(UIScreen.main.bounds.width-90)
         }

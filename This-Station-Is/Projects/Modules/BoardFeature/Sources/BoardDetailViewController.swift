@@ -123,7 +123,7 @@ public class BoardDetailViewController: UIViewController {
     }
     
     @objc func selectLeftBarButton() {
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController?.popToRootViewController(animated: true)
     }
     
     @objc func selectMoreButton() {

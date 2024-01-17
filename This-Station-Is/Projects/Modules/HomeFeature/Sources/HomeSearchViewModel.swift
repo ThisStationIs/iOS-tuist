@@ -40,3 +40,38 @@ extension HomeSearchViewModel {
         }
     }
 }
+
+extension HomeSearchViewModel {
+    public func getFilterBoardData(keyword: String, categoryId: Int, subwayLineIds: [String], completion: @escaping (([Post]) -> Void)) {
+        APIServiceManager().request(with: getFilterData(keyword: keyword, categoryId: categoryId, subwayLineIds: subwayLineIds)) { result in
+            switch result {
+            case .success(let success):
+                print("board Data : \(success.data.posts)")
+                completion(success.data.posts)
+            case .failure(let failure):
+                print("### failure is \(failure)")
+            }
+        }
+    }
+    
+    private func getFilterData(keyword: String, categoryId: Int, subwayLineIds: [String]) -> Endpoint<ResponseWrapper<FilterPostsData>> {
+        
+        let joinLineIds = subwayLineIds.joined(separator: ",")
+        
+        // -1 일 경우 전체
+        let fileterOptions = FilterOptions(keyword: keyword, categoryId: categoryId == -1 ? "" : "\(categoryId)", subwayLineIds: joinLineIds)
+        
+        print(fileterOptions)
+        
+        return Endpoint(
+            path: "api/v1/filter/posts",
+            queryPrameters: fileterOptions
+        )
+    }
+    
+    struct FilterOptions: Encodable {
+        let keyword: String
+        let categoryId: String
+        let subwayLineIds: String
+    }
+}

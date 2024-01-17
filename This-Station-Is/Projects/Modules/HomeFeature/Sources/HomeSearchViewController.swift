@@ -9,8 +9,15 @@
 import UIKit
 import UI
 import Network
+import CommonProtocol
 
 public class HomeSearchViewController: UIViewController {
+    
+    public enum ViewType {
+        case home
+        case board
+    }
+    
     private let searchBar = UISearchBar().then {
         $0.placeholder = "키워드를 검색해보세요"
     }
@@ -34,14 +41,27 @@ public class HomeSearchViewController: UIViewController {
         $0.estimatedRowHeight = 216
     }
     
-    var lineInfo: [Lines] = []
+    public var lineInfo: [DataManager.Line] = []
     
     private var historys: [String] = []
     private var posts: [Post] = []
     private var filteredPosts: [Post] = []
+    private var viewType: ViewType = .home
+    private var categoryId: Int = -1
+    private var subwayLineIds: [String] = []
     
     let viewModel = HomeSearchViewModel()
     
+    public init(viewType: ViewType = .home, categoryId: Int = -1, subwayLineIds: [String] = []) {
+        super.init(nibName: nil, bundle: nil)
+        self.viewType = viewType
+        self.categoryId = categoryId
+        self.subwayLineIds = subwayLineIds
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -182,11 +202,29 @@ extension HomeSearchViewController: UITableViewDelegate, UITableViewDataSource {
             
             updateIsHiddenTableViews(true)
             
-            filteredPosts = posts.filter { post in
-                return post.title.lowercased().contains(searchText.lowercased()) || post.title.initialConsonants().contains(searchText.lowercased())
+//            filteredPosts = posts.filter { post in
+//                return post.title.lowercased().contains(searchText.lowercased()) || post.title.initialConsonants().contains(searchText.lowercased())
+//            }
+            
+            // 필터
+            if viewType == .home {
+                viewModel.getFilterBoardData(keyword: searchText, categoryId: -1, subwayLineIds: []) { post in
+                    self.filteredPosts = post
+                    DispatchQueue.main.async { [self] in
+                        searchTableView.reloadData()
+                        searchBar.resignFirstResponder()
+                    }
+                }
+            } else {
+                viewModel.getFilterBoardData(keyword: searchText, categoryId: categoryId, subwayLineIds: subwayLineIds) { post in
+                    self.filteredPosts = post
+                    DispatchQueue.main.async { [self] in
+                        searchTableView.reloadData()
+                        searchBar.resignFirstResponder()
+                    }
+                }
             }
-            searchTableView.reloadData()
-            searchBar.resignFirstResponder()
+            
         } else {
             guard filteredPosts.count > 0 else { return }
             HomeViewModel().getPostDetail(filteredPosts[indexPath.row].postId) { data in
@@ -203,7 +241,7 @@ extension HomeSearchViewController: UITableViewDelegate, UITableViewDataSource {
 extension HomeSearchViewController: UISearchBarDelegate {
     public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         updateIsHiddenTableViews(false)
-        filteredPosts = []
+//        filteredPosts = []
         return true
     }
     
@@ -211,15 +249,36 @@ extension HomeSearchViewController: UISearchBarDelegate {
         updateIsHiddenTableViews(true)
         
         if let searchText = searchBar.text {
-            filteredPosts = posts.filter { post in
-                return post.title.lowercased().contains(searchText.lowercased()) || post.title.initialConsonants().contains(searchText.lowercased())
+//            filteredPosts = posts.filter { post in
+//                return post.title.lowercased().contains(searchText.lowercased()) || post.title.initialConsonants().contains(searchText.lowercased())
+//            }
+//            print("### filteredPosts is \(filteredPosts)")
+            
+            // 필터
+            if viewType == .home {
+                viewModel.getFilterBoardData(keyword: searchText, categoryId: -1, subwayLineIds: []) { post in
+                    self.filteredPosts = post
+                    DispatchQueue.main.async { [self] in
+                        searchTableView.reloadData()
+                        searchBar.resignFirstResponder()
+                    }
+                    print("### filteredPosts is \(self.filteredPosts)")
+                }
+            } else {
+                viewModel.getFilterBoardData(keyword: searchText, categoryId: categoryId, subwayLineIds: subwayLineIds) { post in
+                    self.filteredPosts = post
+                    DispatchQueue.main.async { [self] in
+                        searchTableView.reloadData()
+                        searchBar.resignFirstResponder()
+                    }
+                }
+                print("### filteredPosts is \(filteredPosts)")
             }
-            print("### filteredPosts is \(filteredPosts)")
+            
             historys.append(searchText)
             viewModel.saveSearchHistory(self.historys)
         }
-        searchTableView.reloadData()
-        searchBar.resignFirstResponder()
+    
     }
 
 }

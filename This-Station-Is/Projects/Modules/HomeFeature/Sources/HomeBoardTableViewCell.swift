@@ -89,7 +89,7 @@ class HomeBoardTableViewCell: UITableViewCell {
     
     func setData(
         _ data: Post,
-        _ colorInfos: [Lines]
+        _ colorInfos: [DataManager.Line]
     ) {
         updateIsHiddenView(1)
         self.profileName.text = data.authorNickname

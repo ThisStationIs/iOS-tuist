@@ -73,6 +73,15 @@ class HomeViewModel {
         }
         
     }
+    
+   
+    
+}
+
+public struct FilterPostsData: Decodable {
+    let posts: [Post]
+    let totalPages: Int?
+    let hasMorePost: Bool
 }
 
 public struct Lines: Decodable {

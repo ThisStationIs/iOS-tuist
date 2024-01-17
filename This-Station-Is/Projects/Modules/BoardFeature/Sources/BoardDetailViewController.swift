@@ -78,7 +78,7 @@ public class BoardDetailViewController: UIViewController {
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         detilaTableView.reloadData()
     }

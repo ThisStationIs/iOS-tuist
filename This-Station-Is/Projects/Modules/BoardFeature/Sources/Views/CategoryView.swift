@@ -50,7 +50,7 @@ public class CateogryView: UIView {
             badge.tag = i
             badge.isSelect = categoryArray[i].id == viewModel.selectedCategory?.id ? true : false
             
-            if i == 0 && viewModel.selectedCategory?.id == 0 {
+            if i == 0 {
                 badge.isSelect = true
                 viewModel.addSelectCategory(category: "전체", tag: -1)
             }

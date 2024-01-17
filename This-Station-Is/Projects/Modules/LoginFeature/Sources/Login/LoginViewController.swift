@@ -22,6 +22,7 @@ public class LoginViewController: UIViewController {
     }
     private let pwInputBox = InputBox(title: "비밀번호").then {
         $0.setTextFieldPlaceholder(placeholder: "비밀번호를 입력해주세요.")
+        $0.textField.isSecureTextEntry = true
     }
     private let loginButton = Button().then {
         $0.title = "로그인"

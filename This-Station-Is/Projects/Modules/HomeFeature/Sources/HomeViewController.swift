@@ -11,6 +11,7 @@ import UI
 import SnapKit
 import Then
 import Network
+import CommonProtocol
 
 public class HomeViewController: UIViewController {
     private let searchBar = UISearchBar().then {
@@ -45,7 +46,7 @@ public class HomeViewController: UIViewController {
         $0.estimatedRowHeight = 216
     }
 
-    private var lineInfo: [Lines] = []
+    private var lineInfo: [DataManager.Line] = []
     private var recentBoards: [Post] = []
     private var hotBoards: [Post] = []
     
@@ -56,9 +57,10 @@ public class HomeViewController: UIViewController {
         self.changeStatusBarBgColor(bgColor: .white)
         navigationItem.titleView = searchBar
         
-        viewModel.getSubwayLine { lines in
-            self.lineInfo = lines
-        }
+//        viewModel.getSubwayLine { lines in
+//            self.lineInfo = lines
+//        }
+        self.lineInfo = DataManager.shared.lineInfos
         
         APIServiceManager().request(with: viewModel.getHomeRecentPosts()) { result in
             switch result {
@@ -77,7 +79,7 @@ public class HomeViewController: UIViewController {
             }
         }
         
-        APIServiceManager() .request(with: viewModel.getHomeHotPosts()) { result in
+        APIServiceManager().request(with: viewModel.getHomeHotPosts()) { result in
             switch result {
             case .success(let success):
                 print("### success: \(success)")
@@ -166,7 +168,7 @@ extension HomeViewController {
 extension HomeViewController: UISearchBarDelegate {
     public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         let nextVC = HomeSearchViewController()
-        nextVC.lineInfo = self.lineInfo
+        nextVC.lineInfo = DataManager.shared.lineInfos
         self.navigationController?.pushViewController(nextVC, animated: true)
         searchBar.resignFirstResponder()
     }
@@ -189,6 +191,10 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 318, height: 216)
     }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: hotBoards[indexPath.row].postId)
+    }
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
@@ -208,5 +214,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 216
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: recentBoards[indexPath.row].postId)
     }
 }

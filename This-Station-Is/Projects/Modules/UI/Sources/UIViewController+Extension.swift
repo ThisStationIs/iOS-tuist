@@ -9,7 +9,7 @@
 import UIKit
 
 extension UIViewController {
-    public func setNavigation(
+    @objc open func setNavigation(
         tintColor: UIColor
     ) {
         setLeftBarButton(tintColor)

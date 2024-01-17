@@ -4,6 +4,7 @@ import Network
 import CommonProtocol
 import IQKeyboardManagerSwift
 import UI
+import BoardFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -24,6 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateRootViewControllerToTabBar), name: NSNotification.Name(rawValue: "MoveToMain"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateRootViewControllerToLogin), name: NSNotification.Name(rawValue: "MoveToLogin"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(pushBoardDetailViewController), name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: nil)
         
         print("### isLogin: \(isLogin)")
         DataManager.shared.getSubwayLine {
@@ -48,6 +50,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         DispatchQueue.main.async {
             self.window?.rootViewController = UINavigationController(rootViewController: LoginViewController())
             self.window?.makeKeyAndVisible()
+        }
+    }
+    
+    @objc
+    func pushBoardDetailViewController(_ notification: NSNotification) {
+        let id = notification.object as? Int ?? 0
+        print("### id in Scene is \(id)")
+        DispatchQueue.main.async {
+            let topVC = UIApplication.topViewController()
+            
+            let viewModel = BoardViewModel()
+
+            let nextVC = BoardDetailViewController(viewModel: viewModel, id: id)
+            nextVC.hidesBottomBarWhenPushed = true
+            topVC?.navigationController?.pushViewController(nextVC, animated: true)
         }
     }
 
@@ -91,11 +108,19 @@ extension SceneDelegate {
         }
 
         if host == "new-password" {
+            for param in params {
+                if param.name == "token" { updateAccessToken(param.value ?? "") }
+            }
+            
             DispatchQueue.main.async {
                 let resetPasswordViewController = UINavigationController(rootViewController: InputNewPasswordViewController())
                 self.window?.rootViewController = resetPasswordViewController
                 self.window?.makeKeyAndVisible()
             }
         }
+    }
+    
+    private func updateAccessToken(_ at: String) {
+        UserDefaults.standard.setValue(at, forKey: "accessToken")
     }
 }

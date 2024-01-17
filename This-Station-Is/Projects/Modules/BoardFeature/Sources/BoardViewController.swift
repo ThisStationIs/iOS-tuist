@@ -61,11 +61,20 @@ public class BoardViewController: UIViewController {
         
         print(self.viewModel.selectedCategory)
         
-        if let savedData = UserDefaults.standard.object(forKey: "selectedLineArray") as? Data {
-            if let savedObject = try? JSONDecoder().decode([DataManager.Line].self, from: savedData){
-                self.viewModel.selectedLineArray = savedObject
+        // 회원가입 시 받아온 값 세팅
+        if DataManager.shared.userSelectedLines.isEmpty {
+            if let savedData = UserDefaults.standard.object(forKey: "selectedLineArray") as? Data {
+                if let savedObject = try? JSONDecoder().decode([DataManager.Line].self, from: savedData){
+                    self.viewModel.selectedLineArray = savedObject
+                }
             }
+        } else {
+            self.viewModel.selectedLineArray = DataManager.shared.userSelectedLines
+            // 한번 적용 후 비워주기
+            DataManager.shared.userSelectedLines = []
         }
+        
+        print("Register Selected Line!!! : \(DataManager.shared.userSelectedLines)")
         
         print(self.viewModel.selectedLineArray)
         
@@ -130,12 +139,10 @@ public class BoardViewController: UIViewController {
         print("selectedCategory : \(selectedCategory)")
         print("selectedLineId : \(selectedLineId)")
 
-        // 필터 적용된 데이터?
+        // 필터 적용된 데이터
         viewModel.getFilterBoardData(keyword: "", categoryId: selectedCategory, subwayLineIds: selectedLineId) {
             DispatchQueue.main.async {
                 self.mainBoardTableView.reloadData()
-
-                
             }
         }
     }
@@ -165,8 +172,13 @@ public class BoardViewController: UIViewController {
 
 extension BoardViewController: UISearchBarDelegate {
     public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        let nextVC = HomeSearchViewController()
-//        nextVC.lineInfo = self.viewModel.lineInfo
+        // 선택 되어있는 호선 id만 가져오기
+        let selectedLineId: [String] = viewModel.selectedLineArray.map { "\($0.id)" }
+        // 선택 되어있는 카테고리 가져오기
+        let selectedCategory: Int = viewModel.selectedCategory?.id ?? 10
+        
+        let nextVC = HomeSearchViewController(viewType: .board, categoryId: selectedCategory, subwayLineIds: selectedLineId)
+        nextVC.lineInfo = DataManager.shared.lineInfos
         self.navigationController?.pushViewController(nextVC, animated: true)
         searchBar.resignFirstResponder()
     }

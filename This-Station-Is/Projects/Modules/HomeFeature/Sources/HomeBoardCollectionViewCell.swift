@@ -10,6 +10,7 @@ import UIKit
 import UI
 import Then
 import SnapKit
+import CommonProtocol
 
 class HomeBoardCollectionViewCell: UICollectionViewCell {
     
@@ -77,7 +78,7 @@ class HomeBoardCollectionViewCell: UICollectionViewCell {
     
     func setData(
         _ data: Post,
-        _ colorInfos: [Lines]
+        _ colorInfos: [DataManager.Line]
     ) {
         self.profileName.text = data.authorNickname
         

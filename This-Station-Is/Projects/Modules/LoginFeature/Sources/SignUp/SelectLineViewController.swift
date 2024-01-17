@@ -91,6 +91,10 @@ extension SelectLineViewController {
     
     @objc
     private func bottomButtonTapped() {
+        guard let selectedItems = lineCollectionView.indexPathsForSelectedItems else { return }
+        for selectedItem in selectedItems {
+            DataManager.shared.userSelectedLines.append(DataManager.shared.lineInfos[selectedItem.item])
+        }
         viewModel.postSignUp {
             DispatchQueue.main.async {
                 let nextVC = FinishSignUpViewController()
@@ -120,7 +124,6 @@ extension SelectLineViewController: UICollectionViewDataSource, UICollectionView
     public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! SelectLineCollectionViewCell
         cell.unselectedCell()
-        
     }
     
     private func updateButtonStatus(_ collectionView: UICollectionView) {
@@ -135,12 +138,18 @@ extension SelectLineViewController: UICollectionViewDataSource, UICollectionView
 
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         if let selectedItems = collectionView.indexPathsForSelectedItems, selectedItems.count >= 5 {
+            showToast()
             return selectedItems.contains(indexPath)
         } else {
             return true
         }
     }
 
+    private func showToast() {
+        let toast = Toast(type: .error)
+        toast.toastText.text = "최대 5개까지만 선택할 수 있어요."
+        toast.show()
+    }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let padding: CGFloat = 24

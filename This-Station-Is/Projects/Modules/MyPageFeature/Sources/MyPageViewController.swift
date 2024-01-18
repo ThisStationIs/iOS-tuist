@@ -102,14 +102,14 @@ public class MyPageViewController: UIViewController {
     
     private func setLayout() {
         profileView.snp.makeConstraints {
-            $0.height.equalTo(154)
+            $0.height.equalTo(203)
 //            $0.top.equalTo(self.view.safeAreaLayoutGuide)
             $0.top.equalToSuperview()
             $0.leading.trailing.equalToSuperview()
         }
         
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(18)
+            $0.top.equalToSuperview().inset(18 + 47)
             $0.leading.equalToSuperview().inset(24)
         }
         

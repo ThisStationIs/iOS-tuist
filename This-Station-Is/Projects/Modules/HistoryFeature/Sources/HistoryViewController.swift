@@ -22,7 +22,6 @@ public class HistoryViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.changeStatusBarBgColor(bgColor: .white)
         setNavigationBar()
     }
     

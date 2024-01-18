@@ -47,9 +47,6 @@ public class BoardViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // TODO: 스크롤 올리면 내려오지 않음 문제 해결 필요
-        //        self.navigationController?.hidesBarsOnSwipe = true
-        self.changeStatusBarBgColor(bgColor: .white)
         self.navigationController?.navigationBar.barTintColor = .white
         
         // UserDefault 에서 값 가져오기
@@ -160,8 +157,9 @@ public class BoardViewController: UIViewController {
     private func setLayout() {
         
         mainBoardTableView.snp.makeConstraints {
-//            $0.top.equalTo(self.view.safeAreaLayoutGuide)
-            $0.top.leading.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(self.view.safeAreaLayoutGuide)
+            $0.leading.trailing.bottom.equalToSuperview()
+//            $0.top.leading.trailing.bottom.equalToSuperview()
         }
     }
     

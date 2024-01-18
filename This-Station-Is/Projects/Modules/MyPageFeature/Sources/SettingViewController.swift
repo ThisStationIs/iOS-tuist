@@ -24,7 +24,6 @@ class SettingViewController: UIViewController {
         self.title = "설정"
         self.navigationController?.navigationBar.backgroundColor = .white
         self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.textMain]
-        self.changeStatusBarBgColor(bgColor: .white)
         
         let leftBarButton = UIBarButtonItem(image: UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(selectLeftBarButton))
         leftBarButton.tintColor = .black

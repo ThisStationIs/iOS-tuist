@@ -56,7 +56,6 @@ public class MyPageViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.changeStatusBarBgColor(bgColor: .primaryNormal)
         self.navigationController?.navigationBar.isHidden = true
     }
     
@@ -104,7 +103,8 @@ public class MyPageViewController: UIViewController {
     private func setLayout() {
         profileView.snp.makeConstraints {
             $0.height.equalTo(154)
-            $0.top.equalTo(self.view.safeAreaLayoutGuide)
+//            $0.top.equalTo(self.view.safeAreaLayoutGuide)
+            $0.top.equalToSuperview()
             $0.leading.trailing.equalToSuperview()
         }
         

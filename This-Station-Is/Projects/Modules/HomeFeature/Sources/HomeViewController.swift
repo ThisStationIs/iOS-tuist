@@ -54,7 +54,6 @@ public class HomeViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.changeStatusBarBgColor(bgColor: .white)
         navigationItem.titleView = searchBar
         
 //        viewModel.getSubwayLine { lines in

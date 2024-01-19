@@ -48,6 +48,7 @@ class MyUploadBoardViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.title = "내가 쓴 글"
         self.navigationController?.navigationBar.backgroundColor = .white
         self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.textMain]
         
@@ -99,5 +100,9 @@ extension MyUploadBoardViewController: UITableViewDelegate, UITableViewDataSourc
         let cell = MyUploadBoardTableViewCell.init(reuseIdentifier: identifier, data: data, lineInfo: DataManager.shared.lineInfos)
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: viewModel.myUploadBoardData[indexPath.row].postId)
     }
 }

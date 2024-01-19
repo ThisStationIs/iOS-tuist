@@ -113,17 +113,18 @@ public class BoardDetailViewController: UIViewController {
             self.textField.text = ""
             
             self.viewModel.getDetailBoardData(id: self.id) {
-                self.viewModel.getCommentData(id: self.id) {
-                    self.detilaTableView.reloadData()
-                    self.textField.endEditing(true)
-                    NotificationCenter.default.post(name: UIResponder.keyboardWillHideNotification, object: nil)
-                }
+//                self.viewModel.getCommentData(id: self.id) {
+//
+//                }
+                self.detilaTableView.reloadData()
+                self.textField.endEditing(true)
+                NotificationCenter.default.post(name: UIResponder.keyboardWillHideNotification, object: nil)
             }
         }
     }
     
     @objc func selectLeftBarButton() {
-        self.navigationController?.popToRootViewController(animated: true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func selectMoreButton() {

@@ -164,11 +164,13 @@ public class BoardDetailViewController: UIViewController {
         var id = 0
         if action.accessibilityLabel ?? "" == "Comment" {
             id = Int(action.accessibilityValue ?? "") ?? 0
+            let reportViewController = ReportViewController(type: .comment, postId: id)
+            self.navigationController?.pushViewController(reportViewController, animated: true)
         } else {
             id = viewModel.detailBoardData.postId
+            let reportViewController = ReportViewController(type: .post, postId: id)
+            self.navigationController?.pushViewController(reportViewController, animated: true)
         }
-        let reportViewController = ReportViewController(postId: id)
-        self.navigationController?.pushViewController(reportViewController, animated: true)
     }
     
     private func deleteCommentHandler(_ commentId: Int) {
@@ -286,17 +288,25 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
             return cell
         } else {
             let commentData = viewModel.detailBoardData.comments[indexPath.row]
-            let identifier = "COMMENT_\(indexPath.section)_\(indexPath.row)_\(commentData.commentId)"
+            let identifier = "COMMENT_\(indexPath.section)_\(indexPath.row)_\(commentData.commentId)_\(commentData.isReported)"
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell
             }
             
-            let cell = CommentTableViewCell(reuseIdentifier: identifier, commentData: commentData)
-            cell.backgroundColor = .white
-            cell.selectionStyle = .none
-            cell.reportHandler = reportHandler
-            cell.deleteCommentHandler = deleteCommentHandler
-            return cell
+            // 댓글 신고 확인
+            if commentData.isReported {
+                let cell = ReportCommentTableViewCell(reuseIdentifier: identifier, commentData: commentData)
+                cell.backgroundColor = .white
+                cell.selectionStyle = .none
+                return cell
+            } else {
+                let cell = CommentTableViewCell(reuseIdentifier: identifier, commentData: commentData)
+                cell.backgroundColor = .white
+                cell.selectionStyle = .none
+                cell.reportHandler = reportHandler
+                cell.deleteCommentHandler = deleteCommentHandler
+                return cell
+            }
         }
     }
 }

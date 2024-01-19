@@ -139,6 +139,7 @@ public class BoardViewController: UIViewController {
         // 필터 적용된 데이터
         viewModel.getFilterBoardData(keyword: "", categoryId: selectedCategory, subwayLineIds: selectedLineId) {
             DispatchQueue.main.async {
+                self.mainBoardTableView.backgroundView = self.viewModel.boardArray.isEmpty ? self.emptyView : UIView()
                 self.mainBoardTableView.reloadData()
             }
         }
@@ -151,7 +152,6 @@ public class BoardViewController: UIViewController {
         let filterButton = UIBarButtonItem(image: UIImage(named: "filter")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectFilterButton))
 //        self.navigationItem.rightBarButtonItem = filterButton
         self.view.addSubview(mainBoardTableView)
-        mainBoardTableView.backgroundView = emptyView
     }
     
     private func setLayout() {

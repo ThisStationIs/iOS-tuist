@@ -43,6 +43,11 @@ public class BoardViewController: UIViewController {
     
     private let emptyView = EmptyView(message: "게시글이 없습니다.")
     
+    private lazy var refreshControl = UIRefreshControl().then {
+        $0.attributedTitle = NSAttributedString(string: "")
+        $0.addTarget(self, action: #selector(refresh), for: .valueChanged)
+    }
+    
     let viewModel = BoardViewModel()
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -103,6 +108,13 @@ public class BoardViewController: UIViewController {
 //        }
     }
     
+    @objc func refresh() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.getFilterData()
+            self.refreshControl.endRefreshing()
+        }
+    }
+    
     @objc func selectTableHeaderView() {
         let selectSubwayLineViewController = SelectSubwayLineViewController(viewModel: viewModel)
         selectSubwayLineViewController.hidesBottomBarWhenPushed = true
@@ -152,6 +164,7 @@ public class BoardViewController: UIViewController {
         let filterButton = UIBarButtonItem(image: UIImage(named: "filter")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectFilterButton))
 //        self.navigationItem.rightBarButtonItem = filterButton
         self.view.addSubview(mainBoardTableView)
+        mainBoardTableView.refreshControl = refreshControl
     }
     
     private func setLayout() {

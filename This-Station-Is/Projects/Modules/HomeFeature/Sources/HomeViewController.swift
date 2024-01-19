@@ -29,6 +29,7 @@ public class HomeViewController: UIViewController {
         $0.scrollDirection = .horizontal
     }
     lazy var hotBoardCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout).then {
+        $0.showsHorizontalScrollIndicator = false
         $0.backgroundColor = .white
         $0.register(HomeBoardCollectionViewCell.self, forCellWithReuseIdentifier: "HomeBoardCollectionViewCell")
     }

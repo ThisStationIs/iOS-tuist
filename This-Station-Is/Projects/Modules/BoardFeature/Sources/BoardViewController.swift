@@ -100,6 +100,8 @@ public class BoardViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         print("👻👻 This is My Token! : \(viewModel.ACCESS_TOKEN)")
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         
         setUI()
         setLayout()
@@ -175,9 +177,11 @@ public class BoardViewController: UIViewController {
 //            $0.top.leading.trailing.bottom.equalToSuperview()
         }
     }
-    
-    private func setTableHeaderView() {
-        
+}
+
+extension BoardViewController: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
 

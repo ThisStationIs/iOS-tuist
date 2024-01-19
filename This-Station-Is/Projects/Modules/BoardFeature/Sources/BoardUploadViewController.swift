@@ -23,6 +23,7 @@ public class BoardUploadViewController: UIViewController {
         $0.rowHeight = UITableView.automaticDimension
         $0.separatorStyle = .none
         $0.backgroundColor = .white
+        $0.keyboardDismissMode = .onDrag
     }
     
     var rightBarItemForSetting: UIBarButtonItem!

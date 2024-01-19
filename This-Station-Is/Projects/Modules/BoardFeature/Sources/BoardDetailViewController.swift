@@ -64,6 +64,7 @@ public class BoardDetailViewController: UIViewController {
         let moreButton = UIBarButtonItem(image: UIImage(named: "more")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectMoreButton))
         
         self.navigationItem.rightBarButtonItem = moreButton
+      
     }
     
     public override func viewDidLoad() {

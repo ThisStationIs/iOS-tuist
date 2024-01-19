@@ -8,6 +8,7 @@
 
 import UIKit
 import UI
+import CommonProtocol
 
 class SelectTagTableViewCell: UITableViewCell {
 
@@ -15,7 +16,7 @@ class SelectTagTableViewCell: UITableViewCell {
     
     private var tagButtonArray: [FilterBadge] = []
     
-    let tagTitleArray: [String] = ["연착정보", "분실물", "사건사고", "알쓸신잡", "질문", "기타"]
+//    let tagTitleArray: [String] = ["연착정보", "분실물", "사건사고", "알쓸신잡", "질문", "기타"]
     
     var viewModel: BoardViewModel!
     
@@ -51,12 +52,12 @@ class SelectTagTableViewCell: UITableViewCell {
         self.contentView.addSubview(selectTagView)
         
         // tag 뷰 만들기
-        for i in 0..<tagTitleArray.count {
+        for i in 0..<DataManager.shared.categoryInfos.count {
             let badgeView = FilterBadge()
             badgeView.setType(.outline)
             badgeView.tag = i
-            badgeView.title = tagTitleArray[i]
-            if defaultTag == tagTitleArray[i] {
+            badgeView.title = DataManager.shared.categoryInfos[i].name
+            if defaultTag == DataManager.shared.categoryInfos[i].name {
                 self.viewModel.uploadBoardData["categoryId"] = i + 1
                 badgeView.isSelect = true
             }
@@ -73,7 +74,7 @@ class SelectTagTableViewCell: UITableViewCell {
     private func setLayout() {
         selectTagView.snp.makeConstraints {
             $0.top.equalTo(tagButtonArray[0].snp.top)
-            $0.bottom.equalTo(tagButtonArray[tagTitleArray.count - 1].snp.bottom)
+            $0.bottom.equalTo(tagButtonArray[DataManager.shared.categoryInfos.count - 1].snp.bottom)
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(24)
         }
@@ -82,7 +83,7 @@ class SelectTagTableViewCell: UITableViewCell {
         var positionX = 0.0
         var positionY = 0.0
         
-        for i in 0..<tagTitleArray.count {
+        for i in 0..<DataManager.shared.categoryInfos.count {
             tagButtonArray[i].snp.makeConstraints {
                 $0.left.equalTo(positionX)
                 $0.top.equalTo(positionY)

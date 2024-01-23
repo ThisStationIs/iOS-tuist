@@ -36,6 +36,7 @@ public class InputCertNumberViewController: UIViewController {
     
     let viewModel = SignUpViewModel.shared
     
+    var timer: Timer?
     var sendEmailEncrypt: String = ""
     var seconsLeft: Int = 60*10
     
@@ -64,10 +65,10 @@ public class InputCertNumberViewController: UIViewController {
         super.viewWillDisappear(animated)
     }
     
-    private func timer() {
+    private func startTimer() {
         print("### timer")
         DispatchQueue.main.async {
-            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
+            self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
                 // 남은 시간에서 1초 빼기
                 print("### seconsLeft is \(self.seconsLeft)")
                 self.seconsLeft -= 1
@@ -148,6 +149,8 @@ extension InputCertNumberViewController {
     @objc
     private func sendButtonClicked() {
         DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
             self.timeLabel.text = "10:00"
             self.seconsLeft = 60*10
         }
@@ -157,7 +160,7 @@ extension InputCertNumberViewController {
                 return
             }
             
-            self.timer()
+            self.startTimer()
             
             self.showAlertView(title: "인증메일 발송", message: "인증메일이 발송되었습니다.")
             self.sendEmailEncrypt = response.sendEmailEncrypt

@@ -38,6 +38,7 @@ public class InputFindEmailViewController: UIViewController {
         setLayout()
         setDelegate()
         setBinding()
+        hideKeyboardWhenTappedAround()
     }
 }
 

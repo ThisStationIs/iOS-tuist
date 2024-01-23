@@ -72,6 +72,7 @@ public class InputEmailViewController: UIViewController {
         setDelegate()
         setBinding()
         setBottomSheet()
+        hideKeyboardWhenTappedAround()
     }
 }
 

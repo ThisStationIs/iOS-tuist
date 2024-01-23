@@ -26,6 +26,7 @@ public class LoginViewController: UIViewController {
     }
     private let loginButton = Button().then {
         $0.title = "로그인"
+        $0.isEnabled = false
     }
     private let buttonsStack = UIStackView().then {
         $0.axis = .horizontal
@@ -156,9 +157,9 @@ extension LoginViewController {
                 NotificationCenter.default.post(name: NSNotification.Name("MoveToMain"), object: nil)
                 UserDefaults.standard.setValue(true, forKey: "isLogin")
             case .failure(let failure):
-                let alert = AlertView(title: "로그인 실패", message: "아이디 및 비밀번호가 일치하지 않아요.")
-                alert.addAction(title: "확인", style: .default)
                 DispatchQueue.main.async {
+                    let alert = AlertView(title: "로그인 실패", message: "아이디 및 비밀번호가 일치하지 않아요.")
+                    alert.addAction(title: "확인", style: .default)
                     alert.present()
                 }
                 print("### postLogin is failed: \(failure)")
@@ -193,6 +194,12 @@ extension LoginViewController {
 
 extension LoginViewController: UITextFieldDelegate {
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard idInputBox.textField.text?.count != 0 && pwInputBox.textField.text?.count != 0 else {
+            loginButton.isEnabled = false
+            return false
+        }
+        
+        loginButton.isEnabled = true
         textField.resignFirstResponder()
         return true
     }

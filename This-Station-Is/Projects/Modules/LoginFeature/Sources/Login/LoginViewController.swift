@@ -133,6 +133,8 @@ extension LoginViewController {
     private func setDelegate() {
         idInputBox.textField.delegate = self
         pwInputBox.textField.delegate = self
+        
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     private func setBinding() {
@@ -203,4 +205,8 @@ extension LoginViewController: UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
+}
+
+extension LoginViewController: UIGestureRecognizerDelegate{
+    // MARK: swipe Back 사용하기 위한 Delegate
 }

@@ -70,6 +70,8 @@ public class MyPageViewController: UIViewController {
         setUI()
         setLayout()
         setData()
+        
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     @objc func selectSettingButton() {
@@ -267,4 +269,8 @@ extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
             alertView.present()
         }
     }
+}
+
+extension MyPageViewController: UIGestureRecognizerDelegate{
+    // MARK: swipe Back 사용하기 위한 Delegate
 }

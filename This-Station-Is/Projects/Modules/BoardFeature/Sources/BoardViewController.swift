@@ -78,6 +78,8 @@ public class BoardViewController: UIViewController {
         DispatchQueue.main.async {
             self.getFilterData()
         }
+        
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -233,4 +235,8 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
         boardDetailViewController.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(boardDetailViewController, animated: true)
     }
+}
+
+extension BoardViewController: UIGestureRecognizerDelegate{
+    // MARK: swipe Back 사용하기 위한 Delegate
 }

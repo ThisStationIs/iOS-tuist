@@ -60,6 +60,7 @@ public class InputCertNumberViewController: UIViewController {
         setLayout()
         setDelegate()
         setBinding()
+        hideKeyboardWhenTappedAround()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {

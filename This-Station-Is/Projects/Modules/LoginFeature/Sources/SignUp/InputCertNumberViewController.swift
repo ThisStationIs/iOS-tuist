@@ -65,10 +65,11 @@ public class InputCertNumberViewController: UIViewController {
     
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        removeTimer()
+        resetUI()
     }
     
     private func startTimer() {
-        print("### timer")
         DispatchQueue.main.async {
             self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
                 // 남은 시간에서 1초 빼기
@@ -87,6 +88,28 @@ public class InputCertNumberViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    private func removeTimer() {
+        self.timer?.invalidate()
+        self.timer = nil
+    }
+    
+    private func resetUI() {
+        resetTime()
+        updateButtonState(false)
+        resetInputBox()
+    }
+    
+    private func resetTime() {
+        self.timeLabel.text = "10:00"
+        self.seconsLeft = 60*10
+    }
+    
+    private func resetInputBox() {
+        self.bottomButton.isEnabled = false
+        self.certNumberInputBox.isError = false
+        certNumberInputBox.textField.text = ""
     }
 }
 
@@ -151,10 +174,8 @@ extension InputCertNumberViewController {
     @objc
     private func sendButtonClicked() {
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            self.timeLabel.text = "10:00"
-            self.seconsLeft = 60*10
+            self.removeTimer()
+            self.resetTime()
         }
         
         self.updateButtonState(false)
@@ -203,9 +224,7 @@ extension InputCertNumberViewController {
 
 extension InputCertNumberViewController: UITextFieldDelegate {
     public func textFieldDidBeginEditing(_ textField: UITextField) {
-        textField.text = ""
-        self.bottomButton.isEnabled = false
-        self.certNumberInputBox.isError = false
+        resetInputBox()
     }
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

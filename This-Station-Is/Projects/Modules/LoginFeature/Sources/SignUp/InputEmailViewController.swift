@@ -29,7 +29,7 @@ public class InputEmailViewController: UIViewController {
     }
     private let bottomButton = Button().then {
         $0.title = "다음"
-//        $0.isEnabled = false
+        $0.isEnabled = false
     }
     
     let allAgreementButton = UIButton().then {

@@ -25,8 +25,8 @@ public class InputCertNumberViewController: UIViewController {
     }
     private let sendButton = UIButton().then {
         $0.setTitle("발송", for: .normal)
-        $0.setTitleColor(UIColor.primaryNormal, for: .normal)
-        $0.backgroundColor = .primaryNormal.withAlphaComponent(0.1)
+        $0.setTitleColor(UIColor.white, for: .normal)
+        $0.backgroundColor = .primaryNormal
         $0.layer.cornerRadius = 15
     }
     private let bottomButton = Button().then {
@@ -154,7 +154,11 @@ extension InputCertNumberViewController {
             self.timeLabel.text = "10:00"
             self.seconsLeft = 60*10
         }
+        
+        self.updateButtonState(false)
         viewModel.postCertNumber(input: viewModel.model.email) { response in
+            
+            
             guard response.sendCount < 10 else {
                 self.showAlertView(title: "인증번호 발송 횟수 초과", message: "10분 뒤 재시도해주세요.")
                 return
@@ -174,10 +178,18 @@ extension InputCertNumberViewController {
         DispatchQueue.main.async {
             
             let alert = AlertView(title: title, message: message)
-            alert.addAction(title: "확인", style: .default)
+            alert.addAction(title: "확인", style: .default) {
+                self.updateButtonState(true)
+            }
             alert.present()
             
         }
+    }
+    
+    func updateButtonState(_ isEnabled: Bool) {
+        sendButton.backgroundColor = .primaryNormal.withAlphaComponent(isEnabled ? 1 : 0.1)
+        sendButton.setTitleColor(isEnabled ? .white : .primaryNormal, for: .normal)
+        sendButton.isEnabled = isEnabled
     }
     
     @objc

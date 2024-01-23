@@ -202,6 +202,19 @@ extension InputCertNumberViewController {
 
 extension InputCertNumberViewController: UITextFieldDelegate {
     public func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.text = ""
+        self.bottomButton.isEnabled = false
+        self.certNumberInputBox.isError = false
+    }
+    
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = textField.text else { return false }
+        guard text.count != 6 else {
+            textField.resignFirstResponder()
+            return false
+        }
+        
+        return true
     }
     
     public func textFieldDidEndEditing(_ textField: UITextField) {

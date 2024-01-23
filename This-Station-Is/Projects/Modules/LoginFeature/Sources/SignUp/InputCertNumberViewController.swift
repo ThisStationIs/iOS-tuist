@@ -17,6 +17,7 @@ public class InputCertNumberViewController: UIViewController {
     }
     private let certNumberInputBox = InputBox(title: "인증번호").then {
         $0.setTextFieldPlaceholder(placeholder: "인증번호 6자리")
+        $0.textField.keyboardType = .numberPad
     }
     private let timeLabel = UILabel().then {
         $0.text = "10:00"

@@ -51,6 +51,9 @@ class SelectTagTableViewCell: UITableViewCell {
         self.selectionStyle = .none
         self.contentView.addSubview(selectTagView)
         
+        // 전체 태그 제거
+        DataManager.shared.categoryInfos = DataManager.shared.categoryInfos.filter { $0.name != "전체" }
+        
         // tag 뷰 만들기
         for i in 0..<DataManager.shared.categoryInfos.count {
             let badgeView = FilterBadge()

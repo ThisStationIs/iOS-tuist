@@ -103,6 +103,17 @@ extension MyUploadBoardViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: viewModel.myUploadBoardData[indexPath.row].postId)
+        let post = viewModel.myUploadBoardData[indexPath.row]
+        
+        // 신고된 글일 경우 alert 띄우기
+        if post.isReported {
+            let alertView = AlertView(title: "신고된 게시글이에요.", message: "해당 게시글은 신고 누적으로 인해\n삭제되었어요.")
+            alertView.addAction(title: "확인", style: .default)
+            alertView.present()
+        } else {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: post.postId)
+        }
+        
+        
     }
 }

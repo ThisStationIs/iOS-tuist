@@ -100,6 +100,17 @@ extension MyCommentViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: viewModel.myCommentData[indexPath.row].postId)
+        let comment = viewModel.myCommentData[indexPath.row]
+        
+        if comment.isBlocked {
+            let alertView = AlertView(title: "신고된 댓글이에요.", message: "해당 댓글은 신고 누적으로 인해\n삭제되었어요.\n게시글로 이동할까요?")
+            alertView.addAction(title: "아니오", style: .cancel)
+            alertView.addAction(title: "네", style: .default) {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: comment.postId)
+            }
+            alertView.present()
+        } else {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: comment.postId)
+        }
     }
 }

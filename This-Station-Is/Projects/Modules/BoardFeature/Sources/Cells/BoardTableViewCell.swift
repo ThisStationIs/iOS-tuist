@@ -64,6 +64,10 @@ public class BoardTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
+    let underlineView = UILabel().then {
+        $0.backgroundColor = .componentDivider
+    }
+    
     public init(reuseIdentifier: String?, boardData: Post, colorInfos: [DataManager.Line]) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         setUI()
@@ -115,6 +119,7 @@ public class BoardTableViewCell: UITableViewCell {
         self.backgroundColor = .white
         
         self.contentView.addSubview(conainerView)
+        self.contentView.addSubview(underlineView)
         
         [
             profileView,
@@ -124,7 +129,7 @@ public class BoardTableViewCell: UITableViewCell {
             titleLabel,
             contentLabel,
             commentImageView,
-            commentCountLabel
+            commentCountLabel,
         ].forEach {
             conainerView.addSubview($0)
         }
@@ -191,6 +196,12 @@ public class BoardTableViewCell: UITableViewCell {
         commentCountLabel.snp.makeConstraints {
             $0.centerY.equalTo(commentImageView)
             $0.leading.equalTo(commentImageView.snp.trailing).offset(8)
+        }
+        
+        underlineView.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.height.equalTo(1)
         }
         
         conainerView.snp.makeConstraints {

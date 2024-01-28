@@ -98,4 +98,8 @@ extension MyCommentViewController: UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: viewModel.myCommentData[indexPath.row].postId)
+    }
 }

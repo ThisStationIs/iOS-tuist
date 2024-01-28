@@ -12,6 +12,11 @@ import UI
 
 class ReportViewController: UIViewController {
     
+    public enum ReportType: String {
+        case comment = "comment"
+        case post = "post"
+    }
+    
     private let reasonTitle = UILabel().then {
         $0.text = "신고사유"
         $0.font = UIFont.systemFont(ofSize: 18, weight: .medium)
@@ -29,12 +34,14 @@ class ReportViewController: UIViewController {
     private var reasonViewArray: [UIView] = []
     private var radioButtonArray: [RadioButton] = []
     private var postId: Int = 0
+    private var reportType: ReportType = .post
     private var selectedReportReasonId: Int = 0
     private var viewModel = ReportViewModel()
     
-    init(postId: Int) {
+    init(type: ReportType = .post, postId: Int) {
         super.init(nibName: nil, bundle: nil)
         self.postId = postId
+        self.reportType = type
     }
     
     required init?(coder: NSCoder) {
@@ -72,7 +79,7 @@ class ReportViewController: UIViewController {
     }
     
     private func reportHandelr() {
-        viewModel.postReportData(postId: postId, reportReasonId: selectedReportReasonId) {
+        viewModel.postReportData(type: reportType.rawValue, postId: postId, reportReasonId: selectedReportReasonId) {
             DispatchQueue.main.async {
                 let alertView = AlertView(title: "신고를 접수했어요.", message: "신고하신 게시글은 게시판에서\n더 이상 확인할 수 없어요.")
                 alertView.addAction(title: "확인", style: .default) {

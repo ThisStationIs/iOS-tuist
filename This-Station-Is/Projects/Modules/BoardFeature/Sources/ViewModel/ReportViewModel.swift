@@ -40,8 +40,8 @@ public class ReportViewModel: NSObject {
     
     // 게시글 신고
     // /api/v1/post/{postId}/report/{reportReasonId}
-    public func postReportData(postId: Int, reportReasonId: Int, completion: @escaping (() -> ())) {
-        APIServiceManager().request(with: postReport(postId: postId, reportReasonId: reportReasonId)) { result in
+    public func postReportData(type: String, postId: Int, reportReasonId: Int, completion: @escaping (() -> ())) {
+        APIServiceManager().request(with: postReport(type: type, postId: postId, reportReasonId: reportReasonId)) { result in
             switch result {
             case .success(let success):
                 print(success)
@@ -54,13 +54,13 @@ public class ReportViewModel: NSObject {
         }
     }
     
-    private func postReport(postId: Int, reportReasonId: Int) -> Endpoint<NullResponse> {
+    private func postReport(type: String, postId: Int, reportReasonId: Int) -> Endpoint<NullResponse> {
         let headers: [String: String] = [
             "X-STATION-ACCESS-TOKEN": ACCESS_TOKEN,
             "Content-Type": "application/json"
         ]
         
-        let path = "api/v1/post/\(postId)/report/\(reportReasonId)"
+        let path = "api/v1/\(type)/\(postId)/report/\(reportReasonId)"
         print(path)
         
         return Endpoint(

@@ -17,7 +17,7 @@ class UnregisterViewController: UIViewController {
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.text = "회원을 탈퇴하시면 이용중인 서비스를 사용하실 수 없으며, 모든 데이터는 복구가 불가능합니다\n\n · 작성 글, 댓글 프로필 등 모든 정보가 삭제됩니다."
+        $0.text = "회원을 탈퇴하시면 이용중인 서비스를 사용하실 수 없으며, 모든 데이터는 복구가 불가능합니다."
         $0.numberOfLines = 0
         $0.font = UIFont.systemFont(ofSize: 16, weight: .regular)
 

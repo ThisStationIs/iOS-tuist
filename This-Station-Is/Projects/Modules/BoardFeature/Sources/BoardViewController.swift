@@ -43,6 +43,11 @@ public class BoardViewController: UIViewController {
     
     private let emptyView = EmptyView(message: "게시글이 없습니다.")
     
+    private lazy var refreshControl = UIRefreshControl().then {
+        $0.attributedTitle = NSAttributedString(string: "")
+        $0.addTarget(self, action: #selector(refresh), for: .valueChanged)
+    }
+    
     let viewModel = BoardViewModel()
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -97,12 +102,21 @@ public class BoardViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         print("👻👻 This is My Token! : \(viewModel.ACCESS_TOKEN)")
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         
         setUI()
         setLayout()
 //        viewModel.getBoardData { [self] in
 //
 //        }
+    }
+    
+    @objc func refresh() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.getFilterData()
+            self.refreshControl.endRefreshing()
+        }
     }
     
     @objc func selectTableHeaderView() {
@@ -141,6 +155,7 @@ public class BoardViewController: UIViewController {
         // 필터 적용된 데이터
         viewModel.getFilterBoardData(keyword: "", categoryId: selectedCategory, subwayLineIds: selectedLineId) {
             DispatchQueue.main.async {
+                self.mainBoardTableView.backgroundView = self.viewModel.boardArray.isEmpty ? self.emptyView : UIView()
                 self.mainBoardTableView.reloadData()
             }
         }
@@ -153,7 +168,7 @@ public class BoardViewController: UIViewController {
         let filterButton = UIBarButtonItem(image: UIImage(named: "filter")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectFilterButton))
 //        self.navigationItem.rightBarButtonItem = filterButton
         self.view.addSubview(mainBoardTableView)
-        mainBoardTableView.backgroundView = emptyView
+        mainBoardTableView.refreshControl = refreshControl
     }
     
     private func setLayout() {
@@ -164,9 +179,11 @@ public class BoardViewController: UIViewController {
 //            $0.top.leading.trailing.bottom.equalToSuperview()
         }
     }
-    
-    private func setTableHeaderView() {
-        
+}
+
+extension BoardViewController: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
 

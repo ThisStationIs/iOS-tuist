@@ -78,7 +78,6 @@ extension FinishSignUpViewController {
     
     @objc
     private func bottomButtonTapped() {
-        UserDefaults.standard.setValue(true, forKey: "isLogin")
         NotificationCenter.default.post(name: NSNotification.Name("MoveToMain"), object: nil)
     }
 }

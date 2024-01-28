@@ -157,7 +157,6 @@ extension LoginViewController {
             case .success(let success):
                 self.setUserData(success.data.userId, success.data.nickName, success.data.accessToken, success.data.refreshToken)
                 NotificationCenter.default.post(name: NSNotification.Name("MoveToMain"), object: nil)
-                UserDefaults.standard.setValue(true, forKey: "isLogin")
             case .failure(let failure):
                 DispatchQueue.main.async {
                     let alert = AlertView(title: "로그인 실패", message: "아이디 및 비밀번호가 일치하지 않아요.")

@@ -25,11 +25,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(updateRootViewControllerToLogin), name: NSNotification.Name(rawValue: "MoveToLogin"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(pushBoardDetailViewController), name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: nil)
         
+        print("### 🕯️ AT is :\(UserDefaults.standard.string(forKey: "accessToken"))")
         DataManager.shared.getSubwayLine {
             DataManager.shared.getCategory {
                 DispatchQueue.main.async {
-                    self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController()
-                    )
+                    self.window?.rootViewController = MainTabBarController()
                     self.window?.makeKeyAndVisible()
                 }
             }

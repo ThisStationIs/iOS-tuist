@@ -10,10 +10,13 @@ import UIKit
 import UI
 import SnapKit
 
+import CommonProtocol
+
 import BoardFeature
 import HistoryFeature
 import MyPageFeature
 import HomeFeature
+import LoginFeature
 
 class MainTabBarController: UITabBarController {
     
@@ -35,10 +38,11 @@ class MainTabBarController: UITabBarController {
         let uploadViewController = OpenUploadViewController()
         uploadViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "upload_board")?.withRenderingMode(.alwaysOriginal), tag: 2)
         
-        let historyNavigationViewController = UINavigationController(rootViewController: HistoryViewController())
+        let historyNavigationViewController = UINavigationController(rootViewController: isValidAccessToken() ? HistoryViewController() : LoginViewController())
         historyNavigationViewController.tabBarItem = UITabBarItem(title: "내 활동", image: UIImage(named: "activity"), tag: 3)
         
-        let myPageNavigationViewController = UINavigationController(rootViewController: MyPageViewController())
+        
+        let myPageNavigationViewController = UINavigationController(rootViewController: isValidAccessToken() ? MyPageViewController() : LoginViewController())
         myPageNavigationViewController.tabBarItem = UITabBarItem(title: "마이페이지", image: UIImage(named: "myPage"), tag: 4)
         
         setViewControllers([homeNavigationViewController, boardNavigationViewController, uploadViewController, historyNavigationViewController, myPageNavigationViewController], animated: false)

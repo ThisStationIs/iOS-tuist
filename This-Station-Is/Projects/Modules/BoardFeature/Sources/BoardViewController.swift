@@ -260,7 +260,3 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
         self.navigationController?.pushViewController(boardDetailViewController, animated: true)
     }
 }
-
-extension BoardViewController: UIGestureRecognizerDelegate{
-    // MARK: swipe Back 사용하기 위한 Delegate
-}

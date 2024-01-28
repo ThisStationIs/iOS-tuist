@@ -23,6 +23,7 @@ public class BoardViewController: UIViewController {
         $0.estimatedRowHeight = 232
         $0.backgroundColor = .white
         $0.separatorStyle = .none
+        $0.sectionHeaderTopPadding = .zero
     }
     
     private lazy var categoryView = CateogryView(viewModel: viewModel).then {
@@ -169,6 +170,7 @@ public class BoardViewController: UIViewController {
 //        self.navigationItem.rightBarButtonItem = filterButton
         self.view.addSubview(mainBoardTableView)
         mainBoardTableView.refreshControl = refreshControl
+       
     }
     
     private func setLayout() {
@@ -176,7 +178,6 @@ public class BoardViewController: UIViewController {
         mainBoardTableView.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide)
             $0.leading.trailing.bottom.equalToSuperview()
-//            $0.top.leading.trailing.bottom.equalToSuperview()
         }
     }
 }
@@ -238,10 +239,16 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
                 return reuseCell
             }
             
-            let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post, colorInfos: DataManager.shared.lineInfos)
-           
-            
-            return cell
+            if post.isReported {
+                let cell = ReportBoardTableViewCell(reuseIdentifier: identifier, boardData: post)
+                cell.isUserInteractionEnabled = false
+                cell.underlineView.isHidden = indexPath.row == 1 ? true : false
+                return cell
+            } else {
+                let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post, colorInfos: DataManager.shared.lineInfos)
+                cell.underlineView.isHidden = indexPath.row == 1 ? true : false
+                return cell
+            }
         }
     }
     

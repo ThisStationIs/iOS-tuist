@@ -17,14 +17,18 @@ public class BoardTableHeaderView: UIView {
         $0.textColor = .textMain
     }
     
+    private let arrowImageView = UIImageView().then {
+        $0.image = UIImage(named: "right_arrow")
+    }
+    
+    private let underlineView = UIView().then {
+        $0.backgroundColor = .componentDivider
+    }
+    
     var dummyLine: [String] = ["1", "2", "8", "수", "인"]
     var lineIconViewArray: [UIView] = []
     
     var viewModel: BoardViewModel!
-    
-    private let arrowImageView = UIImageView().then {
-        $0.image = UIImage(named: "right_arrow")
-    }
     
     public init(viewModel: BoardViewModel) {
         super.init(frame: .zero)
@@ -72,15 +76,6 @@ public class BoardTableHeaderView: UIView {
                 }
             }
         }
-        
-//        if viewModel.selectedLineArray.count > 0 {
-//            // 필터가 변경된 대로 게시글 보여주기
-//            dummyPostData = dummyPostData.filter({ value in
-//                viewModel.selectedLineArray.contains(value.subway)
-//            })
-//        }
-        
-//        self.boardTableView.reloadData()
     }
     
     private func setUI() {
@@ -88,6 +83,7 @@ public class BoardTableHeaderView: UIView {
         self.backgroundColor = .white
         self.addSubview(headerLabel)
         self.addSubview(arrowImageView)
+        self.addSubview(underlineView)
     }
     
     private func setLayout() {
@@ -99,6 +95,12 @@ public class BoardTableHeaderView: UIView {
         arrowImageView.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(24)
             $0.centerY.equalToSuperview()
+        }
+        
+        underlineView.snp.makeConstraints {
+            $0.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.height.equalTo(1)
         }
     }
 }

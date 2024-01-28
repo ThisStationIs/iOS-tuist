@@ -19,6 +19,7 @@ public class FilterBadge: UIView {
     let badgeTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Label"
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         return label
     }()
     

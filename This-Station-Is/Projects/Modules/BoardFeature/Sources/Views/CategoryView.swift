@@ -40,7 +40,7 @@ public class CateogryView: UIView {
     }
     
     private func setUI() {
-        self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 40)
+        self.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 56)
         self.addSubview(cateogryScrollView)
         
         for i in 0..<categoryArray.count {
@@ -87,7 +87,8 @@ public class CateogryView: UIView {
         
         cateogryScrollView.snp.makeConstraints {
             $0.height.equalTo(40)
-            $0.edges.equalToSuperview()
+            $0.top.equalToSuperview().inset(8)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
 }

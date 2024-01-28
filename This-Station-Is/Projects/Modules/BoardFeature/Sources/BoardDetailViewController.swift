@@ -41,7 +41,22 @@ public class BoardDetailViewController: UIViewController {
         $0.addTarget(self, action: #selector(selectSendButton), for: .touchUpInside)
     }
     
+    private lazy var guestButton = UIButton().then {
+        $0.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width - 48, height: 48)
+        $0.layer.cornerRadius = $0.frame.height / 2
+        $0.setTitle("로그인 후 이용해주세요.", for: .normal)
+        $0.setImage(UIImage(named: "arrowRight")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.setTitleColor(.statusNegative, for: .normal)
+        $0.backgroundColor = .statusNegative.withAlphaComponent(0.1)
+        $0.addTarget(self, action: #selector(selectGuestButton), for: .touchUpInside)
+        $0.semanticContentAttribute = .forceRightToLeft
+        $0.tintColor = .statusNegative
+        $0.imageEdgeInsets = .init(top: 0, left: 8, bottom: 0, right: 0)
+    }
+    
     private var id: Int!
+    // TODO: 게스트 여부
+    private let isGuest = false
     private var viewModel: BoardViewModel!
     
     public init(viewModel: BoardViewModel, id: Int) {
@@ -63,7 +78,9 @@ public class BoardDetailViewController: UIViewController {
         
         let moreButton = UIBarButtonItem(image: UIImage(named: "more")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectMoreButton))
         
-        self.navigationItem.rightBarButtonItem = moreButton
+        if !isGuest {
+            self.navigationItem.rightBarButtonItem = moreButton
+        }
       
     }
     
@@ -82,6 +99,10 @@ public class BoardDetailViewController: UIViewController {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         detilaTableView.reloadData()
+    }
+    
+    @objc func selectGuestButton() {
+        NotificationCenter.default.post(name: NSNotification.Name("MoveToLogin"), object: nil)
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -219,12 +240,19 @@ public class BoardDetailViewController: UIViewController {
         let viewTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectViewTapGesture))
         self.view.addGestureRecognizer(viewTapGesture)
         
-        [
-            textField,
-            sendButton
-        ].forEach {
-            bottomView.addSubview($0)
+       
+        if isGuest {
+            bottomView.addSubview(guestButton)
+        } else {
+            [
+                textField,
+                sendButton
+            ].forEach {
+                bottomView.addSubview($0)
+            }
         }
+        
+       
     }
     
     private func setLayout() {
@@ -239,15 +267,23 @@ public class BoardDetailViewController: UIViewController {
             $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
         
-        sendButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(24)
-            $0.centerY.equalToSuperview()
-        }
-        
-        textField.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().inset(24)
-            $0.trailing.equalTo(sendButton.snp.leading).inset(-8)
+        if isGuest {
+            guestButton.snp.makeConstraints {
+                $0.leading.trailing.equalToSuperview().inset(24)
+                $0.height.equalTo(48)
+                $0.top.equalToSuperview()
+            }
+        } else {
+            sendButton.snp.makeConstraints {
+                $0.trailing.equalToSuperview().inset(24)
+                $0.centerY.equalToSuperview()
+            }
+            
+            textField.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.leading.equalToSuperview().inset(24)
+                $0.trailing.equalTo(sendButton.snp.leading).inset(-8)
+            }
         }
     }
 }
@@ -307,6 +343,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
                 cell.selectionStyle = .none
                 cell.reportHandler = reportHandler
                 cell.deleteCommentHandler = deleteCommentHandler
+                cell.moreButton.isHidden = isGuest ? true : false
                 return cell
             }
         }

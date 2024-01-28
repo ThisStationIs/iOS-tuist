@@ -12,6 +12,7 @@ import SnapKit
 
 import UI
 import Network
+import CommonProtocol
 
 public class LoginViewController: UIViewController {
     private let headerImage = UIImageView().then {
@@ -50,6 +51,12 @@ public class LoginViewController: UIViewController {
     
     private let viewModel = LoginViewModel()
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavigation(tintColor: .textMain)
+        self.tabBarController?.tabBar.isHidden = true
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         setView()
@@ -58,6 +65,15 @@ public class LoginViewController: UIViewController {
         setBinding()
         
         hideKeyboardWhenTappedAround()
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    public override func backButtonTapped() {
+        NotificationCenter.default.post(name: NSNotification.Name("MoveToMain"), object: nil)
     }
 }
 
@@ -155,7 +171,8 @@ extension LoginViewController {
         APIServiceManager().request(with: endPoint) { result in
             switch result {
             case .success(let success):
-                self.setUserData(success.data.userId, success.data.nickName, success.data.accessToken, success.data.refreshToken)
+                // TODO: login 프로세스?
+                setUserData(success.data.userId, success.data.nickName, success.data.accessToken, success.data.refreshToken)
                 NotificationCenter.default.post(name: NSNotification.Name("MoveToMain"), object: nil)
             case .failure(let failure):
                 DispatchQueue.main.async {

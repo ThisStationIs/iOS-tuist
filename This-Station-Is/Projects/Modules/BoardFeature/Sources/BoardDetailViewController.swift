@@ -8,6 +8,7 @@
 
 import UIKit
 import UI
+import CommonProtocol
 
 public class BoardDetailViewController: UIViewController {
     
@@ -55,8 +56,6 @@ public class BoardDetailViewController: UIViewController {
     }
     
     private var id: Int!
-    // TODO: 게스트 여부
-    private let isGuest = false
     private var viewModel: BoardViewModel!
     
     public init(viewModel: BoardViewModel, id: Int) {
@@ -78,7 +77,7 @@ public class BoardDetailViewController: UIViewController {
         
         let moreButton = UIBarButtonItem(image: UIImage(named: "more")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectMoreButton))
         
-        if !isGuest {
+        if !DataManager.shared.isGuest {
             self.navigationItem.rightBarButtonItem = moreButton
         }
       
@@ -241,7 +240,7 @@ public class BoardDetailViewController: UIViewController {
         self.view.addGestureRecognizer(viewTapGesture)
         
        
-        if isGuest {
+        if DataManager.shared.isGuest {
             bottomView.addSubview(guestButton)
         } else {
             [
@@ -267,7 +266,7 @@ public class BoardDetailViewController: UIViewController {
             $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
         
-        if isGuest {
+        if DataManager.shared.isGuest {
             guestButton.snp.makeConstraints {
                 $0.leading.trailing.equalToSuperview().inset(24)
                 $0.height.equalTo(48)
@@ -343,7 +342,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
                 cell.selectionStyle = .none
                 cell.reportHandler = reportHandler
                 cell.deleteCommentHandler = deleteCommentHandler
-                cell.moreButton.isHidden = isGuest ? true : false
+                cell.moreButton.isHidden = DataManager.shared.isGuest ? true : false
                 return cell
             }
         }

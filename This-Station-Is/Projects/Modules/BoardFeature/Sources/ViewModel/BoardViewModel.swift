@@ -19,12 +19,23 @@ public class BoardViewModel: NSObject {
     
     var selectedLineArray: [DataManager.Line] = [] {
         didSet {
-            print("selectedLine 변경 \(selectedLineArray)")
+            print("selectedLine 변경 \(selectedLineArray), 게스트 여부 : \(DataManager.shared.isGuest)")
+            
             let encoder = JSONEncoder()
-            if let encoded = try? encoder.encode(selectedLineArray){
-                UserDefaults.standard.setValue(encoded, forKey: "selectedLineArray")
-                print(encoded)
+            
+            if DataManager.shared.isGuest {
+                if let encoded = try? encoder.encode(selectedLineArray){
+                    UserDefaults.standard.setValue(encoded, forKey: "guestSelectedLineArray")
+                    print(encoded)
+                }
+            } else {
+               
+                if let encoded = try? encoder.encode(selectedLineArray){
+                    UserDefaults.standard.setValue(encoded, forKey: "selectedLineArray")
+                    print(encoded)
+                }
             }
+            
         }
     }
     

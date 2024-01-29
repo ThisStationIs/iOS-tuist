@@ -64,17 +64,26 @@ public class BoardViewController: UIViewController {
         
         print(self.viewModel.selectedCategory)
         
-        // 회원가입 시 받아온 값 세팅
-        if DataManager.shared.userSelectedLines.isEmpty {
-            if let savedData = UserDefaults.standard.object(forKey: "selectedLineArray") as? Data {
+        // 게스트 여부 확인
+        if DataManager.shared.isGuest {
+            if let savedData = UserDefaults.standard.object(forKey: "guestSelectedLineArray") as? Data {
                 if let savedObject = try? JSONDecoder().decode([DataManager.Line].self, from: savedData){
                     self.viewModel.selectedLineArray = savedObject
                 }
             }
         } else {
-            self.viewModel.selectedLineArray = DataManager.shared.userSelectedLines
-            // 한번 적용 후 비워주기
-            DataManager.shared.userSelectedLines = []
+            // 회원가입 시 받아온 값 세팅
+            if DataManager.shared.userSelectedLines.isEmpty {
+                if let savedData = UserDefaults.standard.object(forKey: "selectedLineArray") as? Data {
+                    if let savedObject = try? JSONDecoder().decode([DataManager.Line].self, from: savedData){
+                        self.viewModel.selectedLineArray = savedObject
+                    }
+                }
+            } else {
+                self.viewModel.selectedLineArray = DataManager.shared.userSelectedLines
+                // 한번 적용 후 비워주기
+                DataManager.shared.userSelectedLines = []
+            }
         }
         
         print("Register Selected Line!!! : \(DataManager.shared.userSelectedLines)")

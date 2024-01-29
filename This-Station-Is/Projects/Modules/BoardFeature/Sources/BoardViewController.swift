@@ -93,6 +93,8 @@ public class BoardViewController: UIViewController {
         DispatchQueue.main.async {
             self.getFilterData()
         }
+        
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     public override func viewDidAppear(_ animated: Bool) {

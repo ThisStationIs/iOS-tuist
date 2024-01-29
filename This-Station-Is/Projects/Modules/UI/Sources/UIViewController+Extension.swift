@@ -26,7 +26,7 @@ extension UIViewController {
     }
     
     @objc
-    func backButtonTapped() {
+    open func backButtonTapped() {
         // 여기에 백 버튼을 탭했을 때의 동작을 작성하세요.
         navigationController?.popViewController(animated: true)
     }

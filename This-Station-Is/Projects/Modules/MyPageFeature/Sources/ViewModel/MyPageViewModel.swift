@@ -98,7 +98,6 @@ extension MyPageViewModel {
         APIServiceManager().request(with: postLogout()) { result in
             switch result {
             case .success(let success):
-                UserDefaults.standard.setValue(false, forKey: "isLogin")
                 DispatchQueue.main.async {
                     completion()
                 }
@@ -126,7 +125,6 @@ extension MyPageViewModel {
         APIServiceManager().request(with: deleteUnregister(password: password)) { result in
             switch result {
             case .success(let success):
-                UserDefaults.standard.setValue(false, forKey: "isLogin")
                 DispatchQueue.main.async {
                     completion(.success)
                 }

@@ -29,6 +29,7 @@ class MainTabBarController: UITabBarController {
         
         self.tabBar.barTintColor = .white
         
+        
         let homeNavigationViewController = UINavigationController(rootViewController: HomeViewController())
         homeNavigationViewController.tabBarItem = UITabBarItem(title: "홈", image: UIImage(named: "home"), tag: 0)
         

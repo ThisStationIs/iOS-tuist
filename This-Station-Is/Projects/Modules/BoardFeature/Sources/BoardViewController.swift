@@ -65,7 +65,7 @@ public class BoardViewController: UIViewController {
         print(self.viewModel.selectedCategory)
         
         // 게스트 여부 확인
-        if DataManager.shared.isGuest {
+        if !isValidAccessToken() {
             if let savedData = UserDefaults.standard.object(forKey: "guestSelectedLineArray") as? Data {
                 if let savedObject = try? JSONDecoder().decode([DataManager.Line].self, from: savedData){
                     self.viewModel.selectedLineArray = savedObject
@@ -111,6 +111,13 @@ public class BoardViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // 비회원일 경우 선택한 호선 삭제
+        if !isValidAccessToken() {
+            UserDefaults.standard.removeObject(forKey: "guestSelectedLineArray")
+        }
+        
+            
         print("👻👻 This is My Token! : \(viewModel.ACCESS_TOKEN)")
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self

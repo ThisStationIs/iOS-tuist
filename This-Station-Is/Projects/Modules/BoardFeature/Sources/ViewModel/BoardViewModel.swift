@@ -19,11 +19,11 @@ public class BoardViewModel: NSObject {
     
     var selectedLineArray: [DataManager.Line] = [] {
         didSet {
-            print("selectedLine 변경 \(selectedLineArray), 게스트 여부 : \(DataManager.shared.isGuest)")
+            print("selectedLine 변경 \(selectedLineArray), 게스트 여부 : \(!isValidAccessToken())")
             
             let encoder = JSONEncoder()
             
-            if DataManager.shared.isGuest {
+            if !isValidAccessToken() {
                 if let encoded = try? encoder.encode(selectedLineArray){
                     UserDefaults.standard.setValue(encoded, forKey: "guestSelectedLineArray")
                     print(encoded)
@@ -239,9 +239,13 @@ extension BoardViewModel {
         
         print(fileterOptions)
         
+        let userId = BoardRequest(userId: UserDefaults.standard.integer(forKey: "Id"))
+        
         return Endpoint(
             path: "api/v1/filter/posts",
-            queryPrameters: fileterOptions
+            method: .post,
+            queryPrameters: fileterOptions,
+            bodyParameters: userId
         )
     }
     
@@ -249,6 +253,10 @@ extension BoardViewModel {
         let keyword: String
         let categoryId: String
         let subwayLineIds: String
+    }
+    
+    struct BoardRequest: Encodable {
+        let userId: Int
     }
     
     // 게시글 수정

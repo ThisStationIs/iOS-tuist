@@ -77,7 +77,7 @@ public class BoardDetailViewController: UIViewController {
         
         let moreButton = UIBarButtonItem(image: UIImage(named: "more")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectMoreButton))
         
-        if !DataManager.shared.isGuest {
+        if isValidAccessToken() {
             self.navigationItem.rightBarButtonItem = moreButton
         }
       
@@ -240,7 +240,7 @@ public class BoardDetailViewController: UIViewController {
         self.view.addGestureRecognizer(viewTapGesture)
         
        
-        if DataManager.shared.isGuest {
+        if !isValidAccessToken() {
             bottomView.addSubview(guestButton)
         } else {
             [
@@ -266,7 +266,7 @@ public class BoardDetailViewController: UIViewController {
             $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
         
-        if DataManager.shared.isGuest {
+        if !isValidAccessToken() {
             guestButton.snp.makeConstraints {
                 $0.leading.trailing.equalToSuperview().inset(24)
                 $0.height.equalTo(48)
@@ -342,7 +342,7 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
                 cell.selectionStyle = .none
                 cell.reportHandler = reportHandler
                 cell.deleteCommentHandler = deleteCommentHandler
-                cell.moreButton.isHidden = DataManager.shared.isGuest ? true : false
+                cell.moreButton.isHidden = !isValidAccessToken() ? true : false
                 return cell
             }
         }

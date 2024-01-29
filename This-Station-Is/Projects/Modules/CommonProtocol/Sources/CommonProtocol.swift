@@ -14,7 +14,6 @@ public class DataManager {
     public static let shared = DataManager()
     
     // 비회원
-    public var isGuest: Bool = false
     
     public var lineInfos: [Line] = []
     public var categoryInfos: [Category] = []

@@ -124,8 +124,12 @@ extension BoardViewModel {
     }
     
     private func getDetailBoard(id: Int) -> Endpoint<BoardModel<DetailPost>> {
+        let userId = BoardRequest(userId: UserDefaults.standard.integer(forKey: "userId"))
+        
         return Endpoint(
-            path: "api/v1/post/\(id)"
+            path: "api/v1/post/\(id)",
+            method: .post,
+            bodyParameters: userId
         )
     }
     
@@ -239,7 +243,9 @@ extension BoardViewModel {
         
         print(fileterOptions)
         
-        let userId = BoardRequest(userId: UserDefaults.standard.integer(forKey: "Id"))
+        let userId = BoardRequest(userId: UserDefaults.standard.integer(forKey: "userId"))
+        
+        print(userId)
         
         return Endpoint(
             path: "api/v1/filter/posts",

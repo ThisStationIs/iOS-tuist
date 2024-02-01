@@ -13,7 +13,7 @@ class HomeViewModel {
     var lineInfo: [Lines] = []
     
     public func getHomeRecentPosts() -> Endpoint<ResponseWrapper<RecentPosts>> {
-        let userId = UserDefaults.standard.integer(forKey: "Id")
+        let userId = UserDefaults.standard.integer(forKey: "userId")
         return Endpoint(
             path: "api/v1/home/recent/posts?size=5",
             method: .post,
@@ -26,7 +26,7 @@ class HomeViewModel {
     }
     
     public func getHomeHotPosts() -> Endpoint<ResponseWrapper<RecentPosts>> {
-        let userId = UserDefaults.standard.integer(forKey: "Id")
+        let userId = UserDefaults.standard.integer(forKey: "userId")
         return Endpoint(
             path: "api/v1/home/hot/posts?size=5",
             method: .post,

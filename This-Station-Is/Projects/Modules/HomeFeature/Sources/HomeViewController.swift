@@ -66,7 +66,7 @@ public class HomeViewController: UIViewController {
             switch result {
             case .success(let success):
                 print("### success: \(success)")
-                self.recentBoards = success.data.posts
+                self.recentBoards = success.data.posts.filter { $0.isReported == false }
                 DispatchQueue.main.async {
                     print("### recentBoards:\(self.recentBoards)")
                     self.recentBoardTableView.reloadData()
@@ -82,8 +82,8 @@ public class HomeViewController: UIViewController {
         APIServiceManager().request(with: viewModel.getHomeHotPosts()) { result in
             switch result {
             case .success(let success):
-                print("### success: \(success)")
-                self.hotBoards = success.data.posts
+                print("### ☀️ success: \(success)")
+                self.hotBoards = success.data.posts.filter { $0.isReported == false }
                 DispatchQueue.main.async {
                     print("### hotBoards:\(self.hotBoards)")
                     self.hotBoardCollectionView.reloadData()

@@ -117,16 +117,5 @@ struct Post: Decodable {
     let commentCount: Int
     let likeCount: Int
     let createdAt: String
-    
-    private enum CodingKeys: String, CodingKey {
-        case postId
-        case authorNickname
-        case subwayLineName
-        case categoryName
-        case title
-        case preview
-        case commentCount
-        case likeCount
-        case createdAt
-    }
+    let isReported: Bool
 }

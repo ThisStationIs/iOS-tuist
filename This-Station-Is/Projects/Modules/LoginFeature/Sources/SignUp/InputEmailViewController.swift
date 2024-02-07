@@ -29,7 +29,7 @@ public class InputEmailViewController: UIViewController {
     }
     private let bottomButton = Button().then {
         $0.title = "다음"
-//        $0.isEnabled = false
+        $0.isEnabled = false
     }
     
     let allAgreementButton = UIButton().then {
@@ -49,7 +49,7 @@ public class InputEmailViewController: UIViewController {
         $0.isEnabled = false
     }
     
-    let bottomSheet = BottomSheetView(defaultHeight: 394, title: "이번 역은 서비스 약관에\n동의해주세요!")
+    let bottomSheet = BottomSheetView(defaultHeight: 394, title: "메트로시티 서비스 약관에\n동의해주세요!")
     var isRequiredCount: Int = 0 {
         didSet {
             updateTermButtons()
@@ -72,6 +72,7 @@ public class InputEmailViewController: UIViewController {
         setDelegate()
         setBinding()
         setBottomSheet()
+        hideKeyboardWhenTappedAround()
     }
 }
 

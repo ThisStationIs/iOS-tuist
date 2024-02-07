@@ -48,6 +48,7 @@ class MyUploadBoardViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.title = "내가 쓴 글"
         self.navigationController?.navigationBar.backgroundColor = .white
         self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.textMain]
         
@@ -99,5 +100,20 @@ extension MyUploadBoardViewController: UITableViewDelegate, UITableViewDataSourc
         let cell = MyUploadBoardTableViewCell.init(reuseIdentifier: identifier, data: data, lineInfo: DataManager.shared.lineInfos)
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let post = viewModel.myUploadBoardData[indexPath.row]
+        
+        // 신고된 글일 경우 alert 띄우기
+        if post.isReported {
+            let alertView = AlertView(title: "신고된 게시글이에요.", message: "해당 게시글은 신고 누적으로 인해\n삭제되었어요.")
+            alertView.addAction(title: "확인", style: .default)
+            alertView.present()
+        } else {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: post.postId)
+        }
+        
+        
     }
 }

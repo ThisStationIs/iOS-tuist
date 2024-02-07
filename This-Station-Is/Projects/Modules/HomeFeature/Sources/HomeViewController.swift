@@ -29,6 +29,7 @@ public class HomeViewController: UIViewController {
         $0.scrollDirection = .horizontal
     }
     lazy var hotBoardCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout).then {
+        $0.showsHorizontalScrollIndicator = false
         $0.backgroundColor = .white
         $0.register(HomeBoardCollectionViewCell.self, forCellWithReuseIdentifier: "HomeBoardCollectionViewCell")
     }
@@ -161,6 +162,8 @@ extension HomeViewController {
         
         recentBoardTableView.delegate = self
         recentBoardTableView.dataSource = self
+        
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
 }
 
@@ -218,4 +221,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: recentBoards[indexPath.row].postId)
     }
+}
+
+extension HomeViewController: UIGestureRecognizerDelegate{
+    // MARK: swipe Back 사용하기 위한 Delegate
 }

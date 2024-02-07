@@ -17,6 +17,7 @@ public class InputCertNumberViewController: UIViewController {
     }
     private let certNumberInputBox = InputBox(title: "인증번호").then {
         $0.setTextFieldPlaceholder(placeholder: "인증번호 6자리")
+        $0.textField.keyboardType = .numberPad
     }
     private let timeLabel = UILabel().then {
         $0.text = "10:00"
@@ -25,8 +26,8 @@ public class InputCertNumberViewController: UIViewController {
     }
     private let sendButton = UIButton().then {
         $0.setTitle("발송", for: .normal)
-        $0.setTitleColor(UIColor.primaryNormal, for: .normal)
-        $0.backgroundColor = .primaryNormal.withAlphaComponent(0.1)
+        $0.setTitleColor(UIColor.white, for: .normal)
+        $0.backgroundColor = .primaryNormal
         $0.layer.cornerRadius = 15
     }
     private let bottomButton = Button().then {
@@ -36,6 +37,7 @@ public class InputCertNumberViewController: UIViewController {
     
     let viewModel = SignUpViewModel.shared
     
+    var timer: Timer?
     var sendEmailEncrypt: String = ""
     var seconsLeft: Int = 60*10
     
@@ -58,16 +60,18 @@ public class InputCertNumberViewController: UIViewController {
         setLayout()
         setDelegate()
         setBinding()
+        hideKeyboardWhenTappedAround()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        removeTimer()
+        resetUI()
     }
     
-    private func timer() {
-        print("### timer")
+    private func startTimer() {
         DispatchQueue.main.async {
-            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
+            self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
                 // 남은 시간에서 1초 빼기
                 print("### seconsLeft is \(self.seconsLeft)")
                 self.seconsLeft -= 1
@@ -84,6 +88,28 @@ public class InputCertNumberViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    private func removeTimer() {
+        self.timer?.invalidate()
+        self.timer = nil
+    }
+    
+    private func resetUI() {
+        resetTime()
+        updateButtonState(false)
+        resetInputBox()
+    }
+    
+    private func resetTime() {
+        self.timeLabel.text = "10:00"
+        self.seconsLeft = 60*10
+    }
+    
+    private func resetInputBox() {
+        self.bottomButton.isEnabled = false
+        self.certNumberInputBox.isError = false
+        certNumberInputBox.textField.text = ""
     }
 }
 
@@ -148,16 +174,20 @@ extension InputCertNumberViewController {
     @objc
     private func sendButtonClicked() {
         DispatchQueue.main.async {
-            self.timeLabel.text = "10:00"
-            self.seconsLeft = 60*10
+            self.removeTimer()
+            self.resetTime()
         }
+        
+        self.updateButtonState(false)
         viewModel.postCertNumber(input: viewModel.model.email) { response in
+            
+            
             guard response.sendCount < 10 else {
                 self.showAlertView(title: "인증번호 발송 횟수 초과", message: "10분 뒤 재시도해주세요.")
                 return
             }
             
-            self.timer()
+            self.startTimer()
             
             self.showAlertView(title: "인증메일 발송", message: "인증메일이 발송되었습니다.")
             self.sendEmailEncrypt = response.sendEmailEncrypt
@@ -171,10 +201,18 @@ extension InputCertNumberViewController {
         DispatchQueue.main.async {
             
             let alert = AlertView(title: title, message: message)
-            alert.addAction(title: "확인", style: .default)
+            alert.addAction(title: "확인", style: .default) {
+                self.updateButtonState(true)
+            }
             alert.present()
             
         }
+    }
+    
+    func updateButtonState(_ isEnabled: Bool) {
+        sendButton.backgroundColor = .primaryNormal.withAlphaComponent(isEnabled ? 1 : 0.1)
+        sendButton.setTitleColor(isEnabled ? .white : .primaryNormal, for: .normal)
+        sendButton.isEnabled = isEnabled
     }
     
     @objc
@@ -186,6 +224,17 @@ extension InputCertNumberViewController {
 
 extension InputCertNumberViewController: UITextFieldDelegate {
     public func textFieldDidBeginEditing(_ textField: UITextField) {
+        resetInputBox()
+    }
+    
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = textField.text else { return false }
+        guard text.count != 6 else {
+            textField.resignFirstResponder()
+            return false
+        }
+        
+        return true
     }
     
     public func textFieldDidEndEditing(_ textField: UITextField) {

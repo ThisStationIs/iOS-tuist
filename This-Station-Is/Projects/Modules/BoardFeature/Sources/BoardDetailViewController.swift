@@ -8,6 +8,7 @@
 
 import UIKit
 import UI
+import CommonProtocol
 
 public class BoardDetailViewController: UIViewController {
     
@@ -41,6 +42,19 @@ public class BoardDetailViewController: UIViewController {
         $0.addTarget(self, action: #selector(selectSendButton), for: .touchUpInside)
     }
     
+    private lazy var guestButton = UIButton().then {
+        $0.frame = .init(x: 0, y: 0, width: UIScreen.main.bounds.width - 48, height: 48)
+        $0.layer.cornerRadius = $0.frame.height / 2
+        $0.setTitle("로그인 후 이용해주세요.", for: .normal)
+        $0.setImage(UIImage(named: "arrowRight")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.setTitleColor(.statusNegative, for: .normal)
+        $0.backgroundColor = .statusNegative.withAlphaComponent(0.1)
+        $0.addTarget(self, action: #selector(selectGuestButton), for: .touchUpInside)
+        $0.semanticContentAttribute = .forceRightToLeft
+        $0.tintColor = .statusNegative
+        $0.imageEdgeInsets = .init(top: 0, left: 8, bottom: 0, right: 0)
+    }
+    
     private var id: Int!
     private var viewModel: BoardViewModel!
     
@@ -63,7 +77,10 @@ public class BoardDetailViewController: UIViewController {
         
         let moreButton = UIBarButtonItem(image: UIImage(named: "more")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectMoreButton))
         
-        self.navigationItem.rightBarButtonItem = moreButton
+        if isValidAccessToken() {
+            self.navigationItem.rightBarButtonItem = moreButton
+        }
+      
     }
     
     public override func viewDidLoad() {
@@ -81,6 +98,10 @@ public class BoardDetailViewController: UIViewController {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         detilaTableView.reloadData()
+    }
+    
+    @objc func selectGuestButton() {
+        NotificationCenter.default.post(name: NSNotification.Name("MoveToLogin"), object: nil)
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -113,17 +134,18 @@ public class BoardDetailViewController: UIViewController {
             self.textField.text = ""
             
             self.viewModel.getDetailBoardData(id: self.id) {
-                self.viewModel.getCommentData(id: self.id) {
-                    self.detilaTableView.reloadData()
-                    self.textField.endEditing(true)
-                    NotificationCenter.default.post(name: UIResponder.keyboardWillHideNotification, object: nil)
-                }
+//                self.viewModel.getCommentData(id: self.id) {
+//
+//                }
+                self.detilaTableView.reloadData()
+                self.textField.endEditing(true)
+                NotificationCenter.default.post(name: UIResponder.keyboardWillHideNotification, object: nil)
             }
         }
     }
     
     @objc func selectLeftBarButton() {
-        self.navigationController?.popToRootViewController(animated: true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func selectMoreButton() {
@@ -164,11 +186,13 @@ public class BoardDetailViewController: UIViewController {
         var id = 0
         if action.accessibilityLabel ?? "" == "Comment" {
             id = Int(action.accessibilityValue ?? "") ?? 0
+            let reportViewController = ReportViewController(type: .comment, postId: id)
+            self.navigationController?.pushViewController(reportViewController, animated: true)
         } else {
             id = viewModel.detailBoardData.postId
+            let reportViewController = ReportViewController(type: .post, postId: id)
+            self.navigationController?.pushViewController(reportViewController, animated: true)
         }
-        let reportViewController = ReportViewController(postId: id)
-        self.navigationController?.pushViewController(reportViewController, animated: true)
     }
     
     private func deleteCommentHandler(_ commentId: Int) {
@@ -215,12 +239,19 @@ public class BoardDetailViewController: UIViewController {
         let viewTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectViewTapGesture))
         self.view.addGestureRecognizer(viewTapGesture)
         
-        [
-            textField,
-            sendButton
-        ].forEach {
-            bottomView.addSubview($0)
+       
+        if !isValidAccessToken() {
+            bottomView.addSubview(guestButton)
+        } else {
+            [
+                textField,
+                sendButton
+            ].forEach {
+                bottomView.addSubview($0)
+            }
         }
+        
+       
     }
     
     private func setLayout() {
@@ -235,15 +266,23 @@ public class BoardDetailViewController: UIViewController {
             $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
         
-        sendButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(24)
-            $0.centerY.equalToSuperview()
-        }
-        
-        textField.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().inset(24)
-            $0.trailing.equalTo(sendButton.snp.leading).inset(-8)
+        if !isValidAccessToken() {
+            guestButton.snp.makeConstraints {
+                $0.leading.trailing.equalToSuperview().inset(24)
+                $0.height.equalTo(48)
+                $0.top.equalToSuperview()
+            }
+        } else {
+            sendButton.snp.makeConstraints {
+                $0.trailing.equalToSuperview().inset(24)
+                $0.centerY.equalToSuperview()
+            }
+            
+            textField.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.leading.equalToSuperview().inset(24)
+                $0.trailing.equalTo(sendButton.snp.leading).inset(-8)
+            }
         }
     }
 }
@@ -286,17 +325,26 @@ extension BoardDetailViewController: UITableViewDelegate, UITableViewDataSource 
             return cell
         } else {
             let commentData = viewModel.detailBoardData.comments[indexPath.row]
-            let identifier = "COMMENT_\(indexPath.section)_\(indexPath.row)_\(commentData.commentId)"
+            let identifier = "COMMENT_\(indexPath.section)_\(indexPath.row)_\(commentData.commentId)_\(commentData.isReported)"
             if let reuseCell = tableView.dequeueReusableCell(withIdentifier: identifier) {
                 return reuseCell
             }
             
-            let cell = CommentTableViewCell(reuseIdentifier: identifier, commentData: commentData)
-            cell.backgroundColor = .white
-            cell.selectionStyle = .none
-            cell.reportHandler = reportHandler
-            cell.deleteCommentHandler = deleteCommentHandler
-            return cell
+            // 댓글 신고 확인
+            if commentData.isReported {
+                let cell = ReportCommentTableViewCell(reuseIdentifier: identifier, commentData: commentData)
+                cell.backgroundColor = .white
+                cell.selectionStyle = .none
+                return cell
+            } else {
+                let cell = CommentTableViewCell(reuseIdentifier: identifier, commentData: commentData)
+                cell.backgroundColor = .white
+                cell.selectionStyle = .none
+                cell.reportHandler = reportHandler
+                cell.deleteCommentHandler = deleteCommentHandler
+                cell.moreButton.isHidden = !isValidAccessToken() ? true : false
+                return cell
+            }
         }
     }
 }

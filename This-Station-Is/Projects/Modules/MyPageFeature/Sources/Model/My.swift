@@ -48,7 +48,7 @@ public struct Comments: Decodable {
     let postId: Int
     let postTitle: String
     let content: String
-    let isBlocked: Bool
+    let isReported: Bool
     let likeCount: Int
     let createdAt: String
     let lastUpdatedAt: String

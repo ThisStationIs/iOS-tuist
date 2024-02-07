@@ -12,6 +12,7 @@ import SnapKit
 
 import UI
 import Network
+import CommonProtocol
 
 public class LoginViewController: UIViewController {
     private let headerImage = UIImageView().then {
@@ -26,6 +27,7 @@ public class LoginViewController: UIViewController {
     }
     private let loginButton = Button().then {
         $0.title = "로그인"
+        $0.isEnabled = false
     }
     private let buttonsStack = UIStackView().then {
         $0.axis = .horizontal
@@ -49,6 +51,12 @@ public class LoginViewController: UIViewController {
     
     private let viewModel = LoginViewModel()
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavigation(tintColor: .textMain)
+        self.tabBarController?.tabBar.isHidden = true
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         setView()
@@ -57,6 +65,15 @@ public class LoginViewController: UIViewController {
         setBinding()
         
         hideKeyboardWhenTappedAround()
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    public override func backButtonTapped() {
+        NotificationCenter.default.post(name: NSNotification.Name("MoveToMain"), object: nil)
     }
 }
 
@@ -132,6 +149,8 @@ extension LoginViewController {
     private func setDelegate() {
         idInputBox.textField.delegate = self
         pwInputBox.textField.delegate = self
+        
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     private func setBinding() {
@@ -152,32 +171,20 @@ extension LoginViewController {
         APIServiceManager().request(with: endPoint) { result in
             switch result {
             case .success(let success):
-                self.setUserData(success.data.userId, success.data.nickName, success.data.accessToken, success.data.refreshToken)
+                // TODO: login 프로세스?
+                setUserData(success.data.userId, success.data.nickName, success.data.accessToken, success.data.refreshToken)
                 NotificationCenter.default.post(name: NSNotification.Name("MoveToMain"), object: nil)
-                UserDefaults.standard.setValue(true, forKey: "isLogin")
             case .failure(let failure):
-                let alert = AlertView(title: "로그인 실패", message: "아이디 및 비밀번호가 일치하지 않아요.")
-                alert.addAction(title: "확인", style: .default)
                 DispatchQueue.main.async {
+                    let alert = AlertView(title: "로그인 실패", message: "아이디 및 비밀번호가 일치하지 않아요.")
+                    alert.addAction(title: "확인", style: .default)
                     alert.present()
                 }
                 print("### postLogin is failed: \(failure)")
             }
         }
     }
-    
-    public func setUserData(
-        _ userId: Int,
-        _ nickName: String,
-        _ at: String,
-        _ rt: String
-    ) {
-        UserDefaults.standard.setValue(userId, forKey: "userId")
-        UserDefaults.standard.setValue(nickName, forKey: "nickName")
-        UserDefaults.standard.setValue(at, forKey: "accessToken")
-        UserDefaults.standard.setValue(rt, forKey: "refreshToken")
-    }
-    
+
     @objc
     private func joinButtonTapped() {
         let nextVC = InputEmailViewController()
@@ -193,7 +200,17 @@ extension LoginViewController {
 
 extension LoginViewController: UITextFieldDelegate {
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard idInputBox.textField.text?.count != 0 && pwInputBox.textField.text?.count != 0 else {
+            loginButton.isEnabled = false
+            return false
+        }
+        
+        loginButton.isEnabled = true
         textField.resignFirstResponder()
         return true
     }
+}
+
+extension LoginViewController: UIGestureRecognizerDelegate{
+    // MARK: swipe Back 사용하기 위한 Delegate
 }

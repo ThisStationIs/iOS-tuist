@@ -36,7 +36,7 @@ class CommentTableViewCell: UITableViewCell {
         $0.textColor = .textSub
     }
     
-    private lazy var moreButton = UIButton().then {
+    lazy var moreButton = UIButton().then {
         $0.setImage(UIImage(named: "more"), for: .normal)
         $0.addTarget(self, action: #selector(selectMoreButton), for: .touchUpInside)
     }

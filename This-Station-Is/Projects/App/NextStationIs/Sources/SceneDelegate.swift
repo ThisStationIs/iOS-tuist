@@ -21,18 +21,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         
-        let isLogin = UserDefaults.standard.bool(forKey: "isLogin")
-        
         NotificationCenter.default.addObserver(self, selector: #selector(updateRootViewControllerToTabBar), name: NSNotification.Name(rawValue: "MoveToMain"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateRootViewControllerToLogin), name: NSNotification.Name(rawValue: "MoveToLogin"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(pushBoardDetailViewController), name: NSNotification.Name(rawValue: "MoveToBoardDetail"), object: nil)
         
-        print("### isLogin: \(isLogin)")
+        print("### 🕯️ AT is :\(UserDefaults.standard.string(forKey: "accessToken"))")
+        
         DataManager.shared.getSubwayLine {
             DataManager.shared.getCategory {
                 DispatchQueue.main.async {
-                    self.window?.rootViewController = isLogin ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController()
-                    )
+                    self.window?.rootViewController = MainTabBarController()
                     self.window?.makeKeyAndVisible()
                 }
             }

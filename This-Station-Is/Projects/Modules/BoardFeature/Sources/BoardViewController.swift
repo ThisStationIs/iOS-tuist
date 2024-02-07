@@ -23,6 +23,7 @@ public class BoardViewController: UIViewController {
         $0.estimatedRowHeight = 232
         $0.backgroundColor = .white
         $0.separatorStyle = .none
+        $0.sectionHeaderTopPadding = .zero
     }
     
     private lazy var categoryView = CateogryView(viewModel: viewModel).then {
@@ -43,6 +44,11 @@ public class BoardViewController: UIViewController {
     
     private let emptyView = EmptyView(message: "게시글이 없습니다.")
     
+    private lazy var refreshControl = UIRefreshControl().then {
+        $0.attributedTitle = NSAttributedString(string: "")
+        $0.addTarget(self, action: #selector(refresh), for: .valueChanged)
+    }
+    
     let viewModel = BoardViewModel()
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -58,17 +64,26 @@ public class BoardViewController: UIViewController {
         
         print(self.viewModel.selectedCategory)
         
-        // 회원가입 시 받아온 값 세팅
-        if DataManager.shared.userSelectedLines.isEmpty {
-            if let savedData = UserDefaults.standard.object(forKey: "selectedLineArray") as? Data {
+        // 게스트 여부 확인
+        if !isValidAccessToken() {
+            if let savedData = UserDefaults.standard.object(forKey: "guestSelectedLineArray") as? Data {
                 if let savedObject = try? JSONDecoder().decode([DataManager.Line].self, from: savedData){
                     self.viewModel.selectedLineArray = savedObject
                 }
             }
         } else {
-            self.viewModel.selectedLineArray = DataManager.shared.userSelectedLines
-            // 한번 적용 후 비워주기
-            DataManager.shared.userSelectedLines = []
+            // 회원가입 시 받아온 값 세팅
+            if DataManager.shared.userSelectedLines.isEmpty {
+                if let savedData = UserDefaults.standard.object(forKey: "selectedLineArray") as? Data {
+                    if let savedObject = try? JSONDecoder().decode([DataManager.Line].self, from: savedData){
+                        self.viewModel.selectedLineArray = savedObject
+                    }
+                }
+            } else {
+                self.viewModel.selectedLineArray = DataManager.shared.userSelectedLines
+                // 한번 적용 후 비워주기
+                DataManager.shared.userSelectedLines = []
+            }
         }
         
         print("Register Selected Line!!! : \(DataManager.shared.userSelectedLines)")
@@ -78,6 +93,8 @@ public class BoardViewController: UIViewController {
         DispatchQueue.main.async {
             self.getFilterData()
         }
+        
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -94,13 +111,29 @@ public class BoardViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // 비회원일 경우 선택한 호선 삭제
+        if !isValidAccessToken() {
+            UserDefaults.standard.removeObject(forKey: "guestSelectedLineArray")
+        }
+        
+            
         print("👻👻 This is My Token! : \(viewModel.ACCESS_TOKEN)")
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         
         setUI()
         setLayout()
 //        viewModel.getBoardData { [self] in
 //
 //        }
+    }
+    
+    @objc func refresh() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.getFilterData()
+            self.refreshControl.endRefreshing()
+        }
     }
     
     @objc func selectTableHeaderView() {
@@ -139,6 +172,7 @@ public class BoardViewController: UIViewController {
         // 필터 적용된 데이터
         viewModel.getFilterBoardData(keyword: "", categoryId: selectedCategory, subwayLineIds: selectedLineId) {
             DispatchQueue.main.async {
+                self.mainBoardTableView.backgroundView = self.viewModel.boardArray.isEmpty ? self.emptyView : UIView()
                 self.mainBoardTableView.reloadData()
             }
         }
@@ -151,7 +185,8 @@ public class BoardViewController: UIViewController {
         let filterButton = UIBarButtonItem(image: UIImage(named: "filter")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(selectFilterButton))
 //        self.navigationItem.rightBarButtonItem = filterButton
         self.view.addSubview(mainBoardTableView)
-        mainBoardTableView.backgroundView = emptyView
+        mainBoardTableView.refreshControl = refreshControl
+       
     }
     
     private func setLayout() {
@@ -159,12 +194,13 @@ public class BoardViewController: UIViewController {
         mainBoardTableView.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide)
             $0.leading.trailing.bottom.equalToSuperview()
-//            $0.top.leading.trailing.bottom.equalToSuperview()
         }
     }
-    
-    private func setTableHeaderView() {
-        
+}
+
+extension BoardViewController: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
 
@@ -219,10 +255,16 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
                 return reuseCell
             }
             
-            let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post, colorInfos: DataManager.shared.lineInfos)
-           
-            
-            return cell
+            if post.isReported {
+                let cell = ReportBoardTableViewCell(reuseIdentifier: identifier, boardData: post)
+                cell.isUserInteractionEnabled = false
+                cell.underlineView.isHidden = indexPath.row == 1 ? true : false
+                return cell
+            } else {
+                let cell = BoardTableViewCell(reuseIdentifier: identifier, boardData: post, colorInfos: DataManager.shared.lineInfos)
+                cell.underlineView.isHidden = indexPath.row == 1 ? true : false
+                return cell
+            }
         }
     }
     

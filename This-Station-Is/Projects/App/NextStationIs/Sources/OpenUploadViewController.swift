@@ -7,7 +7,11 @@
 //
 
 import UIKit
+
+import CommonProtocol
+
 import BoardFeature
+import LoginFeature
 
 class OpenUploadViewController: UITabBarController {
     
@@ -16,7 +20,7 @@ class OpenUploadViewController: UITabBarController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let uploadViewController = UINavigationController(rootViewController: BoardUploadViewController(viewModel: boardViewModel))
+        let uploadViewController = UINavigationController(rootViewController: isValidAccessToken() ? BoardUploadViewController(viewModel: boardViewModel) : LoginViewController())
         uploadViewController.modalPresentationStyle = .fullScreen
         self.present(uploadViewController, animated: true) {
             self.tabBarController?.selectedIndex = 1

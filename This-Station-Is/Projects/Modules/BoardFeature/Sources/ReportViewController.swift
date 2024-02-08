@@ -35,7 +35,7 @@ class ReportViewController: UIViewController {
     private var radioButtonArray: [RadioButton] = []
     private var postId: Int = 0
     private var reportType: ReportType = .post
-    private var selectedReportReasonId: Int = 0
+    private var selectedReportReasonId: Int = 1
     private var viewModel = ReportViewModel()
     
     init(type: ReportType = .post, postId: Int) {
@@ -116,6 +116,7 @@ class ReportViewController: UIViewController {
             
             let radioButton = RadioButton()
             radioButton.tag = i
+            radioButton.isOn = i == 0 ? true : false
             reasonView.addSubview(radioButton)
             radioButton.snp.makeConstraints {
                 $0.centerY.equalToSuperview()

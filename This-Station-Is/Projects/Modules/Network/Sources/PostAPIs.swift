@@ -11,7 +11,8 @@ import Foundation
 public class PostAPIs {
     public static func getDetailBoard(id: Int) -> Endpoint<ResponseWrapper<DetailPost>> {
         return Endpoint(
-            path: "api/v1/post/\(id)"
+            path: "api/v1/post/\(id)",
+            method: .post
         )
     }
     

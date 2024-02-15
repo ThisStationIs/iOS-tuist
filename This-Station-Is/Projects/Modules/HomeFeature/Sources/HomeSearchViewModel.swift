@@ -26,7 +26,8 @@ class HomeSearchViewModel {
 extension HomeSearchViewModel {
     func getPosts(completion: @escaping (([Post]) -> Void)) {
         let endpoint = Endpoint<ResponseWrapper<RecentPosts>> (
-            path: "api/v1/filter/posts"
+            path: "api/v1/filter/posts",
+            method: .post
         )
         
         APIServiceManager().request(with: endpoint) { result in
@@ -65,7 +66,8 @@ extension HomeSearchViewModel {
         
         return Endpoint(
             path: "api/v1/filter/posts",
-            queryPrameters: fileterOptions
+            method: .post,
+            bodyParameters: fileterOptions
         )
     }
     

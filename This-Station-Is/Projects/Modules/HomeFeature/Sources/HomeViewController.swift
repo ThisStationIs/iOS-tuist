@@ -46,6 +46,7 @@ public class HomeViewController: UIViewController {
         $0.rowHeight = UITableView.automaticDimension
         $0.estimatedRowHeight = 216
     }
+    private let refreshControl = UIRefreshControl()
 
     private var lineInfo: [DataManager.Line] = []
     private var recentBoards: [Post] = []
@@ -62,30 +63,15 @@ public class HomeViewController: UIViewController {
 //        }
         self.lineInfo = DataManager.shared.lineInfos
         
-        APIServiceManager().request(with: viewModel.getHomeRecentPosts()) { result in
-            switch result {
-            case .success(let success):
-                print("### success: \(success)")
-                self.recentBoards = success.data.posts.filter { $0.isReported == false }
-                DispatchQueue.main.async {
-                    print("### recentBoards:\(self.recentBoards)")
-                    self.recentBoardTableView.reloadData()
-                    self.recentBoardTableView.snp.updateConstraints {
-                        $0.height.equalTo(216 * self.recentBoards.count)
-                    }
-                }
-            case .failure(let failure):
-                print("### failure: \(failure)")
-            }
-        }
+        fetchRecentPosts()
         
         APIServiceManager().request(with: viewModel.getHomeHotPosts()) { result in
             switch result {
             case .success(let success):
-                print("### ☀️ success: \(success)")
+//                print("### ☀️ success: \(success)")
                 self.hotBoards = success.data.posts.filter { $0.isReported == false }
                 DispatchQueue.main.async {
-                    print("### hotBoards:\(self.hotBoards)")
+//                    print("### hotBoards:\(self.hotBoards)")
                     self.hotBoardCollectionView.reloadData()
                 }
             case .failure(let failure):
@@ -114,6 +100,8 @@ extension HomeViewController {
         ].forEach {
             scrollView.addSubview($0)
         }
+        
+        setRefreshControlToScrollView()
     }
     
     private func setLayout() {
@@ -164,6 +152,47 @@ extension HomeViewController {
         recentBoardTableView.dataSource = self
         
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+}
+
+extension HomeViewController {
+    private func setRefreshControlToScrollView() {
+        scrollView.refreshControl = self.refreshControl
+        setRefreshControl()
+    }
+    
+    private func setRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+    }
+    
+    @objc private func refreshData() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.fetchRecentPosts()
+            self.refreshControl.endRefreshing()
+        }
+    }
+}
+
+extension HomeViewController {
+    private func fetchRecentPosts() {
+        viewModel.getHomeRecentPosts() { [weak self] posts in
+            guard let self = self else { return }
+            self.recentBoards = self.viewModel.filterWithReport(to: posts)
+            self.updateRecentBoard()
+        }
+    }
+    
+    private func updateRecentBoard() {
+        DispatchQueue.main.async {
+            self.recentBoardTableView.reloadData()
+            self.updateRecentBoardHeight()
+        }
+    }
+    
+    private func updateRecentBoardHeight() {
+        self.recentBoardTableView.snp.updateConstraints {
+            $0.height.equalTo(216 * self.recentBoards.count)
+        }
     }
 }
 

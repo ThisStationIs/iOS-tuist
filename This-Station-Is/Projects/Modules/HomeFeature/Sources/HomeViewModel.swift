@@ -12,19 +12,37 @@ import Network
 class HomeViewModel {
     var lineInfo: [Lines] = []
     
-    public func getHomeRecentPosts() -> Endpoint<ResponseWrapper<RecentPosts>> {
+    public func filterWithReport(to posts: [Post]) -> [Post] {
+        return posts.filter { $0.isReported == false }
+    }
+}
+
+extension HomeViewModel {
+    public func getHomeRecentPosts(completion: @escaping (([Post]) -> Void)) {
         let userId = UserDefaults.standard.integer(forKey: "userId")
-        return Endpoint(
+        let endPoint = Endpoint<ResponseWrapper<RecentPosts>>(
             path: "api/v1/home/recent/posts?size=5",
             method: .post,
             bodyParameters: HomePostRequest(userId: userId)
         )
+        
+        APIServiceManager().request(with: endPoint) { result in
+            switch result {
+            case .success(let success):
+                print("#☀️ success: \(success)")
+                completion(success.data.posts)
+            case .failure(let failure):
+                print("#🌧️ failure: \(failure)")
+            }
+        }
     }
     
     struct HomePostRequest: Encodable {
         let userId: Int
     }
-    
+}
+
+extension HomeViewModel {
     public func getHomeHotPosts() -> Endpoint<ResponseWrapper<RecentPosts>> {
         let userId = UserDefaults.standard.integer(forKey: "userId")
         return Endpoint(
@@ -33,7 +51,9 @@ class HomeViewModel {
             bodyParameters: HomePostRequest(userId: userId)
         )
     }
-    
+}
+
+extension HomeViewModel {
     public func getSubwayLine(completion: @escaping (([Lines]) -> ())) {
         // /api/v1/subway/lines
         APIServiceManager().request(with: getLine()) { result in
@@ -65,7 +85,9 @@ class HomeViewModel {
     struct LinesData: Decodable {
         let lines: [Lines]
     }
+}
 
+extension HomeViewModel {
     func getPostDetail(
         _ postId: Int,
         completion: @escaping ((PostAPIs.DetailPost) -> Void)
@@ -81,11 +103,7 @@ class HomeViewModel {
                 print("### failure in getPostDetail is \(failure)")
             }
         }
-        
     }
-    
-   
-    
 }
 
 public struct FilterPostsData: Decodable {

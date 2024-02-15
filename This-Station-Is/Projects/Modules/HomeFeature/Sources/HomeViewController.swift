@@ -10,7 +10,6 @@ import UIKit
 import UI
 import SnapKit
 import Then
-import Network
 import CommonProtocol
 
 public class HomeViewController: UIViewController {
@@ -56,13 +55,9 @@ public class HomeViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationItem.titleView = searchBar
+        setNavigation(tintColor: .textMain)
         
-//        viewModel.getSubwayLine { lines in
-//            self.lineInfo = lines
-//        }
-        self.lineInfo = DataManager.shared.lineInfos
-        
+        fetchLinesInfo()
         fetchRecentPosts()
         fetchHotPosts()
     }
@@ -72,6 +67,10 @@ public class HomeViewController: UIViewController {
         setView()
         setLayout()
         setDelegate()
+    }
+    
+    public override func setNavigation(tintColor: UIColor) {
+        navigationItem.titleView = searchBar
     }
 }
 
@@ -162,6 +161,10 @@ extension HomeViewController {
 }
 
 extension HomeViewController {
+    private func fetchLinesInfo() {
+        self.lineInfo = DataManager.shared.lineInfos
+    }
+    
     private func fetchRecentPosts() {
         viewModel.getHomeRecentPosts() { [weak self] posts in
             guard let self = self else { return }

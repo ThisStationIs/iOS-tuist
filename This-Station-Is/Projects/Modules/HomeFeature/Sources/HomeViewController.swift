@@ -55,7 +55,7 @@ public class HomeViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setNavigation(tintColor: .textMain)
+        setNavigation()
         
         fetchLinesInfo()
         fetchRecentPosts()
@@ -69,7 +69,7 @@ public class HomeViewController: UIViewController {
         setDelegate()
     }
     
-    public override func setNavigation(tintColor: UIColor) {
+    func setNavigation() {
         navigationItem.titleView = searchBar
     }
 }

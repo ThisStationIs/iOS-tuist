@@ -64,20 +64,7 @@ public class HomeViewController: UIViewController {
         self.lineInfo = DataManager.shared.lineInfos
         
         fetchRecentPosts()
-        
-        APIServiceManager().request(with: viewModel.getHomeHotPosts()) { result in
-            switch result {
-            case .success(let success):
-//                print("### ☀️ success: \(success)")
-                self.hotBoards = success.data.posts.filter { $0.isReported == false }
-                DispatchQueue.main.async {
-//                    print("### hotBoards:\(self.hotBoards)")
-                    self.hotBoardCollectionView.reloadData()
-                }
-            case .failure(let failure):
-                print("### failure: \(failure)")
-            }
-        }
+        fetchHotPosts()
     }
     
     public override func viewDidLoad() {
@@ -168,6 +155,7 @@ extension HomeViewController {
     @objc private func refreshData() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             self.fetchRecentPosts()
+            self.fetchHotPosts()
             self.refreshControl.endRefreshing()
         }
     }
@@ -192,6 +180,20 @@ extension HomeViewController {
     private func updateRecentBoardHeight() {
         self.recentBoardTableView.snp.updateConstraints {
             $0.height.equalTo(216 * self.recentBoards.count)
+        }
+    }
+    
+    private func fetchHotPosts() {
+        viewModel.getHomeHotPosts { [weak self] posts in
+            guard let self = self else { return }
+            self.hotBoards = viewModel.filterWithReport(to: posts)
+            self.updateHotBoard()
+        }
+    }
+    
+    private func updateHotBoard() {
+        DispatchQueue.main.async {
+            self.hotBoardCollectionView.reloadData()
         }
     }
 }

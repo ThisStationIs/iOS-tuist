@@ -27,7 +27,7 @@ class BoardContentTableViewCell: UITableViewCell {
         $0.sizeToFit()
         $0.textColor = .textMain
         $0.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        $0.placeholder = "선택하신 태그와 관련된 글로 입력해주세요.\n댓글이 있는 경우 수정이 불가능합니다."
+        $0.placeholder = "선택하신 태그와 관련된 글로 입력해주세요.\n댓글이 있는 경우 수정이 불가능합니다.\n부적절하거나 불쾌감을 줄 수 있는 컨텐츠를 게시할 경우\n제재를 받을 수 있습니다."
 //        $0.placeholder = "제목을 입력해주세요"
     }
     
@@ -62,7 +62,7 @@ class BoardContentTableViewCell: UITableViewCell {
     private func setLayout() {
         contentTextView.snp.makeConstraints {
             $0.height.equalTo(506)
-            $0.edges.equalToSuperview()
+            $0.top.bottom.leading.trailing.equalToSuperview()
         }
         
         containerView.snp.makeConstraints {

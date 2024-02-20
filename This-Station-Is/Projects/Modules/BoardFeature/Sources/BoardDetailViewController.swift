@@ -176,6 +176,7 @@ public class BoardDetailViewController: UIViewController {
             self.present(alertView, animated: true)
         } else {
             let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            // 신고하기
             let editAction = UIAlertAction(title: "신고하기", style: .default, handler: reportHandler)
             alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
                 action in
@@ -201,6 +202,7 @@ public class BoardDetailViewController: UIViewController {
         if action.accessibilityLabel ?? "" == "Comment" {
             id = Int(action.accessibilityValue ?? "") ?? 0
             let reportViewController = ReportViewController(type: .comment, postId: id)
+            reportViewController.viewType = action.accessibilityHint ?? ""
             self.navigationController?.pushViewController(reportViewController, animated: true)
         } else {
             id = viewModel.detailBoardData.postId

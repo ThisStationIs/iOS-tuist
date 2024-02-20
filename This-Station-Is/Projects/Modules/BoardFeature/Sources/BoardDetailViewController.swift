@@ -178,11 +178,14 @@ public class BoardDetailViewController: UIViewController {
             let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             // 신고하기
             let editAction = UIAlertAction(title: "신고하기", style: .default, handler: reportHandler)
+            let blockAction = UIAlertAction(title: "차단하기", style: .destructive, handler: reportHandler)
+            blockAction.accessibilityHint = "Block"
             alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
                 action in
                 // Called when user taps outside
             }))
             alertView.addAction(editAction)
+            alertView.addAction(blockAction)
             self.present(alertView, animated: true)
         }
     }
@@ -207,6 +210,7 @@ public class BoardDetailViewController: UIViewController {
         } else {
             id = viewModel.detailBoardData.postId
             let reportViewController = ReportViewController(type: .post, postId: id)
+            reportViewController.viewType = action.accessibilityHint ?? ""
             self.navigationController?.pushViewController(reportViewController, animated: true)
         }
     }

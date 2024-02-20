@@ -84,7 +84,7 @@ class ReportViewController: UIViewController {
     private func reportHandelr() {
         viewModel.postReportData(type: reportType.rawValue, postId: postId, reportReasonId: selectedReportReasonId) {
             DispatchQueue.main.async {
-                let alertView = AlertView(title: "\(self.viewType == self.isBlock ? "차단을" : "신고를") 접수했어요.", message: "\(self.viewType == self.isBlock ? "차단" : "신고")하신 게시글은 게시판에서\n더 이상 확인할 수 없어요.")
+                let alertView = AlertView(title: "\(self.viewType == self.isBlock ? "차단을" : "신고를") 접수했어요.", message: "\(self.viewType == self.isBlock ? "차단" : "신고")하신 글은 게시판에서\n더 이상 확인할 수 없어요.")
                 alertView.addAction(title: "확인", style: .default) {
                     self.navigationController?.popToRootViewController(animated: true)
                 }

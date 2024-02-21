@@ -83,18 +83,18 @@ struct UploadCommentResponse: Decodable {
        "postId": 0,
        "content": "string",
        "authorNickname": "string",
-       "isDeleted": true,
-       "isBlocked": true,
+       "isReported": true,
        "likeCount": 0,
-       "lastUpdatedAt": "2023-12-28T06:34:29.083Z"
+       "createdAt": "2024-02-08T14:00:15.147Z",
+       "lastUpdatedAt": "2024-02-08T14:00:15.148Z"
      }
      */
     let commentId: Int
     let postId: Int
     let content: String
     let authorNickname: String
-    let isDeleted: Bool
-    let isBlocked: Bool
+    let isReported: Bool
     let likeCount: Int
+    let createdAt: String
     let lastUpdatedAt: String
 }

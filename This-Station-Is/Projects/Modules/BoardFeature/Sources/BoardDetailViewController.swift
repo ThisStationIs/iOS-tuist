@@ -12,7 +12,7 @@ import CommonProtocol
 
 public class BoardDetailViewController: UIViewController {
     
-    private lazy var detilaTableView = UITableView().then {
+    private lazy var detailTableView = UITableView().then {
         $0.delegate = self
         $0.dataSource = self
         $0.rowHeight = UITableView.automaticDimension
@@ -80,7 +80,7 @@ public class BoardDetailViewController: UIViewController {
         if isValidAccessToken() {
             self.navigationItem.rightBarButtonItem = moreButton
         }
-      
+        
     }
     
     public override func viewDidLoad() {
@@ -97,7 +97,7 @@ public class BoardDetailViewController: UIViewController {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        detilaTableView.reloadData()
+        detailTableView.reloadData()
     }
     
     @objc func selectGuestButton() {
@@ -112,17 +112,25 @@ public class BoardDetailViewController: UIViewController {
         }
         
         // move the root view up by the distance of keyboard height
-//        self.view.frame.origin.y = 0 - keyboardSize.height
+        //        self.view.frame.origin.y = 0 - keyboardSize.height
         bottomView.snp.updateConstraints {
             $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(keyboardSize.height - 34)
+        }
+        
+        detailTableView.snp.updateConstraints {
+            $0.bottom.equalToSuperview().inset(keyboardSize.height + 64)
         }
     }
     
     @objc func keyboardWillHide(notification: NSNotification) {
         // move back the root view origin to zero
-//        self.view.frame.origin.y = 0
+        //        self.view.frame.origin.y = 0
         bottomView.snp.updateConstraints {
             $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
+        }
+        
+        detailTableView.snp.updateConstraints {
+            $0.bottom.equalToSuperview().inset(64)
         }
     }
     
@@ -134,10 +142,10 @@ public class BoardDetailViewController: UIViewController {
             self.textField.text = ""
             
             self.viewModel.getDetailBoardData(id: self.id) {
-//                self.viewModel.getCommentData(id: self.id) {
-//
-//                }
-                self.detilaTableView.reloadData()
+                //                self.viewModel.getCommentData(id: self.id) {
+                //
+                //                }
+                self.detailTableView.reloadData()
                 self.textField.endEditing(true)
                 NotificationCenter.default.post(name: UIResponder.keyboardWillHideNotification, object: nil)
             }
@@ -168,12 +176,16 @@ public class BoardDetailViewController: UIViewController {
             self.present(alertView, animated: true)
         } else {
             let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            // 신고하기
             let editAction = UIAlertAction(title: "신고하기", style: .default, handler: reportHandler)
+            let blockAction = UIAlertAction(title: "차단하기", style: .destructive, handler: reportHandler)
+            blockAction.accessibilityHint = "Block"
             alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
                 action in
                 // Called when user taps outside
             }))
             alertView.addAction(editAction)
+            alertView.addAction(blockAction)
             self.present(alertView, animated: true)
         }
     }
@@ -182,15 +194,23 @@ public class BoardDetailViewController: UIViewController {
         textField.endEditing(true)
     }
     
+    private func getBottomYOffset() -> CGFloat {
+        let contentSize = detailTableView.contentSize.height
+        let frameSize = detailTableView.frame.size.height
+        return contentSize - frameSize
+    }
+    
     private func reportHandler(_ action: UIAlertAction) {
         var id = 0
         if action.accessibilityLabel ?? "" == "Comment" {
             id = Int(action.accessibilityValue ?? "") ?? 0
             let reportViewController = ReportViewController(type: .comment, postId: id)
+            reportViewController.viewType = action.accessibilityHint ?? ""
             self.navigationController?.pushViewController(reportViewController, animated: true)
         } else {
             id = viewModel.detailBoardData.postId
             let reportViewController = ReportViewController(type: .post, postId: id)
+            reportViewController.viewType = action.accessibilityHint ?? ""
             self.navigationController?.pushViewController(reportViewController, animated: true)
         }
     }
@@ -198,7 +218,7 @@ public class BoardDetailViewController: UIViewController {
     private func deleteCommentHandler(_ commentId: Int) {
         print("commentID : \(commentId)")
         viewModel.deleteCommentData(postId: viewModel.detailBoardData.postId, commentId: commentId) {
-            self.detilaTableView.reloadData()
+            self.detailTableView.reloadData()
             let alertView = AlertView(title: "댓글을 삭제했어요.", message: "")
             alertView.addAction(title: "확인", style: .default)
             alertView.present()
@@ -233,13 +253,13 @@ public class BoardDetailViewController: UIViewController {
         self.view.backgroundColor = .white
         self.navigationController?.hidesBarsOnSwipe = false
         
-        self.view.addSubview(detilaTableView)
+        self.view.addSubview(detailTableView)
         self.view.addSubview(bottomView)
         
         let viewTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectViewTapGesture))
         self.view.addGestureRecognizer(viewTapGesture)
         
-       
+        
         if !isValidAccessToken() {
             bottomView.addSubview(guestButton)
         } else {
@@ -251,12 +271,13 @@ public class BoardDetailViewController: UIViewController {
             }
         }
         
-       
+        
     }
     
     private func setLayout() {
-        detilaTableView.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview()
+        detailTableView.snp.makeConstraints {
+            $0.top.equalTo(self.view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview().inset(64)
         }
         

@@ -14,7 +14,7 @@ class ReportBoardTableViewCell: UITableViewCell {
     private let containerView = UIView()
     
     private let reportLabel = UILabel().then {
-        $0.text = "신고한 게시글입니다."
+        $0.text = "다른 사용자에 의해 제재된 글입니다."
         $0.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         $0.textColor = .statusNegative
     }

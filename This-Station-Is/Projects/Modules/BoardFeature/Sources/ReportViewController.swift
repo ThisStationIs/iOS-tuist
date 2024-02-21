@@ -35,8 +35,11 @@ class ReportViewController: UIViewController {
     private var radioButtonArray: [RadioButton] = []
     private var postId: Int = 0
     private var reportType: ReportType = .post
-    private var selectedReportReasonId: Int = 0
+    private var selectedReportReasonId: Int = 1
     private var viewModel = ReportViewModel()
+    
+    var viewType: String = ""
+    var isBlock: String = "Block"
     
     init(type: ReportType = .post, postId: Int) {
         super.init(nibName: nil, bundle: nil)
@@ -58,9 +61,9 @@ class ReportViewController: UIViewController {
     
     @objc func selectReportButton() {
         
-        let alertView = AlertView(title: "신고할까요?", message: "한 번 신고가 접수되면 취소할 수 없으며,\n게시글 내용을 확인할 수 없어요.")
+        let alertView = AlertView(title: viewType == isBlock ? "차단할까요?" : "신고할까요?", message: "한 번 접수되면 취소할 수 없으며,\n게시글 내용을 확인할 수 없어요.")
         alertView.addAction(title: "취소", style: .cancel)
-        alertView.addAction(title: "신고", style: .destructive, handler: reportHandelr)
+        alertView.addAction(title: viewType == isBlock ? "차단" : "신고", style: .destructive, handler: reportHandelr)
         alertView.present()
         
     }
@@ -81,7 +84,7 @@ class ReportViewController: UIViewController {
     private func reportHandelr() {
         viewModel.postReportData(type: reportType.rawValue, postId: postId, reportReasonId: selectedReportReasonId) {
             DispatchQueue.main.async {
-                let alertView = AlertView(title: "신고를 접수했어요.", message: "신고하신 게시글은 게시판에서\n더 이상 확인할 수 없어요.")
+                let alertView = AlertView(title: "\(self.viewType == self.isBlock ? "차단을" : "신고를") 접수했어요.", message: "\(self.viewType == self.isBlock ? "차단" : "신고")하신 글은 게시판에서\n더 이상 확인할 수 없어요.")
                 alertView.addAction(title: "확인", style: .default) {
                     self.navigationController?.popToRootViewController(animated: true)
                 }
@@ -92,7 +95,10 @@ class ReportViewController: UIViewController {
     
     private func setUI() {
         self.view.backgroundColor = .white
-        self.title = "신고하기"
+        self.title = viewType == isBlock ? "차단하기" : "신고하기"
+        reasonTitle.text = viewType == isBlock ? "차단사유" : "신고사유"
+        reportButton.title = viewType == isBlock ? "차단하기" : "신고하기"
+        
         self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.textMain]
         setupRightBarButtonItem()
         
@@ -116,6 +122,7 @@ class ReportViewController: UIViewController {
             
             let radioButton = RadioButton()
             radioButton.tag = i
+            radioButton.isOn = i == 0 ? true : false
             reasonView.addSubview(radioButton)
             radioButton.snp.makeConstraints {
                 $0.centerY.equalToSuperview()

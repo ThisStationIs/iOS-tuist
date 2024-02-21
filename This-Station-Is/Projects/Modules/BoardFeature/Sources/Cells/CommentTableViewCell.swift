@@ -75,13 +75,20 @@ class CommentTableViewCell: UITableViewCell {
         } else {
             let alertView = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             let editAction = UIAlertAction(title: "신고하기", style: .default, handler: reportHandler)
+            let blockAction = UIAlertAction(title: "차단하기", style: .destructive, handler: reportHandler)
             editAction.accessibilityValue = "\(commentData?.commentId ?? 0)"
             editAction.accessibilityLabel = "Comment"
+            editAction.accessibilityHint = "Report"
+            
+            blockAction.accessibilityValue = "\(commentData?.commentId ?? 0)"
+            blockAction.accessibilityLabel = "Comment"
+            blockAction.accessibilityHint = "Block"
             alertView.addAction(UIAlertAction(title: "취소", style: .cancel, handler: {
                 action in
                 // Called when user taps outside
             }))
             alertView.addAction(editAction)
+            alertView.addAction(blockAction)
             guard let rootViewController = UIApplication.topViewController() else { return }
             rootViewController.present(alertView, animated: true)
         }

@@ -35,6 +35,13 @@ public class BottomSheetView: UIView {
         $0.backgroundColor = .componentDivider
     }
     
+    let contentStackView = UIStackView().then {
+        $0.backgroundColor = .white
+        
+        $0.axis = .vertical
+        $0.spacing = 16
+    }
+    
 //    var contentView: UIView = UIView()
     
     var defaultHeight = (UIScreen.main.bounds.height / 844) * 214
@@ -80,7 +87,8 @@ public class BottomSheetView: UIView {
         [
             indicatorView,
             titleLabel,
-            separatorView
+            separatorView,
+            contentStackView
         ].forEach {
             containerView.addSubview($0)
         }
@@ -88,10 +96,8 @@ public class BottomSheetView: UIView {
     
     private func setLayout() {
         containerView.snp.makeConstraints {
-            $0.height.equalTo(defaultHeight)
-            $0.top.equalTo(self.safeAreaLayoutGuide).inset(topConstant)
-            $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.top.equalTo(self.safeAreaLayoutGuide)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
         
         indicatorView.snp.makeConstraints {
@@ -111,6 +117,13 @@ public class BottomSheetView: UIView {
             $0.top.equalTo(titleLabel.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview().inset(24)
         }
+        
+        contentStackView.snp.makeConstraints {
+            $0.top.equalTo(separatorView.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
+                .inset(24)
+        }
     }
 }
 
@@ -120,7 +133,7 @@ public extension BottomSheetView {
         rootViewController.view.addSubview(self)
         
         let safeAreaHeight: CGFloat = self.safeAreaLayoutGuide.layoutFrame.height
-         let bottomPadding: CGFloat = self.safeAreaInsets.bottom
+        let bottomPadding: CGFloat = self.safeAreaInsets.bottom
         
         self.snp.makeConstraints {
             $0.edges.equalToSuperview()
@@ -146,7 +159,7 @@ public extension BottomSheetView {
     }
     
     func addContentViewForSignup(_ view: UIView) {
-        containerView.addSubview(view)
+        contentStackView.addArrangedSubview(view)
     }
     
     func updateTitleSetting(

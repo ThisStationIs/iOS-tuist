@@ -37,6 +37,8 @@ public class InputEmailViewController: UIViewController {
         $0.setTitle("  전체동의", for: .normal)
         $0.setTitleColor(UIColor.textMain, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        
+        $0.contentHorizontalAlignment = .left
     }
     let firstTermView = TermsAgreementView().then {
         $0.setTitle(title: "이용약관 동의")
@@ -63,6 +65,7 @@ public class InputEmailViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setNavigation(tintColor: .textMain)
+        tabBarController?.tabBar.isHidden = true
     }
     
     public override func viewDidLoad() {
@@ -73,6 +76,11 @@ public class InputEmailViewController: UIViewController {
         setBinding()
         setBottomSheet()
         hideKeyboardWhenTappedAround()
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.isNavigationBarHidden = false
     }
 }
 
@@ -120,8 +128,6 @@ extension InputEmailViewController {
     }
     
     private func setBottomSheet() {
-        
-        
         self.bottomSheet.updateTitleSetting(
             font: .systemFont(ofSize: 24, weight: .semibold),
             textAlignment: .left)
@@ -136,35 +142,20 @@ extension InputEmailViewController {
         }
         
         allAgreementButton.snp.makeConstraints {
-            $0.top.equalTo(bottomSheet.titleLabel.snp.bottom)
-                .offset(24)
-            $0.leading.equalToSuperview()
-                .offset(24)
             $0.height.equalTo(24)
         }
 
         firstTermView.snp.makeConstraints {
-            $0.top.equalTo(allAgreementButton.snp.bottom)
-                .offset(49)
-            $0.leading.trailing.equalToSuperview()
-                .inset(24)
             $0.height.equalTo(24)
         }
 
         secondTermView.snp.makeConstraints {
-            $0.top.equalTo(firstTermView.snp.bottom)
-                .offset(24)
-            $0.leading.trailing.equalToSuperview()
-                .inset(24)
             $0.height.equalTo(24)
         }
 
         sheetBottomButton.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-                .inset(24)
-            $0.bottom.equalToSuperview()
-                .inset(40)
             $0.height.equalTo(48)
+            $0.bottom.equalToSuperview()
         }
         
         allAgreementButton.addTarget(self, action: #selector(allAgreementButtonTapped), for: .touchUpInside)
@@ -180,6 +171,8 @@ extension InputEmailViewController {
     private func bottomButtonTapped() {
         guard let email = emailInputBox.textField.text else { return }
         viewModel.model.email = email
+        
+        navigationController?.isNavigationBarHidden = true
         
         bottomSheet.show()
         // TODO: change to coordinator
